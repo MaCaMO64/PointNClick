@@ -120,6 +120,8 @@ const Game = (() => {
   G.rnd = rnd;
   G.hashStr = hashStr;
   G.FALLBACK_USE = FALLBACK_USE;
+  G._debugSpeech = () => !!speech.current;
+  G._debugQueue = () => speech.queue.length > 0;
 
   G.flag = (name) => !!G.flags[name];
   G.setFlag = (name, val) => { G.flags[name] = (val === undefined ? true : val); };
@@ -338,6 +340,7 @@ const Game = (() => {
   }
 
   function updateSpeech(dt) {
+    if (!speech.current && speech.queue.length > 0) startCurrentSpeech();
     const s = speech.current;
     if (!s) return;
     const elapsed = performance.now() - s.t0;
@@ -1145,23 +1148,40 @@ const Game = (() => {
     toastMsg = msg; toastT = 2.4;
   }
 
+  let crashMsg = null;
+
   function loop(ts) {
     const dt = Math.min(0.05, (ts - lastTime) / 1000 || 0.016);
     lastTime = ts;
-    if (G.state === 'play' && !paused) update(dt);
-    else tGlobal += dt * 0.4;
-    if (toastT > 0) toastT -= dt;
-    computeHover();
-    render();
-    if (toastMsg && toastT > 0) {
-      ctx.font = 'bold 18px Verdana, sans-serif';
+    try {
+      if (G.state === 'play' && !paused) update(dt);
+      else tGlobal += dt * 0.4;
+      if (toastT > 0) toastT -= dt;
+      computeHover();
+      render();
+      if (toastMsg && toastT > 0) {
+        ctx.font = 'bold 18px Verdana, sans-serif';
+        ctx.textAlign = 'center';
+        const tw = ctx.measureText(toastMsg).width;
+        ctx.fillStyle = 'rgba(8,8,12,0.8)';
+        roundRect(ctx, W / 2 - tw / 2 - 18, 84, tw + 36, 36, 8);
+        ctx.fill();
+        ctx.fillStyle = '#ffe9a8';
+        ctx.fillText(toastMsg, W / 2, 108);
+      }
+    } catch (e) {
+      console.error('[RING & WRONG] frame error:', e);
+      crashMsg = (e && e.message) ? e.message : String(e);
+    }
+    if (crashMsg) {
+      ctx.font = 'bold 16px Verdana, sans-serif';
       ctx.textAlign = 'center';
-      const tw = ctx.measureText(toastMsg).width;
-      ctx.fillStyle = 'rgba(8,8,12,0.8)';
-      roundRect(ctx, W / 2 - tw / 2 - 18, 84, tw + 36, 36, 8);
+      const tw = ctx.measureText(crashMsg).width;
+      ctx.fillStyle = 'rgba(40,6,6,0.85)';
+      roundRect(ctx, W / 2 - tw / 2 - 14, 8, tw + 28, 30, 6);
       ctx.fill();
-      ctx.fillStyle = '#ffe9a8';
-      ctx.fillText(toastMsg, W / 2, 108);
+      ctx.fillStyle = '#ff9a8a';
+      ctx.fillText('Feil: ' + crashMsg + ' (se konsoll – F12)', W / 2, 28);
     }
     requestAnimationFrame(loop);
   }
