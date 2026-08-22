@@ -1,4 +1,5 @@
-const W = 1280, H = 720, UI_TOP = 570;
+const W = 1280, H = 720, UI_TOP = 600;
+const LOW_W = 320, LOW_H = 150;
 const VERBS = [
   { id: 'look',  label: 'LOOK AT' },
   { id: 'take',  label: 'TAKE' },
@@ -187,8 +188,10 @@ const Game = (() => {
     resolveNpcs(room);
     if (!G.bgCache[roomId]) {
       const c = document.createElement('canvas');
-      c.width = W; c.height = H;
+      c.width = LOW_W; c.height = LOW_H;
       const bctx = c.getContext('2d');
+      bctx.imageSmoothingEnabled = false;
+      bctx.setTransform(LOW_W / W, 0, 0, LOW_H / H, 0, 0);
       room.paint(bctx, W, H);
       G.bgCache[roomId] = c;
     }
@@ -546,11 +549,18 @@ const Game = (() => {
   G.roundRect = roundRect;
 
   function drawWorld() {
-    ctx.drawImage(G.bgCache[G.roomId], 0, 0);
-    if (G.room.animateUnder) G.room.animateUnder(ctx, tGlobal);
+    const l = G._lctx;
+    l.setTransform(LOW_W / W, 0, 0, LOW_H / H, 0, 0);
+    l.clearRect(0, 0, W, H);
+    l.save();
+    l.setTransform(1, 0, 0, 1, 0, 0);
+    l.drawImage(G.bgCache[G.roomId], 0, 0);
+    l.restore();
+
+    if (G.room.animateUnder) G.room.animateUnder(l, tGlobal);
 
     const ents = [];
-    ents.push({ y: player.y, draw: () => drawPerson(ctx, {
+    ents.push({ y: player.y, draw: () => drawPerson(l, {
       x: player.x, y: player.y, scale: depthScale(player.y),
       style: 'toke', facing: player.facing,
       phase: player.moving ? player.phase : 0,
@@ -558,14 +568,14 @@ const Game = (() => {
     })});
     (G.room._npcs || []).forEach(npc => {
       if (npc.def.hidden && npc.def.hidden()) return;
-      ents.push({ y: npc.y, draw: () => npc.def.draw(ctx, {
+      ents.push({ y: npc.y, draw: () => npc.def.draw(l, {
         x: npc.x, y: npc.y, scale: depthScale(npc.y),
         phase: npc.phase, talking: npc.talking, npc,
       })});
     });
     if (G.flag('joinedRando') && !G.npc('rando') && !['dal', 'krater'].includes(G.roomId)) {
       const fxp = player.x - 60 * player.facing;
-      ents.push({ y: player.y - 1, draw: () => drawPerson(ctx, {
+      ents.push({ y: player.y - 1, draw: () => drawPerson(l, {
         x: fxp, y: player.y + 2, scale: depthScale(player.y),
         style: 'rando', facing: player.facing,
         phase: player.moving ? player.phase + 2 : 0,
@@ -574,33 +584,36 @@ const Game = (() => {
     }
     ents.sort((a, b) => a.y - b.y).forEach(e => e.draw());
 
-    if (G.room.animateOver) G.room.animateOver(ctx, tGlobal);
+    if (G.room.animateOver) G.room.animateOver(l, tGlobal);
 
     if (G.ringWorn) {
-      ctx.fillStyle = 'rgba(120,130,160,0.30)';
-      ctx.fillRect(0, 0, W, UI_TOP);
+      l.fillStyle = 'rgba(120,130,160,0.30)';
+      l.fillRect(0, 0, W, UI_TOP);
       const pulse = 0.12 + 0.08 * Math.sin(tGlobal * 3);
-      const grad = ctx.createRadialGradient(W / 2, UI_TOP / 2, UI_TOP * 0.3, W / 2, UI_TOP / 2, UI_TOP * 0.85);
+      const grad = l.createRadialGradient(W / 2, UI_TOP / 2, UI_TOP * 0.3, W / 2, UI_TOP / 2, UI_TOP * 0.85);
       grad.addColorStop(0, 'rgba(255,40,20,0)');
       grad.addColorStop(1, 'rgba(180,20,10,' + pulse.toFixed(3) + ')');
-      ctx.fillStyle = grad;
-      ctx.fillRect(0, 0, W, UI_TOP);
+      l.fillStyle = grad;
+      l.fillRect(0, 0, W, UI_TOP);
     }
+
+    hoverRects.forEach(r => {
+      l.strokeStyle = 'rgba(255,250,220,0.75)';
+      l.lineWidth = 5;
+      roundRect(l, r.x + 2, r.y + 2, r.w - 4, r.h - 4, 8);
+      l.stroke();
+    });
+  }
+
+  function drawSpeechLayer() {
     whispers.forEach(wsp => {
       ctx.save();
-      ctx.globalAlpha = Math.min(0.5, wsp.life * 0.25);
+      ctx.globalAlpha = Math.min(0.55, wsp.life * 0.28);
       ctx.font = 'italic 26px Georgia, serif';
       ctx.fillStyle = '#ffdddd';
       ctx.textAlign = 'center';
       ctx.fillText(wsp.text, wsp.x, wsp.y);
       ctx.restore();
-    });
-
-    hoverRects.forEach(r => {
-      ctx.strokeStyle = 'rgba(255,255,220,0.5)';
-      ctx.lineWidth = 2;
-      roundRect(ctx, r.x + 2, r.y + 2, r.w - 4, r.h - 4, 8);
-      ctx.stroke();
     });
 
     const s = speech.current;
@@ -724,15 +737,15 @@ const Game = (() => {
                  'Use ' + l;
     }
     ctx.fillStyle = 'rgba(240,225,190,0.9)';
-    ctx.fillText(sentence, 640, UI_TOP + 34);
+    ctx.fillText(sentence, 640, UI_TOP + 20);
 
-    const slotSize = 44, stride = 52;
+    const slotSize = 40, stride = 46;
     const cols = 4, rows = 2;
     const perPage = cols * rows;
     const pageCount = Math.max(1, Math.ceil(G.inv.length / perPage));
     if (invPage >= pageCount) invPage = pageCount - 1;
     if (invPage < 0) invPage = 0;
-    const gx = W - 20 - cols * stride + 6, gy = UI_TOP + 48;
+    const gx = W - 24 - cols * stride + 6, gy = UI_TOP + 28;
     const visItems = G.inv.slice(invPage * perPage, invPage * perPage + perPage);
     for (let i = 0; i < perPage; i++) {
       const cx = gx + (i % cols) * stride;
@@ -756,7 +769,7 @@ const Game = (() => {
       uiClicks.push({ x: rx2 - 6, y: ayL - 16, w: 20, h: 22, act: 'invpage', dir: 1 });
       ctx.font = '11px Verdana, sans-serif';
       ctx.fillStyle = 'rgba(200,185,150,0.7)';
-      ctx.fillText((invPage + 1) + '/' + pageCount, gx + cols * stride / 2 - 8, gy + perPage * stride + 12);
+      ctx.fillText((invPage + 1) + '/' + pageCount, gx + cols * stride - 10, gy - 6);
     }
     ctx.font = '12px Verdana, sans-serif';
     ctx.textAlign = 'left';
@@ -766,10 +779,10 @@ const Game = (() => {
     ctx.font = '13px Verdana, sans-serif';
     ctx.textAlign = 'right';
     ctx.fillStyle = 'rgba(200,185,150,0.75)';
-    ctx.fillText('ESC = menu', W - 24, UI_TOP + 142);
+    ctx.fillText('ESC = menu', W - 24, UI_TOP + 110);
     ctx.textAlign = 'left';
     ctx.fillStyle = 'rgba(200,185,150,0.75)';
-    ctx.fillText('right-click = look / cancel', 24, UI_TOP + 142);
+    ctx.fillText('right-click = look / cancel', 24, UI_TOP + 110);
   }
 
   const verbRects = {};
@@ -777,7 +790,7 @@ const Game = (() => {
     if (verbRects[id]) return verbRects[id];
     const idx = VERBS.findIndex(v => v.id === id);
     const col = idx % 2, row = Math.floor(idx / 2);
-    return { x: 24 + col * 132, y: UI_TOP + 48 + row * 52, w: 122, h: 44 };
+    return { x: 20 + col * 140, y: UI_TOP + 28 + row * 46, w: 132, h: 40 };
   }
 
   function drawPause() {
@@ -849,6 +862,9 @@ const Game = (() => {
     if (G.state === 'ending') { renderEnding(); drawCursor(); return; }
 
     drawWorld();
+    ctx.imageSmoothingEnabled = false;
+    ctx.drawImage(G._low, 0, 0, LOW_W, LOW_H, 0, 0, W, H);
+    drawSpeechLayer();
     drawUI();
 
     if (paused) drawPause();
@@ -1198,6 +1214,12 @@ const Game = (() => {
   G.boot = (cv) => {
     canvas = cv;
     ctx = canvas.getContext('2d');
+    ctx.imageSmoothingEnabled = false;
+    G._low = document.createElement('canvas');
+    G._low.width = LOW_W; G._low.height = LOW_H;
+    G._lctx = G._low.getContext('2d');
+    G._lctx.imageSmoothingEnabled = false;
+    G._lctx.setTransform(LOW_W / W, 0, 0, LOW_H / H, 0, 0);
     resize();
     window.addEventListener('resize', resize);
     canvas.addEventListener('mousemove', evt => {
