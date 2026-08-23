@@ -1385,18 +1385,22 @@ const Game = (() => {
     G._bgImages = {};
     if (typeof Image !== 'undefined' && window.ROOMS) {
       Object.keys(window.ROOMS).forEach(id => {
-        const exts = ['png', 'jpeg', 'jpg'];
-        let extIdx = 0;
         const img = new Image();
         img.onload = () => {
           G._bgImages[id] = img;
           if (G.roomId === id) buildBg(id);
         };
-        img.onerror = () => {
-          extIdx += 1;
-          if (extIdx < exts.length) img.src = 'art/' + id + '.' + exts[extIdx];
-        };
-        img.src = 'art/' + id + '.' + exts[0];
+        if (window.ART_DATA && window.ART_DATA[id]) {
+          img.src = window.ART_DATA[id];
+        } else {
+          const exts = ['png', 'jpeg', 'jpg'];
+          let extIdx = 0;
+          img.onerror = () => {
+            extIdx += 1;
+            if (extIdx < exts.length) img.src = 'art/' + id + '.' + exts[extIdx];
+          };
+          img.src = 'art/' + id + '.' + exts[0];
+        }
       });
     }
     resize();
