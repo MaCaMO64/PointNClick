@@ -1,10 +1,11 @@
 const W = 1280, H = 720, UI_TOP = 600;
 const LOW_W = 320, LOW_H = 150;
 const VERBS = [
-  { id: 'look',  label: 'LOOK AT' },
-  { id: 'take',  label: 'TAKE' },
-  { id: 'use',   label: 'USE' },
-  { id: 'talk',  label: 'TALK TO' },
+  { id: 'walk', label: 'WALK' },
+  { id: 'look', label: 'LOOK AT' },
+  { id: 'take', label: 'TAKE' },
+  { id: 'use',  label: 'USE' },
+  { id: 'talk', label: 'TALK TO' },
 ];
 
 const SPEAKER_COLORS = {
@@ -667,37 +668,32 @@ const Game = (() => {
   function renderDialogMenu() {
     dialog.rects = [];
     const opts = dialog.options.filter(o => o.keep || !o._used);
-    const boxW = 760;
-    const lineH = 34;
-    const totalH = (opts.length + 1) * lineH + 24;
-    const bx = (W - boxW) / 2, by = UI_TOP - totalH - 14;
-    ctx.fillStyle = 'rgba(12,14,24,0.82)';
-    roundRect(ctx, bx, by, boxW, totalH, 12);
-    ctx.fill();
-    ctx.strokeStyle = 'rgba(212,175,55,0.55)';
-    ctx.lineWidth = 2;
-    roundRect(ctx, bx, by, boxW, totalH, 12);
-    ctx.stroke();
-
-    ctx.font = '19px Verdana, sans-serif';
-    ctx.textAlign = 'center';
-    let oy = by + 22;
+    const bx = 652, bw = 420;
+    const rows = opts.length + 1;
+    const lh = Math.min(26, (H - UI_TOP - 24) / rows);
+    ctx.font = '15px Verdana, sans-serif';
+    ctx.textAlign = 'left';
+    let oy = UI_TOP + 18 + lh * 0.72;
     opts.forEach(o => {
-      const r = { x: bx + 20, y: oy - 18, w: boxW - 40, h: lineH, opt: o };
+      const r = { x: bx - 4, y: oy - lh * 0.78, w: bw + 8, h: lh, opt: o };
       const hovered = mx >= r.x && mx <= r.x + r.w && my >= r.y && my <= r.y + r.h;
       if (hovered) {
-        ctx.fillStyle = 'rgba(212,175,55,0.18)';
-        roundRect(ctx, r.x, r.y, r.w, r.h, 8);
+        ctx.fillStyle = 'rgba(255,215,110,0.14)';
+        roundRect(ctx, r.x, r.y, r.w, r.h, 5);
         ctx.fill();
       }
-      ctx.fillStyle = hovered ? '#ffe08a' : '#d8d4c8';
-      ctx.fillText('• ' + o.text, W / 2, oy);
+      let text = '› ' + o.text;
+      while (ctx.measureText(text).width > bw - 10 && text.length > 5) text = text.slice(0, -2) + '…';
+      ctx.fillStyle = hovered ? '#fff6d8' : '#ffe08a';
+      ctx.fillText(text, bx + 2, oy);
       dialog.rects.push(r);
-      oy += lineH;
+      oy += lh;
     });
-    const er = { x: bx + 20, y: oy - 18, w: boxW - 40, h: lineH, opt: '__exit__' };
-    ctx.fillStyle = '#888';
-    ctx.fillText('( avslutt samtale )', W / 2, oy);
+    const er = { x: bx - 4, y: oy - lh * 0.78, w: bw + 8, h: lh, opt: '__exit__' };
+    const hoveredExit = mx >= er.x && mx <= er.x + er.w && my >= er.y && my <= er.y + er.h;
+    ctx.font = 'italic 14px Verdana, sans-serif';
+    ctx.fillStyle = hoveredExit ? '#cfc7b0' : '#8f8470';
+    ctx.fillText('( leave )', bx + 2, oy);
     dialog.rects.push(er);
   }
 
@@ -718,43 +714,73 @@ const Game = (() => {
   }
 
   function drawUI() {
-    const grad = ctx.createLinearGradient(0, UI_TOP, 0, H);
-    grad.addColorStop(0, '#241a12');
-    grad.addColorStop(1, '#14100b');
-    ctx.fillStyle = grad;
+    ctx.fillStyle = '#120a04';
     ctx.fillRect(0, UI_TOP, W, H - UI_TOP);
-    ctx.fillStyle = 'rgba(212,175,55,0.5)';
-    ctx.fillRect(0, UI_TOP, W, 3);
+    const grad = ctx.createLinearGradient(0, UI_TOP, 0, H);
+    grad.addColorStop(0, '#33220f');
+    grad.addColorStop(0.5, '#2a1b0c');
+    grad.addColorStop(1, '#191006');
+    ctx.fillStyle = grad;
+    ctx.fillRect(3, UI_TOP + 3, W - 6, H - UI_TOP - 6);
+    ctx.strokeStyle = 'rgba(255,215,150,0.05)';
+    ctx.lineWidth = 2;
+    for (let y = UI_TOP + 18; y < H; y += 18) {
+      ctx.beginPath(); ctx.moveTo(6, y); ctx.lineTo(W - 6, y + Math.sin(y * 1.7) * 1.5); ctx.stroke();
+    }
+    ctx.fillStyle = 'rgba(255,220,160,0.16)';
+    ctx.fillRect(3, UI_TOP + 3, W - 6, 2);
+    ctx.fillRect(3, UI_TOP + 3, 2, H - UI_TOP - 6);
+    ctx.fillStyle = 'rgba(0,0,0,0.55)';
+    ctx.fillRect(3, H - 5, W - 6, 2);
+    ctx.fillRect(W - 5, UI_TOP + 3, 2, H - UI_TOP - 6);
+    ctx.fillStyle = '#c9a24a';
+    ctx.fillRect(0, UI_TOP, W, 2);
 
     VERBS.forEach(v => {
       const r = verbRect(v.id);
       const isActive = activeVerb === v.id;
-      ctx.fillStyle = isActive ? 'rgba(212,175,55,0.85)' : 'rgba(255,255,255,0.07)';
-      roundRect(ctx, r.x, r.y, r.w, r.h, 8);
+      const hov = mx >= r.x && mx <= r.x + r.w && my >= r.y && my <= r.y + r.h;
+      ctx.fillStyle = isActive ? '#3d2a12' : hov ? '#241708' : '#1c1208';
+      roundRect(ctx, r.x, r.y, r.w, r.h, 6);
       ctx.fill();
-      ctx.font = 'bold 17px Verdana, sans-serif';
+      ctx.strokeStyle = isActive ? '#ffd76e' : hov ? 'rgba(255,215,110,0.55)' : '#57401f';
+      ctx.lineWidth = 2;
+      roundRect(ctx, r.x, r.y, r.w, r.h, 6);
+      ctx.stroke();
+      drawVerbIcon(v.id, r.x + r.w / 2, r.y + 22, isActive || hov);
+      ctx.font = 'bold 12px Verdana, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillStyle = isActive ? '#1a1208' : '#e8dcc0';
-      ctx.fillText(v.label, r.x + r.w / 2, r.y + r.h / 2 + 6);
-      uiClicks.push({ ...r, act: 'verb', id: v.id });
+      ctx.fillStyle = isActive ? '#ffe9a8' : '#d8c79a';
+      ctx.fillText(v.label, r.x + r.w / 2, r.y + r.h - 8);
+      uiClicks.push({ x: r.x, y: r.y, w: r.w, h: r.h, act: 'verb', id: v.id });
     });
 
-    ctx.font = 'italic 17px Verdana, sans-serif';
-    ctx.textAlign = 'center';
-    let sentence = '';
-    if (selectedItem) {
-      sentence = hoverLabel
-        ? 'Use ' + ITEMS[selectedItem].name.toLowerCase() + ' on ' + hoverLabel.toLowerCase()
-        : 'Use ' + ITEMS[selectedItem].name.toLowerCase() + ' with…';
-    } else if (hoverLabel) {
-      const l = hoverLabel.toLowerCase();
-      sentence = activeVerb === 'talk' ? 'Talk to ' + l :
-                 activeVerb === 'look' ? 'Look at ' + l :
-                 activeVerb === 'take' ? 'Pick up ' + l :
-                 'Use ' + l;
+    if (dialog.open && dialog.dirty && !G.inScript() && speech.queue.length === 0) {
+      renderDialogMenu();
+    } else {
+      const midCx = 862;
+      let sentence = '';
+      if (selectedItem) {
+        sentence = hoverLabel
+          ? 'Use ' + ITEMS[selectedItem].name.toLowerCase() + ' on ' + hoverLabel.toLowerCase()
+          : 'Use ' + ITEMS[selectedItem].name.toLowerCase() + ' with…';
+      } else if (hoverLabel) {
+        const l = hoverLabel.toLowerCase();
+        sentence = activeVerb === 'walk' ? 'Walk to ' + l :
+                   activeVerb === 'talk' ? 'Talk to ' + l :
+                   activeVerb === 'look' ? 'Look at ' + l :
+                   activeVerb === 'take' ? 'Pick up ' + l :
+                   'Use ' + l;
+      }
+      ctx.font = 'italic 16px Verdana, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillStyle = 'rgba(240,225,190,0.92)';
+      ctx.fillText(sentence, midCx, UI_TOP + 32);
+      ctx.font = '12px Verdana, sans-serif';
+      ctx.fillStyle = 'rgba(200,185,150,0.6)';
+      ctx.fillText('right-click = look / cancel', midCx, UI_TOP + 60);
+      ctx.fillText('ESC = menu', midCx, UI_TOP + 78);
     }
-    ctx.fillStyle = 'rgba(240,225,190,0.9)';
-    ctx.fillText(sentence, 640, UI_TOP + 20);
 
     const slotSize = 40, stride = 46;
     const cols = 4, rows = 2;
@@ -792,22 +818,90 @@ const Game = (() => {
     ctx.textAlign = 'left';
     ctx.fillStyle = 'rgba(200,185,150,0.6)';
     ctx.fillText('BAG', gx, gy - 8);
-
-    ctx.font = '13px Verdana, sans-serif';
-    ctx.textAlign = 'right';
-    ctx.fillStyle = 'rgba(200,185,150,0.75)';
-    ctx.fillText('ESC = menu', W - 24, UI_TOP + 110);
-    ctx.textAlign = 'left';
-    ctx.fillStyle = 'rgba(200,185,150,0.75)';
-    ctx.fillText('right-click = look / cancel', 24, UI_TOP + 110);
   }
 
   const verbRects = {};
   function verbRect(id) {
     if (verbRects[id]) return verbRects[id];
-    const idx = VERBS.findIndex(v => v.id === id);
-    const col = idx % 2, row = Math.floor(idx / 2);
-    return { x: 20 + col * 140, y: UI_TOP + 28 + row * 46, w: 132, h: 40 };
+    const i = VERBS.findIndex(v => v.id === id);
+    const r = { x: 14 + i * 126, y: UI_TOP + 20, w: 118, h: 64 };
+    verbRects[id] = r;
+    return r;
+  }
+
+  function drawVerbIcon(id, cx, cy, on) {
+    const c1 = on ? '#ffe9a8' : '#cbb27f';
+    const c2 = 'rgba(0,0,0,0.5)';
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+    function strokeTwice(fn) {
+      ctx.lineWidth = 2.6;
+      ctx.save();
+      ctx.translate(1.3, 1.3);
+      ctx.strokeStyle = c2;
+      ctx.beginPath(); fn(); ctx.stroke();
+      ctx.restore();
+      ctx.strokeStyle = c1;
+      ctx.beginPath(); fn(); ctx.stroke();
+    }
+    switch (id) {
+      case 'walk':
+        strokeTwice(() => {
+          ctx.arc(0, -8, 3.4, 0, Math.PI * 2);
+          ctx.moveTo(0, -4.5); ctx.lineTo(0, 3);
+          ctx.moveTo(-4.4, -0.5); ctx.lineTo(4.4, -0.5);
+          ctx.moveTo(0, 3); ctx.lineTo(-4.2, 11);
+          ctx.moveTo(0, 3); ctx.lineTo(4.2, 11);
+        });
+        break;
+      case 'look':
+        strokeTwice(() => {
+          ctx.moveTo(-10, 0);
+          ctx.quadraticCurveTo(0, -8.5, 10, 0);
+          ctx.quadraticCurveTo(0, 8.5, -10, 0);
+          ctx.moveTo(2.7, 0);
+          ctx.arc(0, 0, 2.7, 0, Math.PI * 2, true);
+        });
+        break;
+      case 'take':
+        strokeTwice(() => {
+          ctx.moveTo(-7, 1); ctx.lineTo(-7, 8); ctx.lineTo(7, 8); ctx.lineTo(7, 1);
+          ctx.moveTo(0, -9); ctx.lineTo(0, -2);
+          ctx.moveTo(-3.4, -5.4); ctx.lineTo(0, -1.6); ctx.lineTo(3.4, -5.4);
+        });
+        break;
+      case 'use':
+        strokeTwice(() => {
+          ctx.moveTo(4, 0); ctx.arc(0, 0, 4, 0, Math.PI * 2, true);
+          for (let a = 0; a < 8; a++) {
+            const ang = a * Math.PI / 4;
+            ctx.moveTo(Math.cos(ang) * 5.4, Math.sin(ang) * 5.4);
+            ctx.lineTo(Math.cos(ang) * 8.4, Math.sin(ang) * 8.4);
+          }
+        });
+        break;
+      case 'talk':
+        strokeTwice(() => {
+          roundRect(ctx, -8.5, -10, 17, 12, 3.4);
+          ctx.moveTo(-2, 2); ctx.lineTo(0.4, 7.4); ctx.lineTo(3.4, 2);
+        });
+        break;
+    }
+    ctx.restore();
+  }
+
+  function drawSceneTitle() {
+    if (!G.room || !G.room.name) return;
+    const t = G.room.name.toUpperCase();
+    ctx.font = 'bold 21px Georgia, serif';
+    ctx.textAlign = 'center';
+    ctx.lineWidth = 4;
+    ctx.strokeStyle = 'rgba(0,0,0,0.75)';
+    ctx.strokeText(t, W / 2, UI_TOP - 12);
+    ctx.fillStyle = '#8ee06a';
+    ctx.fillText(t, W / 2, UI_TOP - 12);
   }
 
   function drawPause() {
@@ -882,6 +976,7 @@ const Game = (() => {
     ctx.imageSmoothingEnabled = false;
     ctx.drawImage(G._low, 0, 0, LOW_W, LOW_H, 0, 0, W, H);
     drawSpeechLayer();
+    drawSceneTitle();
     drawUI();
 
     if (paused) drawPause();
@@ -1158,6 +1253,13 @@ const Game = (() => {
 
     const pick = pickAt(x, y);
     if (pick) {
+      if (activeVerb === 'walk') {
+        const wxp = pick.hs.standX !== undefined ? pick.hs.standX : pick.hs.x + pick.hs.w / 2;
+        const wyp = pick.hs.standY !== undefined ? pick.hs.standY : pick.hs.y + pick.hs.h + 10;
+        const wp = walkableClamp(wxp, wyp);
+        walkTo(wp.x, wp.y);
+        return;
+      }
       const sx = pick.hs.standX !== undefined ? pick.hs.standX : pick.hs.x + pick.hs.w / 2;
       const sy = pick.hs.standY !== undefined ? pick.hs.standY : pick.hs.y + pick.hs.h + 10;
       const standPt = walkableClamp(
@@ -1240,13 +1342,18 @@ const Game = (() => {
     G._bgImages = {};
     if (typeof Image !== 'undefined' && window.ROOMS) {
       Object.keys(window.ROOMS).forEach(id => {
+        const exts = ['png', 'jpeg', 'jpg'];
+        let extIdx = 0;
         const img = new Image();
         img.onload = () => {
           G._bgImages[id] = img;
           if (G.roomId === id) buildBg(id);
         };
-        img.onerror = () => {};
-        img.src = 'art/' + id + '.png';
+        img.onerror = () => {
+          extIdx += 1;
+          if (extIdx < exts.length) img.src = 'art/' + id + '.' + exts[extIdx];
+        };
+        img.src = 'art/' + id + '.' + exts[0];
       });
     }
     resize();
