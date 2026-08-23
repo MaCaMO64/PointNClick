@@ -180,21 +180,33 @@ const Game = (() => {
     });
   }
 
+  function buildBg(roomId) {
+    const room = window.ROOMS[roomId];
+    if (!room) return;
+    const cv = document.createElement('canvas');
+    cv.width = LOW_W; cv.height = LOW_H;
+    const bctx = cv.getContext('2d');
+    bctx.imageSmoothingEnabled = false;
+    bctx.setTransform(LOW_W / W, 0, 0, LOW_H / H, 0, 0);
+    room.paint(bctx, W, H);
+    const im = G._bgImages && G._bgImages[roomId];
+    if (im) {
+      bctx.setTransform(1, 0, 0, 1, 0, 0);
+      bctx.imageSmoothingEnabled = true;
+      const s = Math.max(LOW_W / im.width, LOW_H / im.height);
+      const dw = im.width * s, dh = im.height * s;
+      bctx.drawImage(im, (LOW_W - dw) / 2, (LOW_H - dh) / 2, dw, dh);
+    }
+    G.bgCache[roomId] = cv;
+  }
+
   function enterRoom(roomId, x, y) {
     const room = window.ROOMS[roomId];
     if (!room) { console.error('Ukjent rom:', roomId); return; }
     G.roomId = roomId;
     G.room = room;
     resolveNpcs(room);
-    if (!G.bgCache[roomId]) {
-      const c = document.createElement('canvas');
-      c.width = LOW_W; c.height = LOW_H;
-      const bctx = c.getContext('2d');
-      bctx.imageSmoothingEnabled = false;
-      bctx.setTransform(LOW_W / W, 0, 0, LOW_H / H, 0, 0);
-      room.paint(bctx, W, H);
-      G.bgCache[roomId] = c;
-    }
+    if (!G.bgCache[roomId]) buildBg(roomId);
     player.x = x !== undefined ? x : 400;
     player.y = y !== undefined ? y : 450;
     player.tx = player.x; player.ty = player.y;
@@ -550,6 +562,7 @@ const Game = (() => {
 
   function drawWorld() {
     const l = G._lctx;
+    if (!G.bgCache[G.roomId]) return;
     l.setTransform(LOW_W / W, 0, 0, LOW_H / H, 0, 0);
     l.clearRect(0, 0, W, H);
     l.save();
@@ -1220,6 +1233,18 @@ const Game = (() => {
     G._lctx = G._low.getContext('2d');
     G._lctx.imageSmoothingEnabled = false;
     G._lctx.setTransform(LOW_W / W, 0, 0, LOW_H / H, 0, 0);
+    G._bgImages = {};
+    if (typeof Image !== 'undefined' && window.ROOMS) {
+      Object.keys(window.ROOMS).forEach(id => {
+        const img = new Image();
+        img.onload = () => {
+          G._bgImages[id] = img;
+          if (G.roomId === id) buildBg(id);
+        };
+        img.onerror = () => {};
+        img.src = 'art/' + id + '.png';
+      });
+    }
     resize();
     window.addEventListener('resize', resize);
     canvas.addEventListener('mousemove', evt => {

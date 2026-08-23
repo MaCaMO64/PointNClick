@@ -64,6 +64,10 @@ sandbox.window = sandbox;
 sandbox.globalThis = sandbox;
 sandbox.window.addEventListener = () => {};
 sandbox.window.removeEventListener = () => {};
+sandbox.Image = class {
+  constructor() { this.onload = null; this.onerror = null; }
+  set src(v) { setTimeout(() => { if (this.onerror) this.onerror(); }, 0); }
+};
 sandbox.document = {
   createElement(tag) { return makeCanvas(tag); },
   getElementById(id) {
