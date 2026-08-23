@@ -227,128 +227,174 @@
       } },
   };
 
-  function drawGrid(c, rows, pal, x, yTop, cs, facing, yRowsFrom, yRowsTo) {
-    const from = yRowsFrom || 0;
-    const to = yRowsTo === undefined ? rows.length : yRowsTo;
-    for (let r = from; r < to; r++) {
+  const CELL = 2;
+  const cache = {};
+
+  function SnapCtx(c) {
+    const r = v => Math.round(v);
+    return {
+      set fillStyle(v) { c.fillStyle = v; },
+      set strokeStyle(v) { c.strokeStyle = v; },
+      set lineWidth(v) { c.lineWidth = v; },
+      fillRect(x, y, w, h) { c.fillRect(r(x), r(y), Math.max(1, r(w)), Math.max(1, r(h))); },
+      strokeRect(x, y, w, h) { c.strokeRect(r(x), r(y), Math.max(1, r(w)), Math.max(1, r(h))); },
+      beginPath() { c.beginPath(); },
+      moveTo(x, y) { c.moveTo(r(x), r(y)); },
+      lineTo(x, y) { c.lineTo(r(x), r(y)); },
+      arc(x, y, rad) { c.arc(r(x), r(y), Math.max(1, r(rad)), 0, Math.PI * 2); },
+      quadraticCurveTo(a, b, x, y) { c.quadraticCurveTo(r(a), r(b), r(x), r(y)); },
+      stroke() { c.stroke(); },
+      fill() { c.fill(); },
+    };
+  }
+
+  function drawGridRaw(cc, rows, pal, ox, oy) {
+    for (let r = 0; r < rows.length; r++) {
       const row = rows[r];
       for (let q = 0; q < row.length; q++) {
-        const ch = row[facing < 0 ? row.length - 1 - q : q];
+        const ch = row[q];
         if (ch === '.') continue;
         const col = pal[ch];
         if (!col) continue;
-        c.fillStyle = col;
-        c.fillRect(x + q * cs, yTop + (r - from) * cs, cs + 0.35, cs + 0.35);
+        cc.fillStyle = col;
+        cc.fillRect(ox + q * CELL, oy + r * CELL, CELL, CELL);
       }
     }
   }
 
+  function humanoidSprite(st, key, legsArr) {
+    if (!cache[key]) {
+      const cv = document.createElement('canvas');
+      cv.width = 16 * CELL;
+      cv.height = (UPPER.length + legsArr.length) * CELL;
+      const cc = cv.getContext('2d');
+      drawGridRaw(cc, UPPER, st.pal, 0, 0);
+      drawGridRaw(cc, legsArr, st.pal, 0, UPPER.length * CELL);
+      if (st.acc) st.acc(SnapCtx(cc), 0, 0, CELL, null);
+      cache[key] = cv;
+    }
+    return cache[key];
+  }
+
+  function specialSprite(rows, pal, key) {
+    if (!cache[key]) {
+      const cv = document.createElement('canvas');
+      cv.width = rows[0].length * CELL;
+      cv.height = rows.length * CELL;
+      const cc = cv.getContext('2d');
+      drawGridRaw(cc, rows, pal, 0, 0);
+      cache[key] = cv;
+    }
+    return cache[key];
+  }
+
+  function blitSprite(c, o, cv, wPx, hPx, bob) {
+    const l = c;
+    l.save();
+    l.setTransform(1, 0, 0, 1, 0, 0);
+    l.imageSmoothingEnabled = false;
+    const lx = Math.round(o.x * 0.25 - wPx / 2);
+    const ly = Math.round(o.y * 0.25) - hPx + (bob || 0) + 1;
+    if (o.facing < 0) {
+      l.translate(lx + wPx, ly);
+      l.scale(-1, 1);
+      l.drawImage(cv, 0, 0, wPx, hPx);
+    } else {
+      l.drawImage(cv, 0, 0, wPx, hPx);
+    }
+    l.restore();
+    return { lx, ly, cell: CELL, wPx, hPx };
+  }
+
+  function block(c, g, facing, c0, r0, cols, rws, color, alpha) {
+    const x0 = facing < 0 ? g.lx + g.wPx - (c0 + cols) * g.cell : g.lx + c0 * g.cell;
+    if (alpha !== undefined) { c.save(); c.globalAlpha = alpha; }
+    c.fillStyle = color;
+    c.fillRect(x0, g.ly + r0 * g.cell, cols * g.cell, rws * g.cell);
+    if (alpha !== undefined) c.restore();
+  }
+
   function drawHumanoid(c, o) {
     const st = STYLES[o.style] || STYLES.toke;
-    const cs = 4 * (o.scale || 1) * (st.scaleMul || 1);
-    const x = o.x - 8 * cs;
-    const yBase = o.y;
+    const facing = o.facing || 1;
     const now = performance.now() / 1000;
 
     c.fillStyle = 'rgba(10,12,20,0.28)';
     c.beginPath();
-    c.ellipse(o.x, yBase + 2, 8.4 * cs, 2.4 * cs, 0, 0, Math.PI * 2);
+    c.ellipse(o.x, o.y + 2, 17 * (o.scale || 1), 5 * (o.scale || 1), 0, 0, Math.PI * 2);
     c.fill();
 
     let frame = 0;
     if (o.walking) frame = Math.floor(o.phase) % 4;
     const seq = [LEG_A, LEG_STAND, LEG_B, LEG_STAND];
     const legs = st.robe ? (o.walking && frame % 2 === 0 ? ROBE_A : ROBE_B) : seq[frame];
-    const bob = o.walking && frame % 2 === 1 ? -0.4 * cs : 0;
-    const yTop = yBase - (UPPER.length + legs.length) * cs + bob;
+    const key = o.style + ':' + (st.robe ? 'r' + (frame % 2) : frame);
+    const cv = humanoidSprite(st, key, legs);
+    const bob = o.walking && frame % 2 === 1 ? -CELL : 0;
+    const g = blitSprite(c, o, cv, 16 * CELL, (UPPER.length + legs.length) * CELL, bob);
 
-    drawGrid(c, UPPER, st.pal, x, yTop, cs, o.facing);
-    drawGrid(c, legs, st.pal, x, yTop + UPPER.length * cs, cs, o.facing);
-
-    if (st.acc) st.acc(c, x, yTop, cs, o);
-
+    const eyeL = facing < 0 ? 11 : 3;
+    const eyeR = facing < 0 ? 4 : 9;
     if (o.sleeping) {
-      c.fillStyle = st.pal.S;
-      c.fillRect(x + 2.6 * cs, yTop + 5 * cs, 3 * cs, 2 * cs);
-      c.fillRect(x + 9.6 * cs, yTop + 5 * cs, 3 * cs, 2 * cs);
+      block(c, g, facing, eyeL, 5, 2, 2, st.pal.S);
+      block(c, g, facing, eyeR, 5, 2, 2, st.pal.S);
     } else if (o.style !== 'rando') {
       const blink = ((now + (o.blinkSeed || 0)) % 3.4) < 0.12;
       if (blink) {
-        c.fillStyle = st.pal.S;
-        c.fillRect(x + 2.6 * cs, yTop + 5 * cs, 3 * cs, 2 * cs);
-        c.fillRect(x + 9.6 * cs, yTop + 5 * cs, 3 * cs, 2 * cs);
+        block(c, g, facing, eyeL, 5, 2, 2, st.pal.S);
+        block(c, g, facing, eyeR, 5, 2, 2, st.pal.S);
       }
     }
-
     if (o.talking) {
       const open = Math.floor(now * 9) % 2 === 0;
-      c.fillStyle = st.pal.M;
-      c.fillRect(x + 6.4 * cs, yTop + (open ? 7.8 : 8.1) * cs, 2.2 * cs, open ? 1.3 * cs : 0.6 * cs);
+      block(c, g, facing, 7, 8, 2, 1, st.pal.M);
+      if (open) block(c, g, facing, 7, 9, 2, 1, st.pal.M);
     }
   }
 
-  function drawSpecial(c, o, rows, pal, opt) {
+  function drawSpecial(c, o, rows, pal, key, opt) {
     const mul = (opt && opt.scaleMul) || 1;
-    const cs = 4 * (o.scale || 1) * mul;
-    const w = rows[0].length;
-    const x = o.x - (w / 2) * cs;
-    const yTop = o.y - rows.length * cs;
+    const cell = Math.max(1, Math.round(CELL * mul));
+    const cv = specialSprite(rows, pal, key);
+    const wPx = rows[0].length * cell;
+    const hPx = rows.length * cell;
     c.fillStyle = 'rgba(10,12,20,0.28)';
     c.beginPath();
-    c.ellipse(o.x, o.y + 2, (w / 2) * 0.8 * cs, 2.2 * cs, 0, 0, Math.PI * 2);
+    c.ellipse(o.x, o.y + 2, (rows[0].length / 2) * 0.8 * cell, 2.2 * cell, 0, 0, Math.PI * 2);
     c.fill();
-    drawGrid(c, rows, pal, x, yTop, cs, o.facing);
-    return { x, yTop, cs };
+    return blitSprite(c, o, cv, wPx, hPx, 0);
   }
 
   const newPerson = (c, o) => {
+    const facing = o.facing || 1;
     switch (o.style) {
       case 'goat': {
         const p = { B: '#efeadb', D: '#ded5c0', H: '#8a7a5a', K: '#222222', S: '#d8aab2' };
-        const g = drawSpecial(c, o, GOAT, p);
-        if (o.talking || true) {
-          const chew = Math.floor(performance.now() / 260) % 2 === 0;
-          c.fillStyle = '#c9988a';
-          c.fillRect(g.x + (o.facing < 0 ? 12.4 : 13.4) * g.cs, g.yTop + 3.6 * g.cs + (chew ? 0.5 * g.cs : 0), 1.2 * g.cs, 0.8 * g.cs);
-        }
+        drawSpecial(c, o, GOAT, p, 'goat');
         return;
       }
       case 'glum': {
         const p = { P: '#cdd6da', L: '#5a4632', W: '#eef7ff', K: '#2a6ea8', M: '#4a3038', F: '#cdd6da' };
-        const g = drawSpecial(c, o, GLUM, p, { scaleMul: 1.05 });
+        const g = drawSpecial(c, o, GLUM, p, 'glum');
         const blink = ((performance.now() / 1000 + 1.3) % 4.1) < 0.15;
-        if (blink) {
-          c.fillStyle = p.P;
-          c.fillRect(g.x + 2.6 * g.cs, g.yTop + 2 * g.cs, 7 * g.cs, g.cs);
-        }
+        if (blink) block(c, g, facing, 3, 2, 6, 2, p.P);
         if (o.talking) {
           const open = Math.floor(performance.now() / 140) % 2 === 0;
-          c.fillStyle = '#4a3038';
-          c.fillRect(g.x + (o.facing < 0 ? 4.6 : 5.6) * g.cs, g.yTop + (open ? 3.9 : 4.2) * g.cs, 1.6 * g.cs, open ? 1.2 * g.cs : 0.6 * g.cs);
+          block(c, g, facing, 7, 4, 1, 1, p.M);
+          if (open) block(c, g, facing, 7, 5, 1, 1, p.M);
         }
         return;
       }
       case 'troll': {
-        const breathe = Math.sin(performance.now() / 700) * 0.4;
-        o = Object.assign({}, o, { scale: (o.scale || 1) + breathe * 0.01 });
         const p = { B: '#8d94a4', D: '#69707f', L: '#9aa1b1', T: '#5f6674', W: '#e8ecf4', K: '#20263a', M: '#4a3038', S: '#8d94a4' };
-        drawSpecial(c, o, TROLL, p, { scaleMul: 1.15 });
+        drawSpecial(c, o, TROLL, p, 'troll', { scaleMul: 1.5 });
         return;
       }
       case 'perr': {
-        const g = drawSpecial(c, o, RIDER, HORSE_PAL, { scaleMul: 1.15 });
+        const g = drawSpecial(c, o, RIDER, HORSE_PAL, 'perr', { scaleMul: 1.5 });
         const pulse = 0.6 + 0.4 * Math.sin(performance.now() / 380);
-        c.save();
-        c.globalAlpha = 0.35 + 0.4 * pulse;
-        c.fillStyle = '#ff3020';
-        c.fillRect(g.x + (o.facing < 0 ? 14.4 : 16.2) * g.cs, g.yTop + 2.1 * g.cs, 1.8 * g.cs, 0.9 * g.cs);
-        c.restore();
-        if (o.reading) {
-          c.fillStyle = '#e8e2d2';
-          c.fillRect(g.x + (o.facing < 0 ? 9 : 11) * g.cs, g.yTop + 5 * g.cs, 4.4 * g.cs, 5 * g.cs);
-          c.strokeStyle = '#8a8574'; c.lineWidth = Math.max(1, g.cs * 0.2);
-          c.strokeRect(g.x + (o.facing < 0 ? 9 : 11) * g.cs, g.yTop + 5 * g.cs, 4.4 * g.cs, 5 * g.cs);
-        }
+        block(c, g, facing, 18, 2, 2, 1, '#ff3020', 0.35 + 0.4 * pulse);
+        if (o.reading) block(c, g, facing, 11, 5, 5, 5, '#e8e2d2');
         return;
       }
       default:
