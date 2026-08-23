@@ -203,6 +203,18 @@ const Game = (() => {
         bctx.fillStyle = room.pngTint;
         bctx.fillRect(0, 0, LOW_W, LOW_H);
       }
+      (room.bgHeal || []).forEach(p => {
+        const lx = p.x / 4, ly = p.y / 4, lw = p.w / 4, lh = p.h / 4;
+        const tw = Math.max(2, Math.round(lw / 5));
+        const th = Math.max(2, Math.round(lh / 5));
+        const tmp = document.createElement('canvas');
+        tmp.width = tw; tmp.height = th;
+        const tc = tmp.getContext('2d');
+        tc.imageSmoothingEnabled = true;
+        tc.drawImage(cv, lx, ly, lw, lh, 0, 0, tw, th);
+        bctx.imageSmoothingEnabled = true;
+        bctx.drawImage(tmp, 0, 0, tw, th, lx, ly, lw, lh);
+      });
     }
     G.bgCache[roomId] = cv;
   }
@@ -580,18 +592,22 @@ const Game = (() => {
     if (G.room.animateUnder) G.room.animateUnder(l, tGlobal);
 
     const ents = [];
-    ents.push({ y: player.y, draw: () => drawPerson(l, {
+    const pArgs = player._drawArgs || (player._drawArgs = {});
+    Object.assign(pArgs, {
       x: player.x, y: player.y, scale: depthScale(player.y),
       style: 'toke', facing: player.facing,
       phase: player.moving ? player.phase : 0,
       walking: player.moving, talking: speech.current && speech.current.who === 'toke',
-    })});
+    });
+    ents.push({ y: player.y, draw: () => drawPerson(l, pArgs) });
     (G.room._npcs || []).forEach(npc => {
       if (npc.def.hidden && npc.def.hidden()) return;
-      ents.push({ y: npc.y, draw: () => npc.def.draw(l, {
+      const nArgs = npc._drawArgs || (npc._drawArgs = {});
+      Object.assign(nArgs, {
         x: npc.x, y: npc.y, scale: depthScale(npc.y),
         phase: npc.phase, talking: npc.talking, npc,
-      })});
+      });
+      ents.push({ y: npc.y, draw: () => npc.def.draw(l, nArgs) });
     });
     if (G.flag('joinedRando') && !G.npc('rando') && !['dal', 'krater'].includes(G.roomId)) {
       const fxp = player.x - 60 * player.facing;
@@ -602,7 +618,13 @@ const Game = (() => {
         walking: player.moving, talking: false,
       })});
     }
-    ents.sort((a, b) => a.y - b.y).forEach(e => e.draw());
+    ents.sort((a, b) => a.y - b.y).forEach(e => {
+      try { e.draw(); }
+      catch (err) {
+        console.error('[RING & WRONG] entity draw failed — skipping so the scene survives:', err);
+        G.toast('Draw error (see console F12)');
+      }
+    });
 
     if (G._debugNpcs) {
       ctx.font = 'bold 14px Consolas, monospace';
@@ -615,8 +637,12 @@ const Game = (() => {
         ctx.fillStyle = '#7dff7d';
         ctx.fillText(s, x, y - 136);
       };
-      (G.room._npcs || []).forEach(npc => tag(npc.def.name + ' #' + npc.uid, npc.x, npc.y));
-      tag('TOMBLE (you)', player.x, player.y);
+      (G.room._npcs || []).forEach(npc => {
+        const b = (npc._drawArgs && npc._drawArgs._blit) || { lx: '?', ly: '?' };
+        tag(npc.def.name + ' def:' + Math.round(npc.x) + ',' + Math.round(npc.y) + ' blit:' + b.lx + ',' + b.ly, npc.x, npc.y);
+      });
+      const pb = (player._drawArgs && player._drawArgs._blit) || { lx: '?', ly: '?' };
+      tag('TOMBLE blit:' + pb.lx + ',' + pb.ly, player.x, player.y);
     }
 
     if (G.room.animateOver) G.room.animateOver(l, tGlobal);

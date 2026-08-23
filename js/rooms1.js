@@ -5,6 +5,10 @@
   window.ROOMS.dal = {
     id: 'dal', name: 'Bloomdale', mood: 'shire',
     paint: ART.dal,
+    pngTint: 'rgba(255,240,210,0.05)',
+    bgHeal: [
+      { x: 4, y: 0, w: 180, h: 260 },
+    ],
     walk: { minY: 488, maxY: 566 },
     animateUnder(c, t) { ART.animDalUnder(c, t, Game); },
     animateOver(c, t) { ART.animDalOver(c, t, Game); },

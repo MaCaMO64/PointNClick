@@ -295,6 +295,7 @@
     l.imageSmoothingEnabled = false;
     const lx = Math.round(o.x * 0.25 - wPx / 2);
     const ly = Math.round(o.y * 0.25) - hPx + (bob || 0) + 1;
+    o._blit = { lx, ly, wPx, hPx };
     if (o.facing < 0) {
       l.translate(lx + wPx, ly);
       l.scale(-1, 1);
