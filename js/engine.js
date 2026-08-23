@@ -196,6 +196,10 @@ const Game = (() => {
       const s = Math.max(LOW_W / im.width, LOW_H / im.height);
       const dw = im.width * s, dh = im.height * s;
       bctx.drawImage(im, (LOW_W - dw) / 2, (LOW_H - dh) / 2, dw, dh);
+      if (room.pngTint) {
+        bctx.fillStyle = room.pngTint;
+        bctx.fillRect(0, 0, LOW_W, LOW_H);
+      }
     }
     G.bgCache[roomId] = cv;
   }

@@ -166,6 +166,7 @@
   window.ROOMS.skog = {
     id: 'skog', name: 'Trollwood', mood: 'forest',
     paint: ART.skog,
+    pngTint: 'rgba(16,20,56,0.42)',
     walk: { minY: 485, maxY: 560 },
     animateOver(c, t) { ART.animSkogOver(c, t, Game); },
     npcs: [
