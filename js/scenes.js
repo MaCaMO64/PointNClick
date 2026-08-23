@@ -663,15 +663,15 @@
 
   A.pubUnder = (c, t, G) => {
     if (!G.flag('sausageGone')) {
-      ell(c, 955, 438, 21, 6, '#e8e2d2', '#b0a890', 1.5);
+      ell(c, 328, 432, 21, 6, '#e8e2d2', '#b0a890', 1.5);
       c.save();
-      c.translate(955, 432); c.scale(0.85, 0.85);
+      c.translate(328, 426); c.scale(0.85, 0.85);
       ART.ICONS['pølse'](c);
       c.restore();
     }
     if (G.flag('spoonFloor') && !G.has('skje')) {
       c.save();
-      c.translate(520, 554);
+      c.translate(764, 550);
       c.rotate(0.5);
       ART.ICONS.skje(c);
       c.restore();
@@ -692,27 +692,21 @@
         ], L[0]);
       });
     };
-    fl(182, 496, 1.15);
-    glow(c, 147.5, 306, 16, 'rgba(255,200,90,0.5)');
-    poly(c, [[147.5, 300 - Math.sin(t * 9) * 1.5], [152, 308], [143, 308]], '#ffce54');
+    fl(614, 452, 1.05);
+    glow(c, 588, 358, 16, 'rgba(255,200,90,0.5)');
+    poly(c, [[588, 352 - Math.sin(t * 9) * 1.5], [592.5, 360], [583.5, 360]], '#ffce54');
     for (let i = 0; i < 8; i++) {
-      const dx = 420 + ((i * 67 + t * 6) % 140);
-      const dy = 170 + ((i * 43 + t * 3) % 220);
+      const dx = 700 + ((i * 67 + t * 6) % 140);
+      const dy = 200 + ((i * 43 + t * 3) % 220);
       circle(c, dx, dy, 1.2, 'rgba(255,230,170,0.3)');
     }
-    c.save();
-    c.translate(96, 486);
-    c.rotate(Math.sin(t * 2) * 0.15 - 0.4);
-    c.strokeStyle = '#16141c'; c.lineWidth = 2.5; c.lineCap = 'round';
-    c.beginPath(); c.moveTo(0, 0); c.quadraticCurveTo(14, -6, 20, 2); c.stroke();
-    c.restore();
     for (let i = 0; i < 3; i++) {
       const ph = (t * 0.5 + i * 0.33) % 1;
       c.strokeStyle = 'rgba(240,240,240,' + ((1 - ph) * 0.3).toFixed(2) + ')';
       c.lineWidth = 1.6;
       c.beginPath();
-      c.moveTo(494 + Math.sin(ph * 7 + i) * 4, 514 - ph * 26);
-      c.quadraticCurveTo(498 + Math.sin(ph * 9 + i) * 5, 506 - ph * 26, 494 + Math.sin(ph * 5 + i) * 4, 498 - ph * 26);
+      c.moveTo(852 + Math.sin(ph * 7 + i) * 4, 514 - ph * 26);
+      c.quadraticCurveTo(856 + Math.sin(ph * 9 + i) * 5, 506 - ph * 26, 852 + Math.sin(ph * 5 + i) * 4, 498 - ph * 26);
       c.stroke();
     }
   };

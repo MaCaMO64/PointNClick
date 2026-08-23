@@ -219,72 +219,48 @@
     animateUnder(c, t) { ART.animPubUnder(c, t, Game); },
     animateOver(c, t) { ART.animPubOver(c, t, Game); },
     npcs: [
-      { ref: 'dora', x: 895, y: 480 },
-      { ref: 'halvor', x: 560, y: 548 },
-      { ref: 'rando', x: 250, y: 545 },
+      { ref: 'dora', x: 270, y: 472 },
+      { ref: 'halvor', x: 760, y: 552 },
+      { ref: 'rando', x: 960, y: 552 },
     ],
     hotspots: [
-      { id: 'peis', label: 'the fireplace', x: 120, y: 380, w: 124, h: 132,
-        standX: 182, standY: 545,
+      { id: 'peis', label: 'the fireplace', x: 520, y: 348, w: 190, h: 172,
+        standX: 615, standY: 548,
         verbs: {
           look: 'The fire crackles away like Uncle Bongo\'s knees. The warmth is real. The coziness is debatable. The warmth is real.',
           use: 'You warm your hands. Adventure requires warm fingers and cold feet. Or something.',
         } },
-      { id: 'bardisk', label: 'the bar counter', x: 866, y: 408, w: 300, h: 150,
-        standX: 1010, standY: 552,
+      { id: 'bardisk', label: 'the bar counter', x: 168, y: 398, w: 214, h: 152,
+        standX: 300, standY: 552,
         verbs: {
           look: 'The bar top has been polished by a thousand elbows. Human elbows. The other kind charge by the hour.',
           use: () => Game.say('dora', 'The bar is served FROM behind it. Not ON it.'),
         } },
-      { id: 'flasker', label: 'the bottle shelf', x: 884, y: 222, w: 382, h: 152,
-        standX: 1075, standY: 552,
+      { id: 'flasker', label: 'the bottle shelf', x: 178, y: 246, w: 224, h: 146,
+        standX: 300, standY: 552,
         verbs: {
           look: 'Bottles from every corner of Middle-earth. Some of them still remember the Roman Empire.',
           use: 'Dora coughed. From across the room. Impressive lung work.',
         } },
-      { id: 'tavle', label: 'the chalkboard', x: 296, y: 296, w: 132, h: 98,
-        standX: 362, standY: 545,
+      { id: 'tavle', label: 'the picture on the wall', x: 782, y: 250, w: 88, h: 68,
+        standX: 826, standY: 545,
         verbs: {
-          look: '"TODAY: SOUP. TOMORROW: ALSO SOUP." The kitchen has a vision.',
-          use: 'The board is written in chalk. The chalk is also soup-related.',
+          look: 'A small landscape painting. It hangs slightly crooked. Like everything else in this establishment.',
+          use: 'You straighten it. It tilts back within the minute. Some things are meant to be.',
         } },
-      { id: 'pvindu', label: 'the window', x: 730, y: 326, w: 84, h: 102,
-        standX: 772, standY: 545,
+      { id: 'pvindu', label: 'the window', x: 1130, y: 286, w: 104, h: 124,
+        standX: 1150, standY: 545,
         verbs: {
           look: 'Outside it is evening. Inside there is soup. The balance of the universe holds.',
         } },
-      { id: 'dart', label: 'the dartboard', x: 804, y: 270, w: 52, h: 52,
-        standX: 830, standY: 545,
-        verbs: {
-          look: 'A dartboard. The bullseye has the most holes. Local strategy.',
-          use() {
-            if (!Game.flag('dartThrown')) {
-              Game.setFlag('dartThrown');
-              Game.script([
-                { say: ['toke', 'One dart. What could POSSIBLY go wrong?'] },
-                { fx: 'whoosh' },
-                { say: ['narrator', 'The dart hits the wall. Then a frame. Then Dora\'s patience.'] },
-                { say: ['dora', 'FURNITURE, dear. We do NOT throw things at furniture.'] },
-              ]);
-            } else Game.think('Dora supervises the dartboard now. With both eyes.');
-          },
-        } },
-      { id: 'bord', label: 'the table with mugs', x: 420, y: 504, w: 104, h: 70,
-        standX: 472, standY: 556,
+      { id: 'bord', label: 'Halvor\'s table', x: 700, y: 514, w: 122, h: 62,
+        standX: 762, standY: 558,
         verbs: {
           look: 'Two empty mugs. Halvor refers to them as "colleagues".',
           use: 'The mugs are empty. Like Halvor\'s promises.',
         } },
-      { id: 'katt', label: 'King (the cat)', x: 44, y: 470, w: 64, h: 62,
-        standX: 90, standY: 552,
-        verbs: {
-          look: 'The cat is called King. He accepts no other name. He has approved this document.',
-          use: 'King blinks slowly. In cat that means "you may live".',
-          take: 'One does not TAKE King. King takes YOU. Legally speaking.',
-          talk: 'Meow. (He demanded tribute. I paid nothing. He remembers.)',
-        } },
-      { id: 'polseplate', label: 'a plate of salted sausage', x: 928, y: 414, w: 56, h: 32,
-        standX: 956, standY: 548,
+      { id: 'polseplate', label: 'a plate of salted sausage', x: 298, y: 404, w: 58, h: 34,
+        standX: 330, standY: 548,
         hidden: () => Game.flag('sausageGone') || Game.has('pølse'),
         verbs: {
           look: 'A salted sausage on a plate. The pride of the house. Dora winks: "Take two." I take one.',
@@ -294,8 +270,8 @@
             Game.say('toke', 'Sausage secured. The journey officially begins.');
           },
         } },
-      { id: 'gulvskje', label: 'something shiny', x: 496, y: 540, w: 48, h: 30,
-        standX: 520, standY: 556,
+      { id: 'gulvskje', label: 'something shiny', x: 738, y: 536, w: 50, h: 32,
+        standX: 764, standY: 558,
         hidden: () => !Game.flag('spoonFloor') || Game.has('skje'),
         verbs: {
           look: 'A silver spoon under the table! Halvor apparently "inherited" it down to the floorboards.',
@@ -307,8 +283,8 @@
             ]);
           },
         } },
-      { id: 'utgang', label: 'the exit', x: 750, y: 542, w: 136, h: 28,
-        standX: 818, standY: 552,
+      { id: 'utgang', label: 'the arched doorway', x: 1056, y: 396, w: 138, h: 178,
+        standX: 1110, standY: 548,
         verbs: {
           look: 'The exit. The door to the crossroads and the rest of the story.',
           use() { Game.goto('kryss', 1190, 522); },
