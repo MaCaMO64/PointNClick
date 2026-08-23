@@ -125,6 +125,7 @@ const Game = (() => {
   G._debugSpeech = () => !!speech.current;
   G._debugQueue = () => speech.queue.length > 0;
   G._debugPlayer = () => ({ x: player.x, y: player.y, moving: player.moving });
+  G._debugNpcs = false;
 
   G.flag = (name) => !!G.flags[name];
   G.setFlag = (name, val) => { G.flags[name] = (val === undefined ? true : val); };
@@ -602,6 +603,21 @@ const Game = (() => {
       })});
     }
     ents.sort((a, b) => a.y - b.y).forEach(e => e.draw());
+
+    if (G._debugNpcs) {
+      ctx.font = 'bold 14px Consolas, monospace';
+      ctx.textAlign = 'center';
+      const tag = (label, x, y) => {
+        const s = label + ' ' + Math.round(x) + ',' + Math.round(y);
+        const w = ctx.measureText(s).width;
+        ctx.fillStyle = 'rgba(0,0,0,0.78)';
+        ctx.fillRect(x - w / 2 - 6, y - 152, w + 12, 22);
+        ctx.fillStyle = '#7dff7d';
+        ctx.fillText(s, x, y - 136);
+      };
+      (G.room._npcs || []).forEach(npc => tag(npc.def.name + ' #' + npc.uid, npc.x, npc.y));
+      tag('TOMBLE (you)', player.x, player.y);
+    }
 
     if (G.room.animateOver) G.room.animateOver(l, tGlobal);
 
@@ -1374,6 +1390,9 @@ const Game = (() => {
       if (evt.key === 'Escape' && G.state === 'play') {
         paused = !paused;
         AudioSys.fx('click');
+      }
+      if (evt.key === 'n' || evt.key === 'N') {
+        G._debugNpcs = !G._debugNpcs;
       }
       if (evt.key === ' ') {
         if (speech.current) { advanceSpeech(); evt.preventDefault(); }
