@@ -565,30 +565,38 @@
   const A = {};
 
   A.dalUnder = (c, t, G) => {
+    c.fillStyle = '#7a4e2a'; c.strokeStyle = '#4e3018'; c.lineWidth = 2;
+    [[40, 556], [96, 556], [58, 540], [114, 540], [76, 524]].forEach(lx => {
+      rr(c, lx[0], lx[1], 52, 15, 7); c.fill(); c.stroke();
+      circle(c, lx[0] + 7, lx[1] + 7.5, 6, '#c9a06a', '#7a5230', 1.6);
+    });
+    rr(c, 300, 500, 56, 48, 3); c.fillStyle = '#c8a468'; c.fill();
+    c.strokeStyle = '#8a6a3c'; c.lineWidth = 2.5; c.stroke();
+    c.strokeStyle = 'rgba(160,120,70,0.9)'; c.lineWidth = 3;
+    c.beginPath(); c.moveTo(326, 500); c.lineTo(332, 548); c.stroke();
+    rr(c, 348, 512, 50, 38, 3); c.fillStyle = '#d6b87e'; c.fill();
+    c.strokeStyle = '#8a6a3c'; c.lineWidth = 2.5; c.stroke();
+    [[930, 340], [960, 316], [992, 342], [1006, 382], [918, 392], [958, 398], [978, 362]].forEach(p => {
+      circle(c, p[0], p[1], 6.5, '#d94038');
+      circle(c, p[0] - 2, p[1] - 2, 2, 'rgba(255,255,255,0.55)');
+    });
     if (!G.has('fløyte')) {
-      c.save(); c.translate(538, 456); c.scale(0.8, 0.8);
+      c.save(); c.translate(150, 514); c.scale(0.8, 0.8);
       ART.ICONS['fløyte'](c);
       c.restore();
     }
     if (!G.has('stokk')) {
       c.strokeStyle = '#8a5a33'; c.lineWidth = 7; c.lineCap = 'round';
-      c.beginPath(); c.moveTo(226, 552); c.lineTo(248, 506); c.stroke();
+      c.beginPath(); c.moveTo(178, 558); c.lineTo(198, 522); c.stroke();
     }
     if (G.flag('appleGround') && !G.has('eple')) {
-      circle(c, 1008, 548, 8, '#d9403a', '#8a2018', 2);
-      circle(c, 1005, 545, 2, 'rgba(255,255,255,0.5)');
+      circle(c, 988, 548, 8, '#d9403a', '#8a2018', 2);
+      circle(c, 985, 545, 2, 'rgba(255,255,255,0.5)');
     }
   };
 
   A.dalOver = (c, t, G) => {
-    for (let i = 0; i < 4; i++) {
-      const ph = (t * 0.32 + i * 0.25) % 1;
-      const py = 316 - ph * 95;
-      const px = 431 + Math.sin(ph * 5 + i * 2) * 10 * ph;
-      c.fillStyle = 'rgba(240,240,235,' + ((1 - ph) * 0.45).toFixed(2) + ')';
-      circle(c, px, py, 7 + ph * 15);
-    }
-    [[700, 430, '#e8963a'], [560, 380, '#7ab0e0']].forEach((bf, i) => {
+    [[620, 300, '#e8963a'], [520, 250, '#7ab0e0']].forEach((bf, i) => {
       const bx = bf[0] + Math.sin(t * 0.7 + i * 2) * 60;
       const by = bf[1] + Math.sin(t * 1.1 + i) * 30;
       const flap = Math.sin(t * 18 + i * 3);
@@ -602,8 +610,8 @@
       const ft = NOW() - G.room._appleT;
       if (ft >= 0 && ft < 0.85) {
         const p = ft / 0.85;
-        const ay = 340 + p * p * 208;
-        circle(c, 1008, ay, 8, '#d9403a', '#8a2018', 2);
+        const ay = 330 + p * p * 218;
+        circle(c, 988, ay, 8, '#d9403a', '#8a2018', 2);
       }
     }
   };

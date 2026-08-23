@@ -161,6 +161,15 @@ if (!spoke) { console.log('FEIL: hotspot ga ingen synlig replikk!'); process.exi
 console.log('  hotspot-respons OK');
 for (let i = 0; i < 30 && (sandbox.Game._debugSpeech() || sandbox.Game._debugQueue()); i++) { click(640, 200); pump(8); }
 
+console.log('== BEVEGELSE: klikk pa apent omrade ==');
+const p0 = sandbox.Game._debugPlayer();
+click(760, 540);
+pump(120);
+const p1 = sandbox.Game._debugPlayer();
+const dist = Math.hypot(p1.x - p0.x, p1.y - p0.y);
+console.log('  flyttet:', Math.round(dist), 'px', p1.moving ? '(satt fast i moving!)' : '');
+if (dist < 60) { console.log('FEIL: spilleren beveget seg ikke fritt!'); process.exit(1); }
+
 console.log('== BESØK ALLE ROM ==');
 const rooms = Object.keys(sandbox.ROOMS);
 rooms.forEach(r => {

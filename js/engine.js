@@ -124,6 +124,7 @@ const Game = (() => {
   G.FALLBACK_USE = FALLBACK_USE;
   G._debugSpeech = () => !!speech.current;
   G._debugQueue = () => speech.queue.length > 0;
+  G._debugPlayer = () => ({ x: player.x, y: player.y, moving: player.moving });
 
   G.flag = (name) => !!G.flags[name];
   G.setFlag = (name, val) => { G.flags[name] = (val === undefined ? true : val); };
@@ -1147,7 +1148,7 @@ const Game = (() => {
       AudioSys.fx('click');
       if (introStep >= INTRO_PANELS.length) {
         G.state = 'play';
-        enterRoom('dal', 300, 480);
+        enterRoom('dal', 620, 545);
         G.script([
           { say: ['narrator', 'Bloomdale. Nine in the morning. The birds are singing, the grass is green, and someone has packed an entire house into boxes.'] },
           { say: ['toke', 'Uncle Bongo? Why is all your furniture standing out in the garden?'] },
