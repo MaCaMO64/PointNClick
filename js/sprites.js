@@ -248,13 +248,15 @@
     };
   }
 
+  const LETTER_FALLBACK = { K: '#20263a', C: '#e8a090', W: '#ffffff', N: '#d8aab2' };
+
   function drawGridRaw(cc, rows, pal, ox, oy) {
     for (let r = 0; r < rows.length; r++) {
       const row = rows[r];
       for (let q = 0; q < row.length; q++) {
         const ch = row[q];
         if (ch === '.') continue;
-        const col = pal[ch];
+        const col = pal[ch] || LETTER_FALLBACK[ch];
         if (!col) continue;
         cc.fillStyle = col;
         cc.fillRect(ox + q * CELL, oy + r * CELL, CELL, CELL);
@@ -304,6 +306,14 @@
       l.drawImage(cv, 0, 0, wPx, hPx);
     }
     l.restore();
+    if (typeof Game !== 'undefined' && Game._debugNpcs) {
+      l.save();
+      l.setTransform(1, 0, 0, 1, 0, 0);
+      l.strokeStyle = '#ff40ff';
+      l.lineWidth = 1;
+      l.strokeRect(lx, ly, wPx, hPx);
+      l.restore();
+    }
     return { lx, ly, cell: CELL, wPx, hPx };
   }
 

@@ -1,5 +1,6 @@
 const W = 1280, H = 720, UI_TOP = 600;
 const LOW_W = 320, LOW_H = 150;
+const GAME_VERSION = 'v0.9.3';
 const VERBS = [
   { id: 'walk', label: 'WALK' },
   { id: 'look', label: 'LOOK AT' },
@@ -126,6 +127,7 @@ const Game = (() => {
   G._debugQueue = () => speech.queue.length > 0;
   G._debugPlayer = () => ({ x: player.x, y: player.y, moving: player.moving });
   G._debugNpcs = false;
+  G.version = GAME_VERSION;
 
   G.flag = (name) => !!G.flags[name];
   G.setFlag = (name, val) => { G.flags[name] = (val === undefined ? true : val); };
@@ -861,6 +863,11 @@ const Game = (() => {
     ctx.textAlign = 'left';
     ctx.fillStyle = 'rgba(200,185,150,0.6)';
     ctx.fillText('BAG', gx, gy - 8);
+
+    ctx.font = '11px Consolas, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillStyle = 'rgba(200,185,150,0.55)';
+    ctx.fillText(GAME_VERSION + '  (N = debug)', W - 10, H - 8);
   }
 
   const verbRects = {};
@@ -938,13 +945,16 @@ const Game = (() => {
   function drawSceneTitle() {
     if (!G.room || !G.room.name) return;
     const t = G.room.name.toUpperCase();
-    ctx.font = 'bold 21px Georgia, serif';
+    c.font = 'bold 21px Georgia, serif';
     ctx.textAlign = 'center';
     ctx.lineWidth = 4;
     ctx.strokeStyle = 'rgba(0,0,0,0.75)';
-    ctx.strokeText(t, W / 2, UI_TOP - 12);
+    ctx.strokeText(t, W / 2, 128);
     ctx.fillStyle = '#8ee06a';
-    ctx.fillText(t, W / 2, UI_TOP - 12);
+    ctx.fillText(t, W / 2, 128);
+    ctx.font = '13px Consolas, monospace';
+    ctx.fillStyle = 'rgba(210,215,235,0.6)';
+    ctx.fillText('RING & WRONG  ' + GAME_VERSION, W / 2, 156);
   }
 
   function drawPause() {
@@ -978,6 +988,9 @@ const Game = (() => {
       pauseRects.push({ x: bx, y: by, w: bw, h: bh, act: it.act });
       by += bh + gap;
     });
+    ctx.font = '12px Consolas, monospace';
+    ctx.fillStyle = 'rgba(200,185,150,0.55)';
+    ctx.fillText('RING & WRONG ' + GAME_VERSION, W / 2, H - 14);
   }
 
   function drawCursor() {
@@ -1376,6 +1389,7 @@ const Game = (() => {
   G.boot = (cv) => {
     canvas = cv;
     ctx = canvas.getContext('2d');
+    console.log('%cRING & WRONG ' + GAME_VERSION, 'color:#8ee06a;font-weight:bold');
     ctx.imageSmoothingEnabled = false;
     G._low = document.createElement('canvas');
     G._low.width = LOW_W; G._low.height = LOW_H;
