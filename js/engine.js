@@ -945,16 +945,13 @@ const Game = (() => {
   function drawSceneTitle() {
     if (!G.room || !G.room.name) return;
     const t = G.room.name.toUpperCase();
-    c.font = 'bold 21px Georgia, serif';
+    ctx.font = 'bold 21px Georgia, serif';
     ctx.textAlign = 'center';
     ctx.lineWidth = 4;
     ctx.strokeStyle = 'rgba(0,0,0,0.75)';
-    ctx.strokeText(t, W / 2, 128);
+    ctx.strokeText(t, W / 2, UI_TOP - 12);
     ctx.fillStyle = '#8ee06a';
-    ctx.fillText(t, W / 2, 128);
-    ctx.font = '13px Consolas, monospace';
-    ctx.fillStyle = 'rgba(210,215,235,0.6)';
-    ctx.fillText('RING & WRONG  ' + GAME_VERSION, W / 2, 156);
+    ctx.fillText(t, W / 2, UI_TOP - 12);
   }
 
   function drawPause() {

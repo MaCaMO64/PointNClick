@@ -594,6 +594,9 @@ const ART = (() => {
     c.font = 'italic 22px Georgia, serif';
     c.fillStyle = '#cfd6f0';
     c.fillText('A thoroughly unnecessary hero\'s tale', W / 2, 172);
+    c.font = '13px Consolas, monospace';
+    c.fillStyle = 'rgba(210,215,235,0.6)';
+    c.fillText('RING & WRONG ' + (typeof GAME_VERSION !== 'undefined' ? GAME_VERSION : ''), W / 2, 204);
     c.font = '15px Verdana, sans-serif';
     c.fillStyle = 'rgba(210,215,235,0.55)';
     c.fillText('A point-and-click adventure in the spirit of LucasArts', W / 2, 396);
