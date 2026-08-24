@@ -629,6 +629,18 @@ const Game = (() => {
     });
 
     if (G._debugNpcs) {
+      l.save();
+      l.setTransform(1, 0, 0, 1, 0, 0);
+      l.imageSmoothingEnabled = false;
+      const canary = ART._canary();
+      l.drawImage(canary, 24, 56);
+      l.strokeStyle = '#40ff40';
+      l.lineWidth = 1;
+      l.strokeRect(24, 56, 32, 40);
+      l.font = '10px Consolas, monospace';
+      l.fillStyle = '#40ff40';
+      l.fillText('CANARY', 24, 52);
+      l.restore();
       ctx.font = 'bold 14px Consolas, monospace';
       ctx.textAlign = 'center';
       const tag = (label, x, y) => {

@@ -319,10 +319,13 @@
 
   function block(c, g, facing, c0, r0, cols, rws, color, alpha) {
     const x0 = facing < 0 ? g.lx + g.wPx - (c0 + cols) * g.cell : g.lx + c0 * g.cell;
-    if (alpha !== undefined) { c.save(); c.globalAlpha = alpha; }
+    c.save();
+    c.setTransform(1, 0, 0, 1, 0, 0);
+    if (alpha !== undefined) c.globalAlpha = alpha;
     c.fillStyle = color;
     c.fillRect(x0, g.ly + r0 * g.cell, cols * g.cell, rws * g.cell);
-    if (alpha !== undefined) c.restore();
+    if (alpha !== undefined) c.globalAlpha = 1;
+    c.restore();
   }
 
   function drawHumanoid(c, o) {
@@ -417,4 +420,5 @@
   ART.person = newPerson;
   ART.rider = (c, o) => newPerson(c, Object.assign({}, o, { style: 'perr' }));
   ART._vectorPerson = vecPerson;
+  ART._canary = () => humanoidSprite(STYLES.toke, 'canary', LEG_STAND);
 })();
