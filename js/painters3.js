@@ -1,6 +1,6 @@
 (() => {
   const A = ART;
-  const { rr, ell, circle, poly, vgrad, glow, pine, vignette } = A;
+  const { rr, ell, circle, poly, vgrad, glow, pine, vignette, cloud } = A;
   const PX = window._PX;
   const { grain, dither, planks, stones, foliage, grassPatch, shadowBlob } = PX;
 

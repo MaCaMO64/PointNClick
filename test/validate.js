@@ -3,7 +3,7 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..');
-const FILES = ['audio', 'art', 'scenes', 'data', 'npcs1', 'npcs2', 'rooms1', 'rooms2', 'rooms3'];
+  const FILES = ['audio', 'art', 'scenes', 'painters1', 'painters2', 'painters3', 'sprites', 'sprites-render', 'data', 'npcs1', 'npcs2', 'rooms1', 'rooms2', 'rooms3'];
 
 let errors = 0;
 let warnings = 0;

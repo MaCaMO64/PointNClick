@@ -72,17 +72,20 @@
           Game.say('bent', 'Pass, poet friend. And greet the lava for me. We have… history together.');
           return;
         }
-        const round = Game.flags.bentRound || 0;
-        if (round === 0) {
+        const seq = Bent_sequence();
+        const idx = Game.flags.bentIdx || 0;
+        if (idx >= seq.length) { Game.say('bent', 'You already paid. In VERSE. G onward.'); return; }
+        if (idx === 0) {
+          const count = seq.length === 1 ? 'ONE riddle (merciful mood today)' : 'Three riddles';
           Game.script([
             { say: ['bent', 'HALT! My bridge, my rules. Payment accepted in POETRY.'] },
             { say: ['toke', 'Poetry? Not coins? Not blood?'] },
-            { say: ['bent', 'Blood tastes wrong against flagstones. Three riddles. Answer them right – or at least rhyme-adjacent. BEGIN!'] },
-            { fn: () => { Game.setFlag('bentRound', 1); } },
-            { fn: () => Bent_ask(1) },
+            { say: ['bent', 'Blood tastes wrong against flagstones. ' + count + '. Answer them right – or at least rhyme-adjacent. BEGIN!'] },
+            { fn: () => { Game.setFlag('bentIdx', 0); } },
+            { fn: () => Bent_ask(0) },
           ]);
         } else {
-          Bent_ask(round);
+          Bent_ask(idx);
         }
       },
     },
@@ -162,11 +165,25 @@
     ]);
   }
 
-  function Bent_ask(round) {
+  function Bent_sequence() {
+    const rules = window.GAME.difficulty.rules;
+    const n = rules.riddleRounds[Game.difficulty] === undefined ? 3 : rules.riddleRounds[Game.difficulty];
+    return [1, 2, 3].slice(0, Math.max(1, Math.min(3, n)));
+  }
+
+  const BENT_HINTS = {
+    1: 'It holds something you DRINK. Often too much.',
+    2: 'You use it directly AFTER a bath. The wetter-it-gets joke writes itself.',
+    3: 'Farmers harvest it in autumn. It has ears AND leaves.',
+  };
+
+  function Bent_ask(seqIdx) {
+    const round = seqIdx;
     const R = [
       null,
       {
         q: ['"RIDDLE ONE", Bent bellows.', '"I have a neck, but no head. What am I?"'],
+        hint: BENT_HINTS[1],
         opts: [
           { text: 'A bottle!', ok: true },
           { text: 'A troll!', wrong: ['bent', 'A TROLL?! Do I have a neck? …We do not speak of this. Try again.'] },
@@ -175,6 +192,7 @@
       },
       {
         q: ['"RIDDLE TWO", bellows Bent, proud of his numbering system.', '"What gets wetter the more it dries?"'],
+        hint: BENT_HINTS[2],
         opts: [
           { text: 'The rain!', wrong: ['bent', 'The rain does not DRY. The rain is the JOB. Wrong!'] },
           { text: 'A towel!', ok: true },
@@ -183,6 +201,7 @@
       },
       {
         q: ['"FINAL RIDDLE!" Bent pounds the bridge for drama.', '"I have ears but never hear. I have leaves but never fall. What am I?"'],
+        hint: BENT_HINTS[3],
         opts: [
           { text: 'Goblins!', wrong: ['bent', 'Goblins HAVE blades. Knife-blades. They fall. OFTEN. Wrong!'] },
           { text: 'A book!', wrong: ['bent', 'A book has LEAVES, yes! But ears? Ears sit on the READER. Half-right is ALL-WRONG here!'] },
@@ -192,7 +211,7 @@
     ][round];
     if (!R) return;
     Game.sayLines(R.q.map(l => ['bent', l]));
-    Game.openDialog(R.opts.map(o => ({
+    const opts = R.opts.map(o => ({
       text: o.text,
       keep: !o.ok,
       effect() {
@@ -208,23 +227,35 @@
           Game.say('bent', STANZAS[Math.floor(Math.random() * STANZAS.length)]);
         }
       },
-    })));
+    }));
+    const hintLevel = (window.GAME.difficulty.rules.hintLevel[Game.difficulty]) === undefined ? 1 : window.GAME.difficulty.rules.hintLevel[Game.difficulty];
+    if (hintLevel >= 2 && R.hint) {
+      opts.push({ text: 'Psst… ask Bent for a HINT.', keep: true, effect() {
+        Game.sayLines([
+          ['toke', 'Psst… a hint?'],
+          ['bent', '…Fine. FINE! ' + R.hint],
+        ]);
+      } });
+    }
+    Game.openDialog(opts);
   }
 
-  function Bent_correct(round) {
+  function Bent_correct(seqIdx) {
+    const seq = Bent_sequence();
     const praise = [
       ['bent', '…CORRECT. A bottle. I AM a bottle enthusiast. Do not judge me.'],
       ['bent', 'CORRECT! A towel. Your wisdom is disturbingly dry – I mean thorough. NEXT!'],
     ];
-    if (round < 3) {
+    const nextIdx = seqIdx + 1;
+    if (nextIdx < seq.length) {
       Game.script([
-        { say: [praise[round - 1][0], praise[round - 1][1]] },
-        { fn: () => { Game.setFlag('bentRound', round + 1); } },
-        { fn: () => Bent_ask(round + 1) },
+        { say: [praise[seqIdx - 1][0], praise[seqIdx - 1][1]] },
+        { fn: () => { Game.setFlag('bentIdx', nextIdx); } },
+        { fn: () => Bent_ask(nextIdx) },
       ]);
     } else {
       Game.script([
-        { say: ['bent', 'CORRECT! WHEAT-STALK! Three out of three!'] },
+        { say: ['bent', 'CORRECT! WHEAT-STALK! ' + (seq.length === 1 ? 'A perfect single riddle!' : 'Three out of three!')] },
         { say: ['bent', 'Nobody has passed since the fellow with your kind of feet. Kept talking to a RING the whole way across. Strange times.'] },
         { fx: 'success' },
         { flag: ['trollPassed'] },

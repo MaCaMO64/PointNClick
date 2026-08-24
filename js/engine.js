@@ -1,6 +1,37 @@
-const W = 1280, H = 720, UI_TOP = 600;
+﻿const W = 1280, H = 720, UI_TOP = 600;
 const LOW_W = 320, LOW_H = 150;
-const GAME_VERSION = 'v0.9.3';
+const GAME = window.GAME;
+const GAME_VERSION = GAME.meta.version;
+
+const Settings = {
+  data: { music: true, sfx: true, display: 'auto', difficulty: 'normal' },
+  onApply: null,
+  load() {
+    try {
+      const raw = localStorage.getItem(GAME.meta.storageKey + '_settings');
+      if (raw) Object.assign(this.data, JSON.parse(raw));
+    } catch (e) {}
+    this.apply();
+  },
+  save() {
+    try { localStorage.setItem(GAME.meta.storageKey + '_settings', JSON.stringify(this.data)); } catch (e) {}
+  },
+  apply() {
+    if (typeof AudioSys !== 'undefined' && AudioSys.setEnabled) AudioSys.setEnabled(this.data.music, this.data.sfx);
+    if (typeof this.onApply === 'function') this.onApply();
+  },
+  cycle(key) {
+    const order = { display: ['auto', 'fill', 'pixel'], difficulty: GAME.difficulty.levels };
+    if (order[key]) {
+      const i = order[key].indexOf(this.data[key]);
+      this.data[key] = order[key][(i + 1) % order[key].length];
+    } else {
+      this.data[key] = !this.data[key];
+    }
+    this.save();
+    this.apply();
+  },
+};
 const VERBS = [
   { id: 'walk', label: 'WALK' },
   { id: 'look', label: 'LOOK AT' },
@@ -9,45 +40,10 @@ const VERBS = [
   { id: 'talk', label: 'TALK TO' },
 ];
 
-const SPEAKER_COLORS = {
-  toke:    '#ffd94a',
-  bongo:   '#7fd4ff',
-  rando:   '#9be37b',
-  dora:    '#ff9e64',
-  halvor:  '#ff7f7f',
-  grim:    '#c9a7ff',
-  perr:    '#ff5555',
-  bent:    '#b8b8ff',
-  bjarne:  '#ffb14a',
-  glum:    '#aef3d2',
-  glumpeek:'#aef3d2',
-  glumfinale:'#aef3d2',
-  goblin:  '#8ee06a',
-  tommel:  '#ffffff',
-  narrator:'#e8e8e8',
-  ring:    '#ffd700',
-};
+const SPEAKER_COLORS = GAME.speakers.colors;
+const SPEAKER_NAMES = GAME.speakers.names;
 
-const SPEAKER_NAMES = {
-  toke: 'TOMBLE',
-  bongo: 'UNCLE BONGO',
-  rando: 'RANDO',
-  dora: 'DORA',
-  halvor: 'HALVOR',
-  grim: 'GRIM',
-  perr: 'BLACK RIDER',
-  bent: 'BENT',
-  goblin: 'GOBLIN',
-  bjarne: 'BJARNE',
-  glum: 'GLUM',
-  glumpeek: 'GLUM',
-  glumfinale: 'GLUM',
-  tommel: 'BILLY',
-  ring: 'THE RING',
-  narrator: '',
-};
-
-const Game = (() => {
+  const trace = (s) => { try { require('fs').appendFileSync('ring-og-vrang/test/trace.txt', s + '\n'); } catch (e) {} }; Game = (() => {
   let canvas, ctx;
   let scaleX = 1, scaleY = 1;
   let mx = -1, my = -1, mouseInside = false;
@@ -80,6 +76,7 @@ const Game = (() => {
   let hoverRects = [];
   let uiClicks = [];
   let paused = false, pauseRects = [];
+  let settingsOpen = false, settingsFrom = 'title', settingsRects = [];
   let aboutOpen = false, aboutRects = [];
   let introStep = 0;
   let titleRects = [];
@@ -323,7 +320,7 @@ const Game = (() => {
       const h = ia[selectedItem];
       if (h) respond(h);
       else respond(() => {
-        G.think('Using the ' + ITEMS[selectedItem].name.toLowerCase() + ' on the ' + hs.label.toLowerCase() + '… ' + rnd(GENERIC_COMBO_FAIL));
+        G.think('Using the ' + ITEMS[selectedItem].name.toLowerCase() + ' on the ' + hs.label.toLowerCase() + 'â€¦ ' + rnd(GENERIC_COMBO_FAIL));
         AudioSys.fx('error');
       });
       return;
@@ -494,6 +491,7 @@ const Game = (() => {
   };
   G.newGame = () => {
     G.inv = []; G.flags = {}; G.ringWorn = false; G.ending = null;
+    G.difficulty = Settings.data.difficulty;
     introStep = 0;
     G.state = 'intro';
     AudioSys.stopMusic();
@@ -506,6 +504,7 @@ const Game = (() => {
   };
 
   function update(dt) {
+    if (G._skipUpdate) return;
     tGlobal += dt;
     updateScript(dt);
     updateSpeech(dt);
@@ -549,7 +548,7 @@ const Game = (() => {
       whisperTimer -= dt;
       if (whisperTimer <= 0) {
         whisperTimer = 2.5 + Math.random() * 3;
-        const words = ['skatten…', 'gi oss den…', 'de vil ta den fra deg…', 'hold den trygg…', 'bare en liten stund…', 'min… min…'];
+        const words = ['skattenâ€¦', 'gi oss denâ€¦', 'de vil ta den fra degâ€¦', 'hold den tryggâ€¦', 'bare en liten stundâ€¦', 'minâ€¦ minâ€¦'];
         whispers.push({ text: rnd(words), x: 200 + Math.random() * 800, y: 420 + Math.random() * 100, life: 4 });
       }
     }
@@ -591,8 +590,7 @@ const Game = (() => {
     l.drawImage(G.bgCache[G.roomId], 0, 0);
     l.restore();
 
-    if (G.room.animateUnder) G.room.animateUnder(l, tGlobal);
-
+    if (G.room.animateUnder) G.room.animateUnder(l, tGlobal); 
     const ents = [];
     const pArgs = player._drawArgs || (player._drawArgs = {});
     Object.assign(pArgs, {
@@ -623,7 +621,7 @@ const Game = (() => {
     ents.sort((a, b) => a.y - b.y).forEach(e => {
       try { e.draw(); }
       catch (err) {
-        console.error('[RING & WRONG] entity draw failed — skipping so the scene survives:', err);
+        console.error('[RING & WRONG] entity draw failed - skipping so the scene survives:', err);
         G.toast('Draw error (see console F12)');
       }
     });
@@ -739,8 +737,8 @@ const Game = (() => {
         roundRect(ctx, r.x, r.y, r.w, r.h, 5);
         ctx.fill();
       }
-      let text = '› ' + o.text;
-      while (ctx.measureText(text).width > bw - 10 && text.length > 5) text = text.slice(0, -2) + '…';
+      let text = 'â€º ' + o.text;
+      while (ctx.measureText(text).width > bw - 10 && text.length > 5) text = text.slice(0, -2) + 'â€¦';
       ctx.fillStyle = hovered ? '#fff6d8' : '#ffe08a';
       ctx.fillText(text, bx + 2, oy);
       dialog.rects.push(r);
@@ -750,7 +748,7 @@ const Game = (() => {
     const hoveredExit = mx >= er.x && mx <= er.x + er.w && my >= er.y && my <= er.y + er.h;
     ctx.font = 'italic 14px Verdana, sans-serif';
     ctx.fillStyle = hoveredExit ? '#cfc7b0' : '#8f8470';
-    ctx.fillText('( leave )', bx + 2, oy);
+    ctx.fillText(GAME.ui.leave, bx + 2, oy);
     dialog.rects.push(er);
   }
 
@@ -820,7 +818,7 @@ const Game = (() => {
       if (selectedItem) {
         sentence = hoverLabel
           ? 'Use ' + ITEMS[selectedItem].name.toLowerCase() + ' on ' + hoverLabel.toLowerCase()
-          : 'Use ' + ITEMS[selectedItem].name.toLowerCase() + ' with…';
+          : 'Use ' + ITEMS[selectedItem].name.toLowerCase() + ' withâ€¦';
       } else if (hoverLabel) {
         const l = hoverLabel.toLowerCase();
         sentence = activeVerb === 'walk' ? 'Walk to ' + l :
@@ -835,8 +833,8 @@ const Game = (() => {
       ctx.fillText(sentence, midCx, UI_TOP + 32);
       ctx.font = '12px Verdana, sans-serif';
       ctx.fillStyle = 'rgba(200,185,150,0.6)';
-      ctx.fillText('right-click = look / cancel', midCx, UI_TOP + 60);
-      ctx.fillText('ESC = menu', midCx, UI_TOP + 78);
+      ctx.fillText(GAME.ui.hintRightClick, midCx, UI_TOP + 60);
+      ctx.fillText(GAME.ui.hintEsc, midCx, UI_TOP + 78);
     }
 
     const slotSize = 40, stride = 46;
@@ -863,8 +861,8 @@ const Game = (() => {
       ctx.textAlign = 'center';
       const ayL = gy + perPage / 2 * stride + 2;
       const lx = gx - 12, rx2 = gx + cols * stride + 4;
-      ctx.fillText('‹', lx, ayL);
-      ctx.fillText('›', rx2, ayL);
+      ctx.fillText('â€¹', lx, ayL);
+      ctx.fillText('â€º', rx2, ayL);
       uiClicks.push({ x: lx - 10, y: ayL - 16, w: 20, h: 22, act: 'invpage', dir: -1 });
       uiClicks.push({ x: rx2 - 6, y: ayL - 16, w: 20, h: 22, act: 'invpage', dir: 1 });
       ctx.font = '11px Verdana, sans-serif';
@@ -966,6 +964,65 @@ const Game = (() => {
     ctx.fillText(t, W / 2, UI_TOP - 12);
   }
 
+  function drawSettings() {
+    ctx.fillStyle = 'rgba(5,6,10,0.85)';
+    ctx.fillRect(0, 0, W, H);
+    settingsRects = [];
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 26px Georgia, serif';
+    ctx.fillStyle = '#f0dfae';
+    ctx.fillText('SETTINGS', W / 2, 110);
+    const rows = [
+      { key: 'music', label: 'MUSIC' },
+      { key: 'sfx', label: 'SOUND EFFECTS' },
+      { key: 'display', label: 'DISPLAY' },
+      { key: 'difficulty', label: 'DIFFICULTY' },
+    ];
+    const bw = 560, bh = 54, gap = 12;
+    let by = 170;
+    rows.forEach(rw => {
+      const val = Settings.data[rw.key];
+      let valText;
+      if (rw.key === 'display') valText = { auto: 'AUTO (FIT)', fill: 'FILL WINDOW', pixel: '1:1 PIXELS' }[val];
+      else if (rw.key === 'difficulty') valText = GAME.difficulty.labels[val] || val.toUpperCase();
+      else valText = val ? 'ON' : 'OFF';
+      const hovered = mx >= W / 2 - bw / 2 && mx <= W / 2 + bw / 2 && my >= by && my <= by + bh;
+      ctx.fillStyle = hovered ? 'rgba(212,175,55,0.16)' : 'rgba(40,34,24,0.92)';
+      roundRect(ctx, W / 2 - bw / 2, by, bw, bh, 10);
+      ctx.fill();
+      ctx.strokeStyle = 'rgba(212,175,55,0.5)';
+      ctx.lineWidth = 1.5;
+      roundRect(ctx, W / 2 - bw / 2, by, bw, bh, 10);
+      ctx.stroke();
+      ctx.font = 'bold 17px Verdana, sans-serif';
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#eadfc4';
+      ctx.fillText(rw.label, W / 2 - bw / 2 + 22, by + bh / 2 + 6);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = hovered ? '#ffe08a' : '#c9a24a';
+      ctx.fillText(valText + '  ▸', W / 2 + bw / 2 - 22, by + bh / 2 + 6);
+      settingsRects.push({ x: W / 2 - bw / 2, y: by, w: bw, h: bh, key: rw.key });
+      by += bh + gap;
+    });
+    const backBh = 50;
+    const hoveredBack = mx >= W / 2 - 160 && mx <= W / 2 + 160 && my >= by && my <= by + backBh;
+    ctx.fillStyle = hoveredBack ? 'rgba(212,175,55,0.9)' : 'rgba(40,34,24,0.92)';
+    roundRect(ctx, W / 2 - 160, by, 320, backBh, 10);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(212,175,55,0.5)';
+    ctx.lineWidth = 1.5;
+    roundRect(ctx, W / 2 - 160, by, 320, backBh, 10);
+    ctx.stroke();
+    ctx.font = 'bold 17px Verdana, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillStyle = hoveredBack ? '#181206' : '#eadfc4';
+    ctx.fillText('BACK', W / 2, by + backBh / 2 + 6);
+    settingsRects.push({ x: W / 2 - 160, y: by, w: 320, h: backBh, key: '__back' });
+    ctx.font = '12px Consolas, monospace';
+    ctx.fillStyle = 'rgba(200,185,150,0.55)';
+    ctx.fillText('Difficulty changes hints and puzzles. Applies to new games and hints immediately.', W / 2, Math.min(H - 16, by + backBh + 30));
+  }
+
   function drawPause() {
     ctx.fillStyle = 'rgba(5,6,10,0.72)';
     ctx.fillRect(0, 0, W, H);
@@ -974,6 +1031,7 @@ const Game = (() => {
       { label: 'RESUME', act: 'resume' },
       { label: 'SAVE GAME', act: 'save' },
       { label: 'LOAD GAME', act: 'load' },
+      { label: 'SETTINGS', act: 'settings' },
       { label: 'MUSIC: ' + (AudioSys.musicEnabled() ? 'ON' : 'OFF'), act: 'music' },
       { label: 'SOUND: ' + (AudioSys.sfxEnabled() ? 'ON' : 'OFF'), act: 'sfx' },
       { label: 'MAIN MENU', act: 'title' },
@@ -1029,6 +1087,7 @@ const Game = (() => {
   }
 
   function render() {
+    if (G._skipRender) return;
     ctx.clearRect(0, 0, W, H);
     uiClicks = [];
     hoverRects = [];
@@ -1037,14 +1096,15 @@ const Game = (() => {
     if (G.state === 'intro') { renderIntro(); drawCursor(); return; }
     if (G.state === 'ending') { renderEnding(); drawCursor(); return; }
 
-    drawWorld();
+    if (!G._skipDW) drawWorld();
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(G._low, 0, 0, LOW_W, LOW_H, 0, 0, W, H);
-    drawSpeechLayer();
+    if (!G._skipBLIT) ctx.drawImage(G._low, 0, 0, LOW_W, LOW_H, 0, 0, W, H);
+    if (!G._skipSL) drawSpeechLayer();
     drawSceneTitle();
-    drawUI();
+    if (!G._skipUI) drawUI();
 
-    if (paused) drawPause();
+    if (settingsOpen) drawSettings();
+    else if (paused) drawPause();
     drawCursor();
   }
 
@@ -1055,6 +1115,7 @@ const Game = (() => {
       { label: 'NEW ADVENTURE', act: 'new' },
     ];
     if (Game_hasSave()) btns.unshift({ label: 'CONTINUE', act: 'continue' });
+    btns.push({ label: 'SETTINGS', act: 'settings' });
     btns.push({ label: 'ABOUT', act: 'about' });
     const bw = 320, bh = 58, gap = 16;
     let by = 430;
@@ -1086,39 +1147,16 @@ const Game = (() => {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#f0dfae';
     ctx.font = 'bold 26px Georgia, serif';
-    ctx.fillText('RING & WRONG', W / 2, 130);
+    ctx.fillText(GAME.meta.title, W / 2, 130);
     ctx.font = '17px Verdana, sans-serif';
     ctx.fillStyle = '#cfc7b0';
-    const lines = [
-      'A point-and-click adventure in a spirit of loving parody.',
-      '',
-      'No hobbits were harmed during production.',
-      '(Several pumpkins, however, were grossly mistreated.)',
-      '',
-      'Right-click: look at things. Left-click: do things.',
-      'You CANNOT die. That is the entire point.',
-      'Uncle Bongo wishes you a pleasant evening.',
-      '',
-      'Click anywhere to go back.',
-    ];
+    const lines = GAME.meta.about;
+
     lines.forEach((ln, i) => ctx.fillText(ln, W / 2, 190 + i * 30));
     aboutRects = [{ x: 0, y: 0, w: W, h: H, act: 'closeabout' }];
   }
 
-  const INTRO_PANELS = [
-    ['In an age before ages got late,',
-     'the Great Rings were forged in the factories of Middle-earth.',
-     'Three for the elves. Seven for the dwarves. Nine for men –',
-     'and one to rule them all … plus the service agreement.'],
-    ['But one day, the Great Ring went missing.',
-     'It turned up in the pocket of UNCLE BONGO,',
-     'a retired adventurer who refused to believe it was more than loose change.',
-     '"Probably from a vending machine," he said. He said it often. Nervously.'],
-    ['Now the Dark Lord\'s Vice-Chancellor has booked a pickup.',
-     'The only one who can save the neighborhood is a small halfling',
-     'with big feet and a poor sense of planning:',
-     'TOMBLE BAGSHOT. That is you. Sorry.'],
-  ];
+  const INTRO_PANELS = GAME.intro;
 
   function renderIntro() {
     window.ART.introBg(ctx, W, H, tGlobal);
@@ -1134,28 +1172,7 @@ const Game = (() => {
     ctx.fillText('- click to continue -', W / 2, 620);
   }
 
-  const ENDING_TEXTS = {
-    good: {
-      title: 'THE END — the good kind!',
-      lines: [
-        'The Ring screamed "NOOO! I had SO much left to give!"',
-        'and melted away with a tiny confetti-bang.',
-        'The Dark Lord lost his job and opened a bakery instead.',
-        'Uncle Bongo flew past on an eagle: "I TOLD you I would come!"',
-        'Rando\'s first comment: "So the food at your uncle\'s WAS free, right?"',
-      ],
-    },
-    bad: {
-      title: 'THE END … or is it?',
-      lines: [
-        'Tomble kept the Ring. The Ring kept Tomble.',
-        'Three weeks later he was middle manager at Mordor Inc.,',
-        'in charge of meeting minutes and evil looks.',
-        'The pay was poor. The coffee was worse.',
-        'Uncle Bongo sent a card: "Regards, grandma. PS: My ring?"',
-      ],
-    },
-  };
+  const ENDING_TEXTS = GAME.endings;
 
   function renderEnding() {
     window.ART.endingBg(ctx, W, H, tGlobal, G.ending);
@@ -1207,6 +1224,18 @@ const Game = (() => {
   function onClick(x, y, rightBtn) {
     AudioSys.init(); AudioSys.resume();
 
+    if (settingsOpen) {
+      for (const r of settingsRects) {
+        if (x >= r.x && x <= r.x + r.w && y >= r.y && y <= r.y + r.h) {
+          AudioSys.fx('click');
+          if (r.key === '__back') settingsOpen = false;
+          else Settings.cycle(r.key);
+          return;
+        }
+      }
+      return;
+    }
+
     if (G.state === 'intro') {
       introStep++;
       AudioSys.fx('click');
@@ -1228,6 +1257,7 @@ const Game = (() => {
           if (r.act === 'new') G.newGame();
           else if (r.act === 'continue') G.loadGame();
           else if (r.act === 'about') aboutOpen = true;
+          else if (r.act === 'settings') { settingsOpen = true; settingsFrom = 'title'; }
           return;
         }
       }
@@ -1252,10 +1282,11 @@ const Game = (() => {
             return;
           }
           if (r.act === 'resume') paused = false;
+          else if (r.act === 'settings') { settingsOpen = true; settingsFrom = 'pause'; }
           else if (r.act === 'save') { G.saveGame(); paused = false; toast('Game saved.'); }
           else if (r.act === 'load') { G.loadGame(); toast('Game loaded.'); }
-          else if (r.act === 'music') AudioSys.toggleMusic();
-          else if (r.act === 'sfx') AudioSys.toggleSfx();
+          else if (r.act === 'music') Settings.cycle('music');
+          else if (r.act === 'sfx') Settings.cycle('sfx');
           else if (r.act === 'title') { G.state = 'title'; paused = false; aboutOpen = false; AudioSys.stopMusic(); AudioSys.startMusic('title'); }
           return;
         }
@@ -1290,7 +1321,7 @@ const Game = (() => {
             if (selectedItem === r.id) { selectedItem = null; }
             else if (selectedItem) { const other = selectedItem; selectedItem = null; tryCombine(other, r.id); }
             else {
-              if (r.id === 'ring') { G.toggleRing(); toast(G.ringWorn ? 'You put on the Ring. The world turns… greyer.' : 'You take off the Ring.'); }
+              if (r.id === 'ring') { G.toggleRing(); toast(G.ringWorn ? 'You put on the Ring. The world turnsâ€¦ greyer.' : 'You take off the Ring.'); }
               else { selectedItem = r.id; }
             }
             AudioSys.fx('click');
@@ -1354,7 +1385,7 @@ const Game = (() => {
     const dt = Math.min(0.05, (ts - lastTime) / 1000 || 0.016);
     lastTime = ts;
     try {
-      if (G.state === 'play' && !paused) update(dt);
+      if (G.state === 'play' && !paused) { update(dt); }
       else tGlobal += dt * 0.4;
       if (toastT > 0) toastT -= dt;
       computeHover();
@@ -1381,7 +1412,7 @@ const Game = (() => {
       roundRect(ctx, W / 2 - tw / 2 - 14, 8, tw + 28, 30, 6);
       ctx.fill();
       ctx.fillStyle = '#ff9a8a';
-      ctx.fillText('Feil: ' + crashMsg + ' (se konsoll – F12)', W / 2, 28);
+      ctx.fillText('Feil: ' + crashMsg + ' (se konsoll â€“ F12)', W / 2, 28);
     }
     requestAnimationFrame(loop);
   }
@@ -1390,15 +1421,26 @@ const Game = (() => {
 
   function resize() {
     const winW = window.innerWidth, winH = window.innerHeight;
-    const s = Math.min(winW / W, winH / H);
-    canvas.style.width = Math.floor(W * s) + 'px';
-    canvas.style.height = Math.floor(H * s) + 'px';
+    const mode = Settings.data.display;
+    if (mode === 'fill') {
+      canvas.style.width = winW + 'px';
+      canvas.style.height = winH + 'px';
+    } else if (mode === 'pixel') {
+      canvas.style.width = W + 'px';
+      canvas.style.height = H + 'px';
+    } else {
+      const s = Math.min(winW / W, winH / H);
+      canvas.style.width = Math.floor(W * s) + 'px';
+      canvas.style.height = Math.floor(H * s) + 'px';
+    }
   }
 
   G.boot = (cv) => {
     canvas = cv;
+    Settings.onApply = () => { Game.difficulty = Settings.data.difficulty; resize(); };
+    Settings.load();
     ctx = canvas.getContext('2d');
-    console.log('%cRING & WRONG ' + GAME_VERSION, 'color:#8ee06a;font-weight:bold');
+    console.log('%cRING & WRONG ' + GAME_VERSION + '  (difficulty: ' + Settings.data.difficulty + ', display: ' + Settings.data.display + ')', 'color:#8ee06a;font-weight:bold');
     ctx.imageSmoothingEnabled = false;
     G._low = document.createElement('canvas');
     G._low.width = LOW_W; G._low.height = LOW_H;
@@ -1440,9 +1482,9 @@ const Game = (() => {
       onClick(p.x, p.y, evt.button === 2);
     });
     window.addEventListener('keydown', evt => {
-      if (evt.key === 'Escape' && G.state === 'play') {
-        paused = !paused;
-        AudioSys.fx('click');
+      if (evt.key === 'Escape') {
+        if (settingsOpen) { settingsOpen = false; AudioSys.fx('click'); }
+        else if (G.state === 'play') { paused = !paused; AudioSys.fx('click'); }
       }
       if (evt.key === 'n' || evt.key === 'N') {
         G._debugNpcs = !G._debugNpcs;

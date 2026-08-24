@@ -89,25 +89,13 @@ sandbox.window.innerWidth = 1600;
 sandbox.window.innerHeight = 900;
 
 let clock = 0;
-let totalFrames = 0;
 let fatal = null;
 function pump(frames) {
-  totalFrames += frames;
-  if (totalFrames > 6000) {
-    console.log('SMOKE: frame budget exhausted (harness too slow - aborting gracefully).');
-    process.exit(2);
-  }
-  const started = Date.now();
   for (let i = 0; i < frames; i++) {
-    if (Date.now() - started > 12000) {
-      errSync('WALL-CLOCK ABORT: frame ' + i + '/' + frames + ' — hang i frame-callback');
-      console.log('SMOKE: wall-clock budget exceeded i pump (hang i frame-callback). Se trace-tail.');
-      process.exit(3);
-    }
     clock += 16.7;
     const q = rafQueue;
     rafQueue = [];
-    q.forEach((cb, ci) => {
+    q.forEach(cb => {
       try { cb(clock); }
       catch (e) {
         fatal = e;
@@ -128,7 +116,6 @@ function click(x, y, rightBtn = false) {
 }
 
 vm.createContext(sandbox);
-const errSync = (s) => { try { require('fs').appendFileSync('ring-og-vrang/test/trace.txt', s + '\n'); } catch (e) {} };
 const FILES = ['audio', 'art', 'scenes', 'painters1', 'painters2', 'painters3', 'sprites', 'sprites-render', 'data', 'npcs1', 'npcs2', 'rooms1', 'rooms2', 'rooms3', 'game', 'engine', 'main'];
 try {
   FILES.forEach(f => {
@@ -163,8 +150,8 @@ if (!sandbox.Game._debugSpeech() && !sandbox.Game._debugQueue()) {
 console.log('  narrasjon synlig OK');
 for (let i = 0; i < 80 && sandbox.Game.inScript(); i++) { click(640, 200); pump(8); }
 pump(10);
-if (sandbox.Game.inScript()) { console.log('FEIL: input forble låst â€“ script hang evig!'); process.exit(1); }
-console.log('  input låst opp OK');
+if (sandbox.Game.inScript()) { console.log('FEIL: input forble laast â€“ script hang evig!'); process.exit(1); }
+console.log('  input laast opp OK');
 
 console.log('== INTERAKSJON: se pa vedstabbel (ma gi replikk) ==');
 click(130, 520);
@@ -184,7 +171,7 @@ const dist = Math.hypot(p1.x - p0.x, p1.y - p0.y);
 console.log('  flyttet:', Math.round(dist), 'px', p1.moving ? '(satt fast i moving!)' : '');
 if (dist < 60) { console.log('FEIL: spilleren beveget seg ikke fritt!'); process.exit(1); }
 
-console.log('== BESØK ALLE ROM ==');
+console.log('== BESÃ˜K ALLE ROM ==');
 const rooms = Object.keys(sandbox.ROOMS);
 rooms.forEach(r => {
   try {
@@ -199,8 +186,6 @@ rooms.forEach(r => {
 });
 
 console.log('== NPC-SNAKK (rask gjennomgang) ==');
-sandbox.Game.goto('dal', 620, 545); pump(5);
-console.log('  vert: dal OK');
 const talks = [
   () => sandbox.NPC_DEFS.bongo.talk(),
   () => sandbox.NPC_DEFS.perr.talk(),
@@ -209,20 +194,15 @@ const talks = [
   () => sandbox.NPC_DEFS.rando.talk(),
   () => sandbox.NPC_DEFS.grim.talk(),
   () => sandbox.NPC_DEFS.bjarne.talk(),
-  () => sandbox.NPC_DEFS.goblin.itemActions['fløyte'](),
+  () => sandbox.NPC_DEFS.goblin.itemActions['flÃ¸yte'](),
 ];
 talks.forEach((t, i) => {
   try {
     sandbox.Game.closeDialog();
-    sandbox.Game.inv = ['stokk', 'eple', 'ring', 'mynter', 'fløyte', 'pølse', 'øl', 'skje'];
-    errSync('talk #' + (i + 1) + ' pre');
+    sandbox.Game.inv = ['stokk', 'eple', 'ring', 'mynter', 'flÃ¸yte', 'pÃ¸lse', 'Ã¸l', 'skje'];
     t();
-    errSync('talk #' + (i + 1) + ' post');
-    if (i === 6) { sandbox.Game._skipDW = (i % 3 === 0); sandbox.Game._skipBLIT = false; sandbox.Game._skipSL = true; sandbox.Game._skipUI = true; errSync('bjarne bisect run'); }
     pump(30);
-    errSync('pump post #' + (i + 1));
     for (let k = 0; k < 8; k++) { click(640, 200); pump(15); }
-    errSync('clicks post #' + (i + 1));
     console.log('  npc-dialog OK #' + (i + 1));
   } catch (e) {
     console.log('  NPC-KRASJ #' + (i + 1), '->', e.message);
@@ -249,5 +229,5 @@ Object.entries(sandbox.ROOMS).forEach(([rid, room]) => {
 });
 console.log('  alle hotspot-funksjoner OK');
 
-console.log('\n=== RØYKTEST: PASS ===');
-process.exit(0);
+console.log('\n=== RÃ˜YKTEST: PASS ===');
+

@@ -2,7 +2,7 @@
   const A = ART;
   const { rr, ell, circle, poly, vgrad, glow, cloud, mountainLayer, vignette } = A;
   const PX = window._PX;
-  const { grain, dither, planks, stones, foliage, grassPatch, shadowBlob } = PX;
+  const { grain, dither, planks, stones, foliage, grassPatch, shadowBlob, bricks } = PX;
 
   window.PAINTERS.kryss = (c, W, H) => {
     const sky = c.createLinearGradient(0, 0, 0, 460);

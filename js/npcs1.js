@@ -345,12 +345,18 @@
   }
 
   function doraHint() {
-    if (!Game.flag('perrPaid') && !Game.flag('visitedPub')) return 'A Black Rider set up a toll booth at the crossroads. He wants payment in "entertainment". I recommend newspapers.';
-    if (!Game.flag('spoonReturned') && !Game.has('skje') && !Game.flag('spoonFloor')) return 'Halvor over there is sitting on my lucky spoon – figuratively, in elbow-wrestle territory. A cold drink loosens many things.';
-    if (Game.flag('spoonFloor') && !Game.has('skje')) return 'Something shiny rolled under HALVOR\'S table. Look under it. Bend down. You can do it. Probably.';
-    if (!Game.flag('joinedRando')) return 'Rando in the corner is a "casual hiker". He has been watching the Ring since you walked in. Very casual behavior.';
-    if (!Game.flag('trollPassed')) return 'The bridge-troll in Trollwood takes payment in POETRY. Rhyme badly and you rhyme LONG.';
-    return 'Soup? Anyone want soup? …No? As always.';
+    const rules = window.GAME.difficulty.rules;
+    const lvl = rules.hintLevel[Game.difficulty] === undefined ? 1 : rules.hintLevel[Game.difficulty];
+    let s;
+    if (!Game.flag('perrPaid') && !Game.flag('visitedPub')) s = 'A Black Rider set up a toll booth at the crossroads. He wants payment in "entertainment". I recommend newspapers.';
+    else if (!Game.flag('spoonReturned') && !Game.has('skje') && !Game.flag('spoonFloor')) s = 'Halvor over there is sitting on my lucky spoon – figuratively, in elbow-wrestle territory. A cold drink loosens many things.';
+    else if (Game.flag('spoonFloor') && !Game.has('skje')) s = 'Something shiny rolled under HALVOR\'S table. Look under it. Bend down. You can do it. Probably.';
+    else if (!Game.flag('joinedRando')) s = 'Rando in the corner is a "casual hiker". He has been watching the Ring since you walked in. Very casual behavior.';
+    else if (!Game.flag('trollPassed')) s = 'The bridge-troll in Trollwood takes payment in POETRY. Rhyme badly and you rhyme LONG.';
+    else s = 'Soup? Anyone want soup? …No? As always.';
+    if (lvl >= 2 && !s.startsWith('Soup?')) return 'GOAL: ' + s;
+    if (lvl <= 0 && !s.startsWith('Soup?')) return 'You seem to have everything under control. Probably. Talk to everyone. Touch everything. Trust no lock.';
+    return s;
   }
 
   function Halvor_menu() {

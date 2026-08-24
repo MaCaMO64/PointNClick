@@ -150,6 +150,7 @@ const AudioSys = (() => {
     stopMusic() { mood = null; },
     toggleMusic() { musicOn = !musicOn; return musicOn; },
     toggleSfx() { sfxOn = !sfxOn; return sfxOn; },
+    setEnabled(m, s) { musicOn = m; sfxOn = s; },
     musicEnabled: () => musicOn,
     sfxEnabled: () => sfxOn,
   };
