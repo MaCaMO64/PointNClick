@@ -100,8 +100,9 @@
     c.fill();
 
     const sp = spriteSpace(c, o, w, h);
+    if (opt && opt.overlayFirst && overlay) overlay(SnapCtx(c), cell, performance.now() / 1000);
     drawGrid(c, rows, pal, cell);
-    if (overlay) overlay(SnapCtx(c), cell, performance.now() / 1000);
+    if (overlay && !(opt && opt.overlayFirst)) overlay(SnapCtx(c), cell, performance.now() / 1000);
     c.restore();
     o._blit = { lx: sp.ox, ly: sp.oy, wPx: w, hPx: h };
   }
@@ -109,7 +110,19 @@
   const newPerson = (c, o) => {
     switch (o.style) {
       case 'goat':
-        drawSpecial(c, o, C.GOAT, { B: '#efeadb', D: '#ded5c0', H: '#8a7a5a', K: '#222222', S: '#d8aab2' }, 'goat');
+        drawSpecial(c, o, C.GOAT, { B: '#f2ede0', D: '#d8d0bc', H: '#6d5c3a', K: '#1c1c1c', S: '#c98f9d' }, 'goat', { scaleMul: 1.5, overlayFirst: true }, (sc, cell) => {
+          sc.strokeStyle = '#4a4438';
+          sc.lineWidth = Math.max(1, cell * 0.3);
+          sc.beginPath();
+          for (let r = 0; r < C.GOAT.length; r++) {
+            const row = C.GOAT[r];
+            for (let q = 0; q < row.length; q++) {
+              if (row[q] === '.') continue;
+              sc.strokeRect(q * cell, r * cell, cell, cell);
+            }
+          }
+          sc.stroke();
+        });
         return;
       case 'glum':
         drawSpecial(c, o, C.GLUM, { P: '#cdd6da', L: '#5a4632', W: '#eef7ff', K: '#2a6ea8', M: '#4a3038', F: '#cdd6da' }, 'glum', null, (sc, cell, t) => {
