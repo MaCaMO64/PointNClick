@@ -36,11 +36,12 @@
   }
 
   function spriteSpace(c, o, w, h) {
+    const KX = 320 / 1280, KY = 156 / 720;
     c.save();
-    c.setTransform(1, 0, 0, 1, 0, 0);
+    c.setTransform(KX, 0, 0, KY, 0, 0);
     c.imageSmoothingEnabled = false;
-    const ox = Math.round(o.x * 0.25 - w / 2);
-    const oy = Math.round(o.y * 0.25) - h + 1;
+    const ox = Math.round(o.x * KX - w / 2);
+    const oy = Math.round(o.y * KY) - h + 1;
     c.translate(ox, oy);
     if ((o.facing || 1) < 0) { c.translate(w, 0); c.scale(-1, 1); }
     return { ox, oy, w, h };

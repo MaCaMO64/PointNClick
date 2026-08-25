@@ -1,4 +1,4 @@
-(() => {
+﻿(() => {
   const NOW = () => performance.now() / 1000;
   window.ROOMS = {};
 
@@ -10,7 +10,7 @@
       { dx: 0, dy: 0, w: 185, h: 265, sx: 195, sy: 0, flip: true },
       { dx: 1180, dy: 450, w: 100, h: 120, sx: 1050, sy: 450 },
     ],
-    walk: { minY: 488, maxY: 566 },
+    walk: { minY: 488, maxY: 592 },
     animateUnder(c, t) { ART.animDalUnder(c, t, Game); },
     animateOver(c, t) { ART.animDalOver(c, t, Game); },
     npcs: [
@@ -31,10 +31,10 @@
         verbs: { look: 'The neighbor\'s round window. Warm light inside. Their moustache drawings are less impressive.' } },
       { id: 'floyte', label: 'the tin whistle', x: 122, y: 496, w: 66, h: 38,
         standX: 168, standY: 554,
-        hidden: () => Game.has('fløyte'),
+        hidden: () => Game.has('flÃ¸yte'),
         verbs: {
           look: 'A tin whistle resting on the door step. It lies there as if waiting for a musical moment. Or an excuse.',
-          take() { Game.addItem('fløyte'); Game.say('toke', 'Whistle secured. The neighbors already regret this.'); },
+          take() { Game.addItem('flÃ¸yte'); Game.say('toke', 'Whistle secured. The neighbors already regret this.'); },
         } },
       { id: 'vedstabbel', label: 'the woodpile', x: 24, y: 512, w: 136, h: 58,
         standX: 120, standY: 560,
@@ -101,7 +101,7 @@
       if (on && !Game.flag('ringGagDal') && Game.flag('questStarted')) {
         Game.setFlag('ringGagDal');
         Game.script([
-          { say: ['bongo', 'Tomble? TOMBLE?! Where did you…'] },
+          { say: ['bongo', 'Tomble? TOMBLE?! Where did youâ€¦'] },
           { wait: 0.3 },
           { say: ['narrator', 'Uncle Bongo spins around. He looks straight through you. Twice.'] },
           { say: ['bongo', 'Oh. There you are. You went very quiet. TAKE OFF that thing while we talk, please.'] },
@@ -113,7 +113,7 @@
   window.ROOMS.kryss = {
     id: 'kryss', name: 'The Crossroads', mood: 'road',
     paint: ART.kryss,
-    walk: { minY: 485, maxY: 560 },
+    walk: { minY: 485, maxY: 592 },
     animateUnder(c, t) { ART.animKryssUnder(c, t, Game); },
     animateOver(c, t) { ART.animKryssOver(c, t, Game); },
     npcs: [ { ref: 'perr', x: 1010, y: 505 } ],
@@ -147,7 +147,7 @@
               { wait: 0.4 },
               { fx: 'coin' },
               { flag: ['avisOut'] },
-              { say: ['narrator', 'A jerk. A scrape. And PLOP – something papery falls into the gravel.'] },
+              { say: ['narrator', 'A jerk. A scrape. And PLOP â€“ something papery falls into the gravel.'] },
             ]);
           },
         } },
@@ -155,7 +155,7 @@
         standX: 214, standY: 556,
         hidden: () => !Game.flag('avisOut') || Game.has('avis'),
         verbs: {
-          look: '"MORDOR TIMES – all the news, one opinion." The headline is set in CAPITALS and zero discussion.',
+          look: '"MORDOR TIMES â€“ all the news, one opinion." The headline is set in CAPITALS and zero discussion.',
           take() {
             Game.addItem('avis');
             Game.sayLines([
@@ -206,9 +206,9 @@
       if (on && !Game.flag('ringGagKryss') && Game.flag('questStarted')) {
         Game.setFlag('ringGagKryss');
         Game.script([
-          { say: ['narrator', 'The world turns grey. Sounds stretch out. And then… a horse turns its head. SLOWLY.'] },
-          { say: ['perr', '*sniff* …*SNIFF*'] },
-          { say: ['toke', 'NO NO NO–'] },
+          { say: ['narrator', 'The world turns grey. Sounds stretch out. And thenâ€¦ a horse turns its head. SLOWLY.'] },
+          { say: ['perr', '*sniff* â€¦*SNIFF*'] },
+          { say: ['toke', 'NO NO NOâ€“'] },
           { ring: false },
           { say: ['narrator', 'You tear the Ring off your finger. Colors flood back, and the Rider loses interest with a disappointed horse noise.'] },
           { say: ['toke', '(Noted: invisibility attracts NOSES.)'] },
@@ -220,7 +220,7 @@
   window.ROOMS.pub = {
     id: 'pub', name: 'The Wobbly Pony', mood: 'pub',
     paint: ART.pub,
-    walk: { minY: 500, maxY: 558 },
+    walk: { minY: 500, maxY: 592 },
     animateUnder(c, t) { ART.animPubUnder(c, t, Game); },
     animateOver(c, t) { ART.animPubOver(c, t, Game); },
     npcs: [
@@ -266,11 +266,11 @@
         } },
       { id: 'polseplate', label: 'a plate of salted sausage', x: 298, y: 404, w: 58, h: 34,
         standX: 330, standY: 548,
-        hidden: () => Game.flag('sausageGone') || Game.has('pølse'),
+        hidden: () => Game.flag('sausageGone') || Game.has('pÃ¸lse'),
         verbs: {
           look: 'A salted sausage on a plate. The pride of the house. Dora winks: "Take two." I take one.',
           take() {
-            Game.addItem('pølse');
+            Game.addItem('pÃ¸lse');
             Game.setFlag('sausageGone');
             Game.say('toke', 'Sausage secured. The journey officially begins.');
           },
@@ -284,7 +284,7 @@
             Game.addItem('skje');
             Game.sayLines([
               ['toke', 'Spoon recovered! Halvor snores appreciatively.'],
-              ['halvor', '*mumbles in his sleep* she came home…'],
+              ['halvor', '*mumbles in his sleep* she came homeâ€¦'],
             ]);
           },
         } },

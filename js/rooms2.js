@@ -4,7 +4,7 @@
   window.ROOMS.elv = {
     id: 'elv', name: 'The Riverbank', mood: 'river',
     paint: ART.elv,
-    walk: { minY: 455, maxY: 555 },
+    walk: { minY: 455, maxY: 592 },
     animateUnder(c, t) { ART.animElvUnder(c, t, Game); },
     animateOver(c, t) { ART.animElvOver(c, t, Game); },
     npcs: [
@@ -167,7 +167,7 @@
     id: 'skog', name: 'Trollwood', mood: 'forest',
     paint: ART.skog,
     pngTint: 'rgba(16,20,56,0.42)',
-    walk: { minY: 485, maxY: 560 },
+    walk: { minY: 485, maxY: 592 },
     animateOver(c, t) { ART.animSkogOver(c, t, Game); },
     npcs: [
       { ref: 'bent', x: 985, y: 468 },

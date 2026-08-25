@@ -1,5 +1,6 @@
-﻿const W = 1280, H = 720, UI_TOP = 600;
-const LOW_W = 320, LOW_H = 150;
+﻿const W = 1280, H = 720, UI_TOP = 624;
+const LOW_W = 320, LOW_H = 156;
+const KX = LOW_W / W, KY = LOW_H / H;
 const GAME = window.GAME;
 const GAME_VERSION = GAME.meta.version;
 
@@ -189,7 +190,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
     cv.width = LOW_W; cv.height = LOW_H;
     const bctx = cv.getContext('2d');
     bctx.imageSmoothingEnabled = false;
-    bctx.setTransform(LOW_W / W, 0, 0, LOW_H / H, 0, 0);
+    bctx.setTransform(KX, 0, 0, KY, 0, 0);
     room.paint(bctx, W, H);
     const im = G._bgImages && G._bgImages[roomId];
     if (im) {
@@ -203,7 +204,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
         bctx.fillRect(0, 0, LOW_W, LOW_H);
       }
       (room.bgHeal || []).forEach(p => {
-        const lx = p.dx / 4, ly = p.dy / 4, lw = p.w / 4, lh = p.h / 4;
+        const lx = p.dx * KX, ly = p.dy * KY, lw = p.w * KX, lh = p.h * KY;
         bctx.save();
         if (p.sx !== undefined) {
           bctx.imageSmoothingEnabled = false;
@@ -815,7 +816,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
       ctx.lineWidth = 2;
       roundRect(ctx, r.x, r.y, r.w, r.h, 6);
       ctx.stroke();
-      drawVerbIcon(v.id, r.x + r.w / 2, r.y + 22, isActive || hov);
+      drawVerbIcon(v.id, r.x + r.w / 2, r.y + 19, isActive || hov);
       ctx.font = 'bold 12px Verdana, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillStyle = isActive ? '#ffe9a8' : '#d8c79a';
@@ -850,13 +851,13 @@ const SPEAKER_NAMES = GAME.speakers.names;
       ctx.fillText(GAME.ui.hintEsc, midCx, UI_TOP + 78);
     }
 
-    const slotSize = 40, stride = 46;
+    const slotSize = 38, stride = 44;
     const cols = 4, rows = 2;
     const perPage = cols * rows;
     const pageCount = Math.max(1, Math.ceil(G.inv.length / perPage));
     if (invPage >= pageCount) invPage = pageCount - 1;
     if (invPage < 0) invPage = 0;
-    const gx = W - 24 - cols * stride + 6, gy = UI_TOP + 28;
+    const gx = W - 22 - cols * stride + 6, gy = UI_TOP + 12;
     const visItems = G.inv.slice(invPage * perPage, invPage * perPage + perPage);
     for (let i = 0; i < perPage; i++) {
       const cx = gx + (i % cols) * stride;
@@ -897,7 +898,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
   function verbRect(id) {
     if (verbRects[id]) return verbRects[id];
     const i = VERBS.findIndex(v => v.id === id);
-    const r = { x: 14 + i * 126, y: UI_TOP + 20, w: 118, h: 64 };
+    const r = { x: 14 + i * 126, y: UI_TOP + 14, w: 118, h: 56 };
     verbRects[id] = r;
     return r;
   }
@@ -1111,7 +1112,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
 
     if (!G._skipDW) drawWorld();
     ctx.imageSmoothingEnabled = false;
-    if (!G._skipBLIT) ctx.drawImage(G._low, 0, 0, LOW_W, LOW_H, 0, 0, W, H);
+    if (!G._skipBLIT) ctx.drawImage(G._low, 0, 0, LOW_W, LOW_H, 0, 0, W, UI_TOP);
     if (!G._skipSL) drawSpeechLayer();
     drawSceneTitle();
     if (!G._skipUI) drawUI();

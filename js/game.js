@@ -1,7 +1,7 @@
-window.GAME = {
+﻿window.GAME = {
   meta: {
     title: 'RING & WRONG',
-    version: 'v0.9.4',
+    version: 'v0.9.5',
     storageKey: 'ringandwrong',
     subtitle: 'A thoroughly unnecessary hero\'s tale',
     tagline: 'A point-and-click adventure in the spirit of LucasArts',
@@ -68,8 +68,8 @@ window.GAME = {
   intro: [
     ['In an age before ages got late,',
      'the Great Rings were forged in the factories of Middle-earth.',
-     'Three for the elves. Seven for the dwarves. Nine for men –',
-     'and one to rule them all … plus the service agreement.'],
+     'Three for the elves. Seven for the dwarves. Nine for men â€“',
+     'and one to rule them all â€¦ plus the service agreement.'],
     ['But one day, the Great Ring went missing.',
      'It turned up in the pocket of UNCLE BONGO,',
      'a retired adventurer who refused to believe it was more than loose change.',
@@ -82,7 +82,7 @@ window.GAME = {
 
   endings: {
     good: {
-      title: 'THE END — the good kind!',
+      title: 'THE END â€” the good kind!',
       lines: [
         'The Ring screamed "NOOO! I had SO much left to give!"',
         'and melted away with a tiny confetti-bang.',
@@ -92,7 +92,7 @@ window.GAME = {
       ],
     },
     bad: {
-      title: 'THE END … or is it?',
+      title: 'THE END â€¦ or is it?',
       lines: [
         'Tomble kept the Ring. The Ring kept Tomble.',
         'Three weeks later he was middle manager at Mordor Inc.,',

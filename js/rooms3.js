@@ -1,8 +1,8 @@
-(() => {
+﻿(() => {
   window.ROOMS.vulkan = {
     id: 'vulkan', name: 'Foot of Mount Pleasant', mood: 'volcano',
     paint: ART.vulkan,
-    walk: { minY: 485, maxY: 560 },
+    walk: { minY: 485, maxY: 592 },
     animateOver(c, t) { ART.animVulkanOver(c, t, Game); },
     npcs: [ { ref: 'bjarne', x: 760, y: 505 } ],
     hotspots: [
@@ -67,7 +67,7 @@
       { id: 'vskilt', label: 'the CLOSED sign', x: 866, y: 324, w: 148, h: 62,
         standX: 940, standY: 545,
         verbs: {
-          look: '"CLOSED FOR MAINTENANCE – reopens next age." Below, in smaller print: "(sorry for the inconvenience)"',
+          look: '"CLOSED FOR MAINTENANCE â€“ reopens next age." Below, in smaller print: "(sorry for the inconvenience)"',
           use: 'The sign swings a little. It has no power left here. Not over you, at least.',
         } },
     ],
@@ -75,13 +75,13 @@
       if (on && !Game.flag('finaleStarted')) {
         Game.setFlag('finaleStarted');
         Game.script([
-          { say: ['narrator', 'The world turns grey. The ash falls quietly. Bjarne\'s gaze slides right through you – twice, three times.'] },
-          { say: ['bjarne', 'HELLO? WHERE DID YOU GO?! You cannot JUST disappear! There are RULES about this! Paragraph– where is my paragraph?'] },
+          { say: ['narrator', 'The world turns grey. The ash falls quietly. Bjarne\'s gaze slides right through you â€“ twice, three times.'] },
+          { say: ['bjarne', 'HELLO? WHERE DID YOU GO?! You cannot JUST disappear! There are RULES about this! Paragraphâ€“ where is my paragraph?'] },
           { fx: 'whoosh' },
           { say: ['narrator', 'Something small and grey comes skimming over the lava ridges at a speed no grey thing should manage.'] },
           { say: ['glum', 'THE TREASURE! Glum sees it! Glum SMELLS it! Here! HERE!'] },
-          { say: ['bjarne', 'WHAT THE– two invisible ones?! NO. No. I just took a job at a BAKERY. VACATION! I AM TAKING VACATION!'] },
-          { say: ['narrator', 'Bjarne throws his guard cap onto the desk and vanishes into the dust. The iron gate stands open behind him – wide open.'] },
+          { say: ['bjarne', 'WHAT THEâ€“ two invisible ones?! NO. No. I just took a job at a BAKERY. VACATION! I AM TAKING VACATION!'] },
+          { say: ['narrator', 'Bjarne throws his guard cap onto the desk and vanishes into the dust. The iron gate stands open behind him â€“ wide open.'] },
           { fx: 'door' },
           { say: ['glum', 'In! IN! Glum knows the way! Glum ALWAYS knows the way! *hissing*'] },
           { goto: { room: 'krater', x: 140, y: 520 } },
@@ -93,7 +93,7 @@
   window.ROOMS.krater = {
     id: 'krater', name: 'The Caldera', mood: 'volcano',
     paint: ART.krater,
-    walk: { minY: 470, maxY: 545 },
+    walk: { minY: 470, maxY: 592 },
     animateOver(c, t) { ART.animKraterOver(c, t, Game); },
     npcs: [ { ref: 'glumfinale', x: 900, y: 505 } ],
     hotspots: [
@@ -106,14 +106,14 @@
       { id: 'bskilt', label: 'the broken sign', x: 1076, y: 396, w: 96, h: 64,
         standX: 1120, standY: 500,
         verbs: {
-          look: '"DO NOT THROW THINGS HERE!" – the sign itself lies half inside the crater. The house of irony has found its headquarters.',
+          look: '"DO NOT THROW THINGS HERE!" â€“ the sign itself lies half inside the crater. The house of irony has found its headquarters.',
           use: 'The sign gave up on its own rule. Respect for following through.',
         } },
       { id: 'ravine', label: 'the crater rim', x: 980, y: 430, w: 260, h: 130,
         standX: 1060, standY: 505,
         verbs: {
           look() {
-            if (!Game.flag('craterReady')) return 'The edge of the caldera itself. The heat pushes against your face. The Ring in your pocket feels… restless.';
+            if (!Game.flag('craterReady')) return 'The edge of the caldera itself. The heat pushes against your face. The Ring in your pocket feelsâ€¦ restless.';
             return 'The rim. The lava. The moment. Everything waits on one small hand movement from one big-footed halfling.';
           },
           talk() { Ravine_attempt(); },
@@ -142,7 +142,7 @@
   function Ravine_attempt() {
     if (!Game.ringWorn || !Game.has('ring')) {
       Game.sayLines([
-        ['toke', 'The Ring needs to be close to the fire for this. It almost wants it itself…'],
+        ['toke', 'The Ring needs to be close to the fire for this. It almost wants it itselfâ€¦'],
         ['narrator', '(Put on the Ring from your bag if you want to finish the journey.)'],
       ]);
       return;
@@ -165,18 +165,18 @@
       { fx: 'magic' },
       { wait: 0.4 },
       { fx: 'splash' },
-      { say: ['narrator', 'The Ring falls. It screams. It negotiates. Then it meets the lava – and the lava is not interested in negotiating.'] },
+      { say: ['narrator', 'The Ring falls. It screams. It negotiates. Then it meets the lava â€“ and the lava is not interested in negotiating.'] },
       { fx: 'fanfare' },
       { say: ['narrator', 'A small confetti-bang of golden sparks marks the end of a very long ownership arrangement.'] },
       { wait: 0.4 },
       { fn: () => {
-        if (Game.flag('joinedRando')) Game.say('rando', 'Finally! I finished my sandwich. What did I miss? …Everything? I missed EVERYTHING?');
+        if (Game.flag('joinedRando')) Game.say('rando', 'Finally! I finished my sandwich. What did I miss? â€¦Everything? I missed EVERYTHING?');
       } },
       { say: ['narrator', 'Above you, something enormous casts a shadow. An eagle. On its back sits an old hobbit with glasses on his forehead, waving wildly.'] },
       { say: ['bongo', 'I TOLD you I would come get you! My marker was in the mail! TOMBLE! YOU ARE SO SLOW!'] },
       { say: ['toke', 'Uncle BONGO?!'] },
       { say: ['bongo', 'Pensioners get WEDNESDAYS off! Come, the flight departs! There is cocoa at home!'] },
-      { say: ['narrator', 'And so it ended – with lava, confetti, an eagle with capacity issues, and cocoa. So much cocoa.'] },
+      { say: ['narrator', 'And so it ended â€“ with lava, confetti, an eagle with capacity issues, and cocoa. So much cocoa.'] },
       { fn: () => Game.showEnding('good') },
     ]);
   }
@@ -184,7 +184,7 @@
   function BadEnding() {
     Game.script([
       { say: ['ring', '(Good choice. A wise investment. A LONG-TERM outlook.)'] },
-      { say: ['toke', 'Just for a bit. Just until I find out what it DOES. Just–'] },
+      { say: ['toke', 'Just for a bit. Just until I find out what it DOES. Justâ€“'] },
       { say: ['narrator', 'Three weeks later: Tomble Bagshot, middle manager at Mordor Inc., responsible for meeting minutes and evil looks.'] },
       { say: ['ring', '(The minutes. Write the minutes. The minutes matter. WE matter. YOU matter. ONLY US.)'] },
       { fx: 'sad' },
