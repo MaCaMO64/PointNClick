@@ -7,14 +7,15 @@
     paint: ART.dal,
     pngTint: 'rgba(255,240,210,0.05)',
     bgHeal: [
-      { x: 4, y: 0, w: 180, h: 260 },
+      { dx: 0, dy: 0, w: 185, h: 265, sx: 195, sy: 0, flip: true },
+      { dx: 1180, dy: 450, w: 100, h: 120, sx: 1050, sy: 450 },
     ],
     walk: { minY: 488, maxY: 566 },
     animateUnder(c, t) { ART.animDalUnder(c, t, Game); },
     animateOver(c, t) { ART.animDalOver(c, t, Game); },
     npcs: [
       { ref: 'bongo', x: 258, y: 552 },
-      { ref: 'tommel', x: 1150, y: 548 },
+      { ref: 'tommel', x: 1058, y: 548 },
     ],
     hotspots: [
       { id: 'dor', label: 'the round door', x: 14, y: 396, w: 108, h: 136,

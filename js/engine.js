@@ -203,16 +203,29 @@ const SPEAKER_NAMES = GAME.speakers.names;
         bctx.fillRect(0, 0, LOW_W, LOW_H);
       }
       (room.bgHeal || []).forEach(p => {
-        const lx = p.x / 4, ly = p.y / 4, lw = p.w / 4, lh = p.h / 4;
-        const tw = Math.max(2, Math.round(lw / 5));
-        const th = Math.max(2, Math.round(lh / 5));
-        const tmp = document.createElement('canvas');
-        tmp.width = tw; tmp.height = th;
-        const tc = tmp.getContext('2d');
-        tc.imageSmoothingEnabled = true;
-        tc.drawImage(cv, lx, ly, lw, lh, 0, 0, tw, th);
-        bctx.imageSmoothingEnabled = true;
-        bctx.drawImage(tmp, 0, 0, tw, th, lx, ly, lw, lh);
+        const lx = p.dx / 4, ly = p.dy / 4, lw = p.w / 4, lh = p.h / 4;
+        bctx.save();
+        if (p.sx !== undefined) {
+          bctx.imageSmoothingEnabled = false;
+          if (p.flip) {
+            bctx.translate(lx + lw / 2, ly + lh / 2);
+            bctx.scale(-1, 1);
+            bctx.drawImage(cv, p.sx / 4, p.sy / 4, lw, lh, -lw / 2, -lh / 2, lw, lh);
+          } else {
+            bctx.drawImage(cv, p.sx / 4, p.sy / 4, lw, lh, lx, ly, lw, lh);
+          }
+        } else {
+          const tw = Math.max(2, Math.round(lw / 5));
+          const th = Math.max(2, Math.round(lh / 5));
+          const tmp = document.createElement('canvas');
+          tmp.width = tw; tmp.height = th;
+          const tc = tmp.getContext('2d');
+          tc.imageSmoothingEnabled = true;
+          tc.drawImage(cv, lx, ly, lw, lh, 0, 0, tw, th);
+          bctx.imageSmoothingEnabled = true;
+          bctx.drawImage(tmp, 0, 0, tw, th, lx, ly, lw, lh);
+        }
+        bctx.restore();
       });
     }
     G.bgCache[roomId] = cv;
