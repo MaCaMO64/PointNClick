@@ -370,6 +370,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
     if (speech.queue.length > 0) {
       startCurrentSpeech();
     } else {
+      if (typeof AudioSys !== 'undefined' && AudioSys.setDuck) AudioSys.setDuck(false);
       if (dialog.open && !dialog.closedByEffect) dialog.dirty = true;
     }
   }
@@ -381,6 +382,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
     s.blipCount = 0;
     speech.current = s;
     speech.fullShown = false;
+    if (typeof AudioSys !== 'undefined' && AudioSys.setDuck) AudioSys.setDuck(true);
     const npcObj = G.npc(s.who);
     (G.room._npcs || []).forEach(n => n.talking = false);
     if (npcObj) npcObj.talking = true;
