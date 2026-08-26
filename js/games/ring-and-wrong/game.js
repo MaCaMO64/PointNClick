@@ -112,3 +112,21 @@
     },
   },
 };
+  GAME.paint = {
+    title: (c, W, H, t) => ART.title(c, W, H, t),
+    introBg: (c, W, H, t) => ART.introBg(c, W, H, t),
+    ending: (c, W, H, t, type) => ART.endingBg(c, W, H, t, type),
+    person: (c, o) => ART.person(c, o),
+    canary: () => ART._canary(),
+  };
+
+  GAME.start = {
+    room: 'dal', x: 620, y: 545,
+    script: [
+      { say: ['narrator', 'Bloomdale. Nine in the morning. The birds are singing, the grass is green, and someone has packed an entire house into boxes.'] },
+      { say: ['toke', 'Uncle Bongo? Why is all your furniture standing out in the garden?'] },
+    ],
+  };
+
+  GAME.assets = { artPath: 'js/games/ring-and-wrong/art/' };
+  GAME.audio = { tracks: { title: 'title', shire: 'dal', road: 'kryss', pub: 'pub', river: 'elv', forest: 'skog', volcano: 'vulkan', ending: 'ending' } };

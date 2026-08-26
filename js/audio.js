@@ -353,7 +353,8 @@
     },
     startMusic(name) {
       if (!ctx) return;
-      const tid = MOOD_TRACK[name] || name;
+      const tracks = (window.GAME && window.GAME.audio && window.GAME.audio.tracks) || {};
+      const tid = tracks[name] || name;
       if (trackId === tid && (trackSrc || procMood)) return;
       trackId = tid;
       if (window.MUSIC_DATA && window.MUSIC_DATA[tid]) {

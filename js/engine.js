@@ -615,7 +615,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
       phase: player.moving ? player.phase : 0,
       walking: player.moving, talking: speech.current && speech.current.who === 'toke',
     });
-    ents.push({ y: player.y, draw: () => drawPerson(l, pArgs) });
+    ents.push({ y: player.y, draw: () => GAME.paint.person(l, pArgs) });
     (G.room._npcs || []).forEach(npc => {
       if (npc.def.hidden && npc.def.hidden()) return;
       const nArgs = npc._drawArgs || (npc._drawArgs = {});
@@ -627,7 +627,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
     });
     if (G.flag('joinedRando') && !G.npc('rando') && !['dal', 'krater'].includes(G.roomId)) {
       const fxp = player.x - 60 * player.facing;
-      ents.push({ y: player.y - 1, draw: () => drawPerson(l, {
+      ents.push({ y: player.y - 1, draw: () => GAME.paint.person(l, {
         x: fxp, y: player.y + 2, scale: depthScale(player.y),
         style: 'rando', facing: player.facing,
         phase: player.moving ? player.phase + 2 : 0,
@@ -646,7 +646,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
       l.save();
       l.setTransform(1, 0, 0, 1, 0, 0);
       l.imageSmoothingEnabled = false;
-      const canary = ART._canary();
+      const canary = GAME.paint.canary();
       l.drawImage(canary, 24, 56);
       l.strokeStyle = '#40ff40';
       l.lineWidth = 1;
@@ -1125,7 +1125,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
   }
 
   function renderTitle() {
-    window.ART.title(ctx, W, H, tGlobal);
+    GAME.paint.title(ctx, W, H, tGlobal);
     titleRects = [];
     const btns = [
       { label: 'NEW ADVENTURE', act: 'new' },
@@ -1175,7 +1175,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
   const INTRO_PANELS = GAME.intro;
 
   function renderIntro() {
-    window.ART.introBg(ctx, W, H, tGlobal);
+    GAME.paint.introBg(ctx, W, H, tGlobal);
     const p = INTRO_PANELS[introStep];
     ctx.textAlign = 'center';
     p.forEach((ln, i) => {
@@ -1191,7 +1191,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
   const ENDING_TEXTS = GAME.endings;
 
   function renderEnding() {
-    window.ART.endingBg(ctx, W, H, tGlobal, G.ending);
+    GAME.paint.ending(ctx, W, H, tGlobal, G.ending);
     const e = ENDING_TEXTS[G.ending] || ENDING_TEXTS.good;
     ctx.textAlign = 'center';
     ctx.font = 'bold 40px Georgia, serif';
@@ -1257,11 +1257,8 @@ const SPEAKER_NAMES = GAME.speakers.names;
       AudioSys.fx('click');
       if (introStep >= INTRO_PANELS.length) {
         G.state = 'play';
-        enterRoom('dal', 620, 545);
-        G.script([
-          { say: ['narrator', 'Bloomdale. Nine in the morning. The birds are singing, the grass is green, and someone has packed an entire house into boxes.'] },
-          { say: ['toke', 'Uncle Bongo? Why is all your furniture standing out in the garden?'] },
-        ]);
+        enterRoom(GAME.start.room, GAME.start.x, GAME.start.y);
+        if (GAME.start.script) G.script(GAME.start.script);
       }
       return;
     }
@@ -1478,9 +1475,9 @@ const SPEAKER_NAMES = GAME.speakers.names;
           let extIdx = 0;
           img.onerror = () => {
             extIdx += 1;
-            if (extIdx < exts.length) img.src = 'art/' + id + '.' + exts[extIdx];
+            if (extIdx < exts.length) img.src = GAME.assets.artPath + id + '.' + exts[extIdx];
           };
-          img.src = 'art/' + id + '.' + exts[0];
+          img.src = GAME.assets.artPath + id + '.' + exts[0];
         }
       });
     }

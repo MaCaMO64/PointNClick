@@ -129,7 +129,8 @@ function click(x, y, rightBtn = false) {
 
 vm.createContext(sandbox);
 const errSync = (s) => { try { require('fs').appendFileSync('ring-og-vrang/test/trace.txt', s + '\n'); } catch (e) {} };
-const FILES = ['audio', 'art', 'scenes', 'painters1', 'painters2', 'painters3', 'sprites', 'sprites-render', 'data', 'npcs1', 'npcs2', 'rooms1', 'rooms2', 'rooms3', 'game', 'engine', 'main'];
+const indexHtmlSrc = require('fs').readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
+const FILES = [...indexHtmlSrc.matchAll(/src="(js\/[^"?]+)/g)].map(m => m[1].replace(/^js\//, '').replace(/\.js$/, ''));
 try {
   FILES.forEach(f => {
     const src = fs.readFileSync(path.join(ROOT, 'js', f + '.js'), 'utf8');
@@ -143,6 +144,13 @@ try {
   vm.runInContext('window.Game = Game; window.AudioSys = AudioSys;', sandbox);
 
 console.log('== BOOT ==');
+console.log('smoke-read game.js:', (function () {
+  const s = require('fs').readFileSync(path.join(__dirname, '..', 'js', 'games', 'ring-and-wrong', 'game.js'), 'utf8');
+  const i = s.indexOf('GAME.start');
+  return s.slice(i, i + 160);
+})());
+console.log('start.script:', JSON.stringify(sandbox.GAME.start.script).slice(0, 130));
+console.log('start.room:', sandbox.GAME.start.room);
 pump(5);
 
 console.log('== TITLE: klikk NYTT EVENTYR ==');

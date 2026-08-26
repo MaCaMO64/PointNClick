@@ -3,7 +3,8 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..');
-  const FILES = ['audio', 'art', 'scenes', 'painters1', 'painters2', 'painters3', 'sprites', 'sprites-render', 'data', 'npcs1', 'npcs2', 'rooms1', 'rooms2', 'rooms3'];
+  const indexSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
+  const FILES = [...indexSrc.matchAll(/src="(js\/[^"?]+)/g)].map(m => m[1].replace(/^js\//, '').replace(/\.js$/, '')).filter(f => f !== 'engine' && f !== 'main');
 
 let errors = 0;
 let warnings = 0;
@@ -61,7 +62,7 @@ Object.entries(roomSources).forEach(([rid, s]) => {
   while ((m = reReadRoom.exec(s))) flagsRead.add(m[1]);
 });
 ['npcs1.js', 'npcs2.js'].forEach(f => {
-  const src = fs.readFileSync(path.join(ROOT, 'js', f), 'utf8');
+  const src = fs.readFileSync(path.join(ROOT, 'js', 'games', 'ring-and-wrong', f), 'utf8');
   let m;
   const reSet = /\.setFlag\(\s*['"]([a-zA-Z]+)['"]/g;
   while ((m = reSet.exec(src))) flagsSet.add(m[1]);
