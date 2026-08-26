@@ -107,6 +107,56 @@ Prompt-mal: *«[STEMNING], instrumental video game background music, pixel adven
 - `hintLevel`: 2 = «PSST… HINT?»-alternativ hos Bent + Dora sier «GOAL: …»; 0 = vage hint
 Les `Game.difficulty` der du vil utvide (velges i SETTINGS, gjelder umiddelbart på hint).
 
+## Karakterer (genererte spriter)
+Karakterene genereres som **PNG-spriter på magenta bakgrunn**, kroma-nøkles og innbakes. Motoren legger til livet: bob, blunk, munnveksling ved prat, vending og skygge.
+
+### Du trenger
+| Karakter | Poser | Prioritet |
+|---|---|---|
+| `tomble` | 1 stående + 2-3 gang-poser (kan være ett ark) | MÅ |
+| `bongo`, `dora`, `bent` | 1 stående (+ valgfritt 1 «snakk» med åpen munn) | Bør |
+| `rando`, `halvor`, `grim`, `bjarne`, `glum`, `billy`, `goblin` | 1 stående | Bør |
+| `perr` (sort ridder til hest) | 1, hele motiven med hest | Bør |
+
+### Prompt-mal (lim inn, fyll inn karakter)
+```
+[CHARACTER], detailed pixel art sprite, 16-bit adventure game character,
+full body side view facing left, crisp pixels, rich shading and outline,
+consistent chibi proportions (large head ~50% of height),
+isolated on a solid bright magenta background (#FF00FF), no shadow on ground,
+no text, no border, single character centered
+```
+For Tomble (gang-poser): bytt «full body side view facing left» med:
+```
+character sprite sheet: the SAME halfling character three times side by side,
+evenly spaced, identical scale and style — pose 1: idle standing,
+pose 2: walking mid-step left leg forward, pose 3: walking mid-step right leg forward
+```
+
+### Karakter-prompts
+**`tomble`** — helten:
+```
+Small halfling adventurer, curly brown hair, big furry feet, mustard yellow
+vest over cream shirt, brown shorts, cheerful determined face. + [mal med 3 poser]
+```
+**`bongo`** — onkelen: `Elderly retired hobbit adventurer, white hair tufts, small round glasses pushed up on forehead, maroon robe with gold trim, fuzzy slippers. + [mal]`
+**`rando`** — vandrereren: `Mysterious rugged ranger in a dark green hooded cloak, stubble, sword hilt visible, dramatic stance. + [mal]`
+**`dora`** — vertinnen: `Friendly sturdy innkeeper woman, auburn bun hair, rust-red dress with cream apron, holding a foaming tankard. + [mal]`
+**`halvor`** — fylliken: `Drunk slouching patron, blue-gray shirt, flushed red round nose, half-closed eyes, messy dark hair. + [mal]`
+**`grim`** — fiskeren: `Grumpy old fisher-gnome, long white beard, tall pointed blue hat with a gold star, yellow raincoat, holding a fishing rod. + [mal]`
+**`bjarne`** — orkvakten: `Bored orc security guard, green-gray skin, orange hi-vis vest over chainmail, underbite tusks, holding a clipboard. + [mal]`
+**`glum`** — *Glum*: `Small pale wretched hunched creature, huge watery blue eyes, sparse strands of hair, ragged brown loincloth, long bony fingers. + [mal]`
+**`bent`** — trollet: `Massive stone bridge troll, gray-blue skin, tiny too-small metal helmet, heavy bored expression, broad seated build. + [mal]`
+**`billy`** — geita: `Stubborn white goat with curved horns, cheeky expression, standing proudly. + [mal]`
+**`perr`** — den sorte riddern: `Ominous black rider on a black horse, flowing tattered dark cloak, hood with a faint glowing red slit, spiked horse armor. + [mal]`
+**`goblin`** — goblinen: `Small mischievous green goblin, big pointy ears, crude brown loincloth, crooked dagger. + [mal]`
+
+### Etter generering
+1. Lagre som `art/chars/<navn>.png` (ark: `tomble_sheet.png`)
+2. Si ifra — jeg bygger `tools/build-chars.js` (kroma-nøkling + slice + normalisering + innbaking) og kobler den genererte rendereren i motoren
+3. NPC-varianter kan farges med hue-rotate per karakter uten nye genereringer
+Motoren (`js/engine.js`, `js/audio.js`, `js/art.js`, `js/main.js`) inneholder null historie — alt innhold ligger i en **spillpakke** under `js/games/<dittspill>/`. `index.html` velger spill ved hvilken pakke som inkluderes.
+
 ## Lag et nytt spill med motoren
 Motoren (`js/engine.js`, `js/audio.js`, `js/art.js`, `js/main.js`) inneholder null historie — alt innhold ligger i en **spillpakke** under `js/games/<dittspill>/`. `index.html` velger spill ved hvilken pakke som inkluderes.
 
