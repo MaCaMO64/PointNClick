@@ -107,10 +107,71 @@ Prompt-mal: *«[STEMNING], instrumental video game background music, pixel adven
 - `hintLevel`: 2 = «PSST… HINT?»-alternativ hos Bent + Dora sier «GOAL: …»; 0 = vage hint
 Les `Game.difficulty` der du vil utvide (velges i SETTINGS, gjelder umiddelbart på hint).
 
-## Motor vs. innhold
-- **Motor**: `engine.js` (rendering, verber, dialog, cutscenes, lagring, innstillinger) + `audio.js` + `sprites-render.js` — ingen historie-referanser
-- **Innhold**: `game.js` (manifest: meta/tekster/talere/intro/slutninger/vanskelighet) + `rooms1-3.js` + `npcs1-2.js` + `data.js` (items/combos) + `scenes/painters` (prosedural fallback-grafikk) + `sprites.js` (sprite-grids)
-- Nytt spill = nytt manifest + egne innholdsfiler mot samme motor-API (`Game.*`)
+## Lag et nytt spill med motoren
+Motoren (`js/engine.js`, `js/audio.js`, `js/art.js`, `js/main.js`) inneholder null historie — alt innhold ligger i en **spillpakke** under `js/games/<dittspill>/`. `index.html` velger spill ved hvilken pakke som inkluderes.
+
+### Oppskrift
+1. **Kopier pakken** (raskest):
+```
+xcopy /E /I js\games\ring-and-wrong js\games\mittspill
+```
+2. **Bytt manifestet** (`mittspill/game.js`) — dette er kontrakten mot motoren:
+```js
+window.GAME = {
+  meta: { title: 'MITT SPILL', version: 'v0.1.0', storageKey: 'mittspill',
+          subtitle: '...', tagline: '...', about: ['...'] },
+  ui:    { hintRightClick: '...', hintEsc: 'ESC = menu', leave: '( leave )' },
+  speakers: { colors: { toke: '#ffd94a', /* ... */ }, names: { toke: 'TOMBLE', /* ... */ } },
+  intro: [ ['Panel 1 linje 1', 'linje 2', '...'], ['Panel 2...'] ],
+  endings: { good: { title: '...', lines: ['...'] }, bad: { /* ... */ } },
+  difficulty: { levels: ['easy', 'normal', 'hard'], labels: { /* ... */ },
+                rules: { riddleRounds: { easy: 1, normal: 3, hard: 3 },
+                         hintLevel: { easy: 2, normal: 1, hard: 0 } } },
+
+  // HOOKENS motoren kaller:
+  paint:  { title(c, W, H, t), introBg(c, W, H, t), ending(c, W, H, t, type),
+            person(c, o), canary() },                 // tegning (deleger til ART.*)
+  start:  { room: 'forsterom', x: 400, y: 500,
+            script: [{ say: ['helt', 'Foerste replikk!'] }] },
+  assets: { artPath: 'js/games/mittspill/art/' },
+  audio:  { tracks: { title: 'title', /* mood → musikkfil-id */ } },
+};
+```
+3. **Bytt innhold** i paken:
+   - `rooms*.js` — `window.ROOMS` (rom, hotspots, walk-bånd, dialoger, cutscenes)
+   - `npcs*.js` — `window.NPC_DEFS` (karakterer, dialogtrær, itemActions)
+   - `data.js` — `window.ITEMS` (navn + ikon) + `window.COMBOS`
+   - `sprites.js` — piksel-grids + paletter (`window.SPRITE_CORE`)
+   - `painters*.js` — prosedyral fallback-bakgrunner (`ART.<romid>`)
+4. **Bakgrunner og musikk**: legg filer i pakkens `art/` og `music/`, deretter:
+```
+node tools/build-art.js
+node tools/build-music.js
+```
+5. **Bytt paken i `index.html`**: endre `js/games/ring-and-wrong/` → `js/games/mittspill/` i script-blokken.
+6. **Test**:
+```
+node test/validate.js
+node test/smoke.js
+```
+`validate.js` og `smoke.js` leser script-listen fra `index.html` — de følger automatisk med når du flytter/fornyer filer.
+
+### Minimum per fil (kontrakten)
+| Fil | Må inneholde |
+|---|---|
+| `game.js` | `GAME` med `meta`, `paint`, `start`, `assets`, `audio` (+ `ui`, `speakers`, `intro`, `endings`, `difficulty`) |
+| `rooms*.js` | `window.ROOMS` — hvert rom: `id, name, paint, walk {minY, maxY}, hotspots[], npcs[]` |
+| `npcs*.js` | `window.NPC_DEFS` — hver: `id, name, draw, look/talk/use/take, itemActions` |
+| `data.js` | `window.ITEMS` (name + icon) og `window.COMBOS` |
+| `sprites.js` | `window.SPRITE_CORE = { UPPER, LEG_*, STYLES, ... }` (kan gjenbruke malen) |
+| `painters*.js` | `ART.<romid>`-fallbacks (kan være tomme hvis alle rom har PNG-bakgrunn) |
+
+Tips: start med å **slette** innhold du ikke trenger (f.eks. `painters*` hvis alle rom har PNG-bakgrunner, `sprites*` hvis du tegner karakterer på annet vis) og fjern tilsvarende script-tagger i `index.html`. Motoren fallbacker trygt: mangler `paint`-hook eller `paint()`-funksjon tegnes et flatt felt.
+
+## Motor vs. innhold (oversikt)
+- **Motor**: `engine.js` (rendering, verber, dialog, cutscenes, lagring, innstillinger) + `audio.js` + `art.js` (verktøy) + `main.js` — ingen historie-referanser
+- **Innhold**: `js/games/<spill>/` — alt annet
+- Motoren kaller bare GAME-hookene (`paint`, `start`, `assets`, `audio`) — null historie igjen i `engine.js`/`audio.js`
 
 ## Hosting
 Se `HOSTING.md` (Netlify Drop / GitHub Pages / itch.io / lokal server).
