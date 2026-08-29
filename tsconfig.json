@@ -10,6 +10,6 @@
     "skipLibCheck": true,
     "types": []
   },
-  "include": ["ring-og-vrang/js/**/*.js", "ring-og-vrang/index.html"],
+  "include": ["js/**/*.js", "index.html"],
   "exclude": ["js/games/**/art-data.js", "js/games/**/music-data.js"]
 }
