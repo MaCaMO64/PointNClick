@@ -590,8 +590,12 @@
       c.beginPath(); c.moveTo(178, 558); c.lineTo(198, 522); c.stroke();
     }
     if (G.flag('appleGround') && !G.has('eple')) {
-      circle(c, 988, 548, 8, '#d9403a', '#8a2018', 2);
-      circle(c, 985, 545, 2, 'rgba(255,255,255,0.5)');
+      circle(c, 988, 548, 12, '#d9403a', '#7a1410', 4);
+      circle(c, 982, 542, 3, 'rgba(255,255,255,0.65)');
+      c.strokeStyle = '#5d3c22';
+      c.lineWidth = 3;
+      c.beginPath(); c.moveTo(988, 540); c.quadraticCurveTo(991, 534, 996, 531); c.stroke();
+      ell(c, 997, 530, 6, 3, '#5aa04e');
     }
   };
 

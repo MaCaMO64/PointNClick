@@ -65,6 +65,7 @@
               { wait: 0.95 },
               { fx: 'door' },
               { flag: ['appleGround'] },
+              { flag: ['appleFalling', false] },
               { say: ['toke', 'And THAT is how we harvest in Bloomdale. With physics.'] },
             ]);
           },
