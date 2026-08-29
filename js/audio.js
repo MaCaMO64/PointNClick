@@ -10,31 +10,7 @@
   let trackSrc = null, trackGain = null;
   const trackBuf = {};
 
-  const MOOD_TRACK = {
-    title: 'title', shire: 'dal', road: 'kryss', pub: 'pub',
-    river: 'elv', forest: 'skog', volcano: 'vulkan', ending: 'ending',
-  };
-
-  const MOODS = {
-    title:  { bpm: 96,  root: 130.81, pad: 'warm', pattern: 'rand', density: 0.32, amb: [],
-      prog: [[0, 4, 7], [-3, 0, 4], [-7, -3, 0], [-5, -1, 2]], scale: [0, 2, 4, 7, 9] },
-    shire:  { bpm: 82,  root: 130.81, pad: 'warm', pattern: 'rand', density: 0.28, amb: ['birds'],
-      prog: [[0, 4, 7], [-7, -3, 0], [-3, 0, 4], [-5, -1, 2]], scale: [0, 2, 4, 7, 9] },
-    road:   { bpm: 100, root: 220.00, pad: 'warm', pattern: 'rand', density: 0.25, amb: ['wind'],
-      prog: [[0, 3, 7], [3, 7, 10], [-2, 2, 5], [-5, -1, 2]], scale: [0, 3, 5, 7, 10] },
-    pub:    { bpm: 116, root: 174.61, pad: 'warm', pattern: 'rand', density: 0.40, amb: ['fire', 'murmur'],
-      prog: [[0, 4, 7], [-5, -1, 2], [-3, 0, 4], [-7, -3, 0]], scale: [0, 2, 4, 7, 9] },
-    river:  { bpm: 96,  root: 146.83, pad: 'warm', pattern: 'arp', density: 0.55, amb: ['river'],
-      prog: [[0, 4, 7], [-5, -1, 2], [-3, 0, 4], [-7, -3, 0]], scale: [0, 2, 4, 7, 9] },
-    forest: { bpm: 66,  root: 164.81, pad: 'dark', pattern: 'rand', density: 0.16, amb: ['wind'],
-      prog: [[0, 3, 7], [-4, 0, 3], [-7, -3, 0], [-5, -1, 2]], scale: [0, 3, 5, 7, 10] },
-    volcano:{ bpm: 60,  root: 98.00,  pad: 'dark', pattern: 'rand', density: 0.12, amb: ['rumble'],
-      prog: [[0, 3, 7], [1, 4, 8], [0, 3, 7], [-5, -1, 2]], scale: [0, 3, 5, 7, 10] },
-    krater: { bpm: 63,  root: 98.00,  pad: 'dark', pattern: 'rand', density: 0.18, amb: ['rumble'],
-      prog: [[0, 3, 7], [1, 4, 8], [-5, -1, 2], [0, 3, 7]], scale: [0, 3, 5, 7, 10] },
-    ending: { bpm: 88,  root: 130.81, pad: 'warm', pattern: 'rand', density: 0.30, amb: ['birds'],
-      prog: [[0, 4, 7], [-3, 0, 4], [-7, -3, 0], [-5, -1, 2]], scale: [0, 2, 4, 7, 9] },
-  };
+  function MOODS() { return (window.GAME && window.GAME.audio && window.GAME.audio.moods) || {}; }
 
   function initGraph() {
     master = ctx.createGain(); master.gain.value = 0.85;
@@ -292,7 +268,7 @@
     procMood = name;
     step = 0;
     nextT = ctx.currentTime + 0.08;
-    startAmbience(MOODS[name]);
+    startAmbience(MOODS()[name]);
   }
 
   const FX = {
@@ -321,7 +297,7 @@
 
   function scheduleTick() {
     if (!ctx || !procMood) return;
-    const m = MOODS[procMood];
+    const m = MOODS()[procMood];
     while (nextT < ctx.currentTime + 0.35) {
       if (nextT < ctx.currentTime) nextT = ctx.currentTime + 0.05;
       scheduleStep(m, nextT);
@@ -380,5 +356,4 @@
     sfxEnabled: () => sfxOn,
   };
 
-  function startProceduralOuter(name) { startProcedural(name); }
 })();

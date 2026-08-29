@@ -673,7 +673,7 @@
       c.save();
       c.translate(764, 550);
       c.rotate(0.5);
-      ART.ICONS.skje(c);
+      GAME_ICONS.skje(c);
       c.restore();
     }
   };

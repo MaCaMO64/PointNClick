@@ -1,7 +1,7 @@
 ﻿window.GAME = {
   meta: {
     title: 'RING & WRONG',
-    version: 'v0.10.0',
+    version: 'v0.11.0',
     storageKey: 'ringandwrong',
     subtitle: 'A thoroughly unnecessary hero\'s tale',
     tagline: 'A point-and-click adventure in the spirit of LucasArts',
@@ -82,6 +82,7 @@
 
   endings: {
     good: {
+      music: 'ending',
       title: 'THE END â€” the good kind!',
       lines: [
         'The Ring screamed "NOOO! I had SO much left to give!"',
@@ -92,6 +93,7 @@
       ],
     },
     bad: {
+      music: 'volcano',
       title: 'THE END â€¦ or is it?',
       lines: [
         'Tomble kept the Ring. The Ring kept Tomble.',
@@ -129,4 +131,39 @@
   };
 
   GAME.assets = { artPath: 'js/games/ring-and-wrong/art/' };
-  GAME.audio = { tracks: { title: 'title', shire: 'dal', road: 'kryss', pub: 'pub', river: 'elv', forest: 'skog', volcano: 'vulkan', ending: 'ending' } };
+  GAME.audio = {
+    tracks: { title: 'title', shire: 'dal', road: 'kryss', pub: 'pub', river: 'elv', forest: 'skog', volcano: 'vulkan', ending: 'ending' },
+    moods: {
+      title:  { bpm: 96,  root: 130.81, pad: 'warm', pattern: 'rand', density: 0.32, amb: [],
+        prog: [[0, 4, 7], [-3, 0, 4], [-7, -3, 0], [-5, -1, 2]], scale: [0, 2, 4, 7, 9] },
+      shire:  { bpm: 82,  root: 130.81, pad: 'warm', pattern: 'rand', density: 0.28, amb: ['birds'],
+        prog: [[0, 4, 7], [-7, -3, 0], [-3, 0, 4], [-5, -1, 2]], scale: [0, 2, 4, 7, 9] },
+      road:   { bpm: 100, root: 220.00, pad: 'warm', pattern: 'rand', density: 0.25, amb: ['wind'],
+        prog: [[0, 3, 7], [3, 7, 10], [-2, 2, 5], [-5, -1, 2]], scale: [0, 3, 5, 7, 10] },
+      pub:    { bpm: 116, root: 174.61, pad: 'warm', pattern: 'rand', density: 0.40, amb: ['fire', 'murmur'],
+        prog: [[0, 4, 7], [-5, -1, 2], [-3, 0, 4], [-7, -3, 0]], scale: [0, 2, 4, 7, 9] },
+      river:  { bpm: 96,  root: 146.83, pad: 'warm', pattern: 'arp', density: 0.55, amb: ['river'],
+        prog: [[0, 4, 7], [-5, -1, 2], [-3, 0, 4], [-7, -3, 0]], scale: [0, 2, 4, 7, 9] },
+      forest: { bpm: 66,  root: 164.81, pad: 'dark', pattern: 'rand', density: 0.16, amb: ['wind'],
+        prog: [[0, 3, 7], [-4, 0, 3], [-7, -3, 0], [-5, -1, 2]], scale: [0, 3, 5, 7, 10] },
+      volcano:{ bpm: 60,  root: 98.00,  pad: 'dark', pattern: 'rand', density: 0.12, amb: ['rumble'],
+        prog: [[0, 3, 7], [1, 4, 8], [0, 3, 7], [-5, -1, 2]], scale: [0, 3, 5, 7, 10] },
+      krater: { bpm: 63,  root: 98.00,  pad: 'dark', pattern: 'rand', density: 0.18, amb: ['rumble'],
+        prog: [[0, 3, 7], [1, 4, 8], [-5, -1, 2], [0, 3, 7]], scale: [0, 3, 5, 7, 10] },
+      ending: { bpm: 88,  root: 130.81, pad: 'warm', pattern: 'rand', density: 0.30, amb: ['birds'],
+        prog: [[0, 4, 7], [-3, 0, 4], [-7, -3, 0], [-5, -1, 2]], scale: [0, 2, 4, 7, 9] },
+    },
+  };
+
+  GAME.defaultMood = 'shire';
+  GAME.followers = [
+    { style: 'rando', flag: 'joinedRando', offsetX: -60, excludeRooms: ['dal', 'krater'] },
+  ];
+  GAME.wearable = {
+    itemId: 'ring',
+    whispers: ['the treasure...', 'give it to us...', 'they will take it from you...', 'keep it safe...', 'just a little while...', 'mine... mine...'],
+    overlay: { veil: 'rgba(120,130,160,0.30)', vignette: 'rgba(180,20,10,' },
+    fxOn: 'ringOn', fxOff: 'pickup',
+    toastOn: 'You put on the Ring. The world turns... greyer.',
+    toastOff: 'You take off the Ring.',
+  };

@@ -56,7 +56,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
     bgCache: {},
     inv: [],
     flags: {},
-    ringWorn: false,
+    worn: null,
     ending: null,
   };
 
@@ -103,7 +103,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
     'I do not really NEED that.',
     'Leave it be. It is happy here.',
     'It would not fit in my pockets. And I have ALL the pockets.',
-    'Theft is more Rando\'s style.',
+    'Theft is a lifestyle choice. I am more of a tourist.',
   ];
   const FALLBACK_TALK = [
     'It does not have much to say. The quiet type.',
@@ -246,7 +246,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
     selectedItem = null;
     pendingAction = null;
     whispers = [];
-    AudioSys.startMusic(room.mood || 'shire');
+    AudioSys.startMusic(room.mood || GAME.defaultMood);
     pendingAuto = !!scriptState.steps;
     invPage = 0;
     if (room.onEnter) room.onEnter();
@@ -448,51 +448,54 @@ const SPEAKER_NAMES = GAME.speakers.names;
       if (st.music) { AudioSys.startMusic(st.music); continue; }
       if (st.fx) { AudioSys.fx(st.fx); continue; }
       if (st.flag) { G.setFlag(st.flag[0], st.flag[1]); continue; }
-      if (st.ring !== undefined) { G.ringWorn = st.ring; continue; }
+      if (st.wear !== undefined) { G.wear(st.wear); continue; }
       if (st.goto) { enterRoom(st.goto.room, st.goto.x, st.goto.y); continue; }
       if (st.dialog) { G.openDialog(st.dialog); scriptState.steps = null; break; }
     }
   }
 
-  G.wearRing = (on) => {
-    G.ringWorn = on;
-    AudioSys.fx(on ? 'ringOn' : 'pickup');
-    if (G.room && G.room.onRingToggle) G.room.onRingToggle(on);
+  G.wear = (id) => {
+    G.worn = id || null;
+    const w = GAME.wearable || {};
+    AudioSys.fx(id ? (w.fxOn || 'pickup') : (w.fxOff || 'pickup'));
+    if (G.room && G.room.onWearToggle) G.room.onWearToggle(id);
   };
-  G.toggleRing = () => {
-    if (!G.has('ring')) return;
-    G.wearRing(!G.ringWorn);
+  G.toggleWear = () => {
+    const w = GAME.wearable;
+    if (!w || !G.has(w.itemId)) return;
+    G.wear(G.worn === w.itemId ? null : w.itemId);
   };
 
+  function storageKey(suffix) { return (GAME.meta.storageKey || 'ringandwrong') + '_' + suffix; }
   function autosave() {
     try {
-      const prev = localStorage.getItem('rv_auto');
-      if (prev) localStorage.setItem('rv_auto_prev', prev);
-      localStorage.setItem('rv_auto', JSON.stringify(saveData()));
+      const prev = localStorage.getItem(storageKey('auto'));
+      if (prev) localStorage.setItem(storageKey('auto_prev'), prev);
+      localStorage.setItem(storageKey('auto'), JSON.stringify(saveData()));
     } catch (e) {}
   }
   function saveData() {
     return {
       room: G.roomId, x: player.x, y: player.y,
-      inv: G.inv.slice(), flags: { ...G.flags }, ringWorn: G.ringWorn,
+      inv: G.inv.slice(), flags: { ...G.flags }, worn: G.worn,
       ts: Date.now(),
     };
   }
   G.saveGame = () => {
-    try { localStorage.setItem('rv_save', JSON.stringify(saveData())); return true; }
+    try { localStorage.setItem(storageKey('save'), JSON.stringify(saveData())); return true; }
     catch (e) { return false; }
   };
   G.loadGame = () => {
-    let raw = localStorage.getItem('rv_save');
-    if (!raw) raw = localStorage.getItem('rv_auto');
-    if (!raw) raw = localStorage.getItem('rv_auto_prev');
+    let raw = localStorage.getItem(storageKey('save'));
+    if (!raw) raw = localStorage.getItem(storageKey('auto'));
+    if (!raw) raw = localStorage.getItem(storageKey('auto_prev'));
     if (!raw) return false;
     try {
       const d = JSON.parse(raw);
       if (!window.ROOMS[d.room]) return false;
       G.inv = d.inv || [];
       G.flags = d.flags || {};
-      G.ringWorn = !!d.ringWorn;
+      G.worn = d.worn || null;
       G.state = 'play';
       paused = false;
       dialog.open = false; dialog.options = [];
@@ -503,10 +506,10 @@ const SPEAKER_NAMES = GAME.speakers.names;
     } catch (e) { return false; }
   };
   G.hasSave = () => {
-    return !!(localStorage.getItem('rv_save') || localStorage.getItem('rv_auto'));
+    return !!(localStorage.getItem(storageKey('save')) || localStorage.getItem(storageKey('auto')));
   };
   G.newGame = () => {
-    G.inv = []; G.flags = {}; G.ringWorn = false; G.ending = null;
+    G.inv = []; G.flags = {}; G.worn = null; G.ending = null;
     G.difficulty = Settings.data.difficulty;
     introStep = 0;
     G.state = 'intro';
@@ -515,7 +518,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
   G.showEnding = (type) => {
     G.ending = type;
     G.state = 'ending';
-    AudioSys.startMusic(type === 'good' ? 'ending' : 'volcano');
+    AudioSys.startMusic((GAME.endings[type] && GAME.endings[type].music) || GAME.defaultMood);
     AudioSys.fx(type === 'good' ? 'fanfare' : 'sad');
   };
 
@@ -560,12 +563,12 @@ const SPEAKER_NAMES = GAME.speakers.names;
       }
     });
 
-    if (G.ringWorn) {
+    const wear = GAME.wearable;
+    if (G.worn && wear && wear.whispers) {
       whisperTimer -= dt;
       if (whisperTimer <= 0) {
         whisperTimer = 2.5 + Math.random() * 3;
-        const words = ['skattenâ€¦', 'gi oss denâ€¦', 'de vil ta den fra degâ€¦', 'hold den tryggâ€¦', 'bare en liten stundâ€¦', 'minâ€¦ minâ€¦'];
-        whispers.push({ text: rnd(words), x: 200 + Math.random() * 800, y: 420 + Math.random() * 100, life: 4 });
+        whispers.push({ text: rnd(wear.whispers), x: 200 + Math.random() * 800, y: 420 + Math.random() * 100, life: 4 });
       }
     }
     whispers.forEach(wsp => { wsp.life -= dt; wsp.y -= dt * 14; });
@@ -625,15 +628,18 @@ const SPEAKER_NAMES = GAME.speakers.names;
       });
       ents.push({ y: npc.y, draw: () => npc.def.draw(l, nArgs) });
     });
-    if (G.flag('joinedRando') && !G.npc('rando') && !['dal', 'krater'].includes(G.roomId)) {
-      const fxp = player.x - 60 * player.facing;
-      ents.push({ y: player.y - 1, draw: () => GAME.paint.person(l, {
+    (GAME.followers || []).forEach(f => {
+      if (!G.flag(f.flag) || G.npc(f.style) || (f.excludeRooms || []).includes(G.roomId)) return;
+      const fxp = player.x + (f.offsetX || -60) * player.facing;
+      const fArgs = f._drawArgs || (f._drawArgs = {});
+      Object.assign(fArgs, {
         x: fxp, y: player.y + 2, scale: depthScale(player.y),
-        style: 'rando', facing: player.facing,
+        style: f.style, facing: player.facing,
         phase: player.moving ? player.phase + 2 : 0,
         walking: player.moving, talking: false,
-      })});
-    }
+      });
+      ents.push({ y: player.y - 1, draw: () => GAME.paint.person(l, fArgs) });
+    });
     ents.sort((a, b) => a.y - b.y).forEach(e => {
       try { e.draw(); }
       catch (err) {
@@ -675,13 +681,14 @@ const SPEAKER_NAMES = GAME.speakers.names;
 
     if (G.room.animateOver) G.room.animateOver(l, tGlobal);
 
-    if (G.ringWorn) {
-      l.fillStyle = 'rgba(120,130,160,0.30)';
+    const wear = GAME.wearable;
+    if (G.worn && wear && wear.overlay) {
+      l.fillStyle = wear.overlay.veil;
       l.fillRect(0, 0, W, UI_TOP);
       const pulse = 0.12 + 0.08 * Math.sin(tGlobal * 3);
       const grad = l.createRadialGradient(W / 2, UI_TOP / 2, UI_TOP * 0.3, W / 2, UI_TOP / 2, UI_TOP * 0.85);
-      grad.addColorStop(0, 'rgba(255,40,20,0)');
-      grad.addColorStop(1, 'rgba(180,20,10,' + pulse.toFixed(3) + ')');
+      grad.addColorStop(0, wear.overlay.vignette + '0)');
+      grad.addColorStop(1, wear.overlay.vignette + pulse.toFixed(3) + ')');
       l.fillStyle = grad;
       l.fillRect(0, 0, W, UI_TOP);
     }
@@ -1334,7 +1341,11 @@ const SPEAKER_NAMES = GAME.speakers.names;
             if (selectedItem === r.id) { selectedItem = null; }
             else if (selectedItem) { const other = selectedItem; selectedItem = null; tryCombine(other, r.id); }
             else {
-              if (r.id === 'ring') { G.toggleRing(); toast(G.ringWorn ? 'You put on the Ring. The world turnsâ€¦ greyer.' : 'You take off the Ring.'); }
+              const wearItem = GAME.wearable && GAME.wearable.itemId;
+              if (wearItem && r.id === wearItem) {
+                G.toggleWear();
+                toast(G.worn ? (GAME.wearable.toastOn || 'Worn.') : (GAME.wearable.toastOff || 'Removed.'));
+              }
               else { selectedItem = r.id; }
             }
             AudioSys.fx('click');

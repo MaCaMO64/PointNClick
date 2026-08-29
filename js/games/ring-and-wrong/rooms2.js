@@ -261,13 +261,13 @@
           },
         } },
     ],
-    onRingToggle(on) {
+    onWearToggle(id) {
       if (on && !Game.flag('ringGagSkog') && Game.flag('questStarted')) {
         Game.setFlag('ringGagSkog');
         Game.script([
           { say: ['narrator', 'The world turns grey. In the hollow tree, two eyes light up like wet coins.'] },
           { say: ['glum', '*hissing from nowhere* THE TREASURE…'] },
-          { ring: false },
+          { wear: null },
           { say: ['toke', '(Noted: the forest HAS an opinion about my luggage.)'] },
         ]);
       }

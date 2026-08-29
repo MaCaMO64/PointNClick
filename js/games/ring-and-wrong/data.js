@@ -1,15 +1,18 @@
+const GAME_ICONS = window.GAME_ICONS || {};
+window.GAME_ICONS = GAME_ICONS;
+
 window.ITEMS = {
-  stokk:   { name: 'Stick',             icon: ART.ICONS.stokk },
-  eple:    { name: 'Apple',             icon: ART.ICONS.eple },
-  ring:    { name: 'The Great Ring',    icon: ART.ICONS.ring },
-  mynter:  { name: 'Pouch of coins',    icon: ART.ICONS.mynter },
-  'fløyte':{ name: 'Tin whistle',       icon: ART.ICONS['fløyte'] },
-  'pølse': { name: 'Salted sausage',    icon: ART.ICONS['pølse'] },
-  'øl':    { name: 'Mug of ale',        icon: ART.ICONS['øl'] },
-  skje:    { name: 'Lucky spoon',       icon: ART.ICONS.skje },
-  nøkkel:  { name: 'Boathouse key',     icon: ART.ICONS.nøkkel },
-  'åre':   { name: 'Oar',               icon: ART.ICONS['åre'] },
-  avis:    { name: '"Mordor Times"',    icon: ART.ICONS.avis },
+  stokk:   { name: 'Stick',             icon: GAME_ICONS.stokk },
+  eple:    { name: 'Apple',             icon: GAME_ICONS.eple },
+  ring:    { name: 'The Great Ring',    icon: GAME_ICONS.ring },
+  mynter:  { name: 'Pouch of coins',    icon: GAME_ICONS.mynter },
+  'fløyte':{ name: 'Tin whistle',       icon: GAME_ICONS['fløyte'] },
+  'pølse': { name: 'Salted sausage',    icon: GAME_ICONS['pølse'] },
+  'øl':    { name: 'Mug of ale',        icon: GAME_ICONS['øl'] },
+  skje:    { name: 'Lucky spoon',       icon: GAME_ICONS.skje },
+  nøkkel:  { name: 'Boathouse key',     icon: GAME_ICONS.nøkkel },
+  'åre':   { name: 'Oar',               icon: GAME_ICONS['åre'] },
+  avis:    { name: '"Mordor Times"',    icon: GAME_ICONS.avis },
 };
 
 window.COMBOS = {

@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   const NOW = () => performance.now() / 1000;
   window.ROOMS = {};
 
@@ -97,7 +97,7 @@
           },
         } },
     ],
-    onRingToggle(on) {
+    onWearToggle(id) {
       if (on && !Game.flag('ringGagDal') && Game.flag('questStarted')) {
         Game.setFlag('ringGagDal');
         Game.script([
@@ -202,14 +202,14 @@
         } },
     ],
     onEnter() {},
-    onRingToggle(on) {
+    onWearToggle(id) {
       if (on && !Game.flag('ringGagKryss') && Game.flag('questStarted')) {
         Game.setFlag('ringGagKryss');
         Game.script([
           { say: ['narrator', 'The world turns grey. Sounds stretch out. And thenâ€¦ a horse turns its head. SLOWLY.'] },
           { say: ['perr', '*sniff* â€¦*SNIFF*'] },
           { say: ['toke', 'NO NO NOâ€“'] },
-          { ring: false },
+          { wear: null },
           { say: ['narrator', 'You tear the Ring off your finger. Colors flood back, and the Rider loses interest with a disappointed horse noise.'] },
           { say: ['toke', '(Noted: invisibility attracts NOSES.)'] },
         ]);

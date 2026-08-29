@@ -1,4 +1,4 @@
-﻿(() => {
+(() => {
   window.ROOMS.vulkan = {
     id: 'vulkan', name: 'Foot of Mount Pleasant', mood: 'volcano',
     paint: ART.vulkan,
@@ -71,7 +71,7 @@
           use: 'The sign swings a little. It has no power left here. Not over you, at least.',
         } },
     ],
-    onRingToggle(on) {
+    onWearToggle(id) {
       if (on && !Game.flag('finaleStarted')) {
         Game.setFlag('finaleStarted');
         Game.script([

@@ -16,7 +16,11 @@ ctx.window = ctx;
 vm.createContext(ctx);
 FILES.forEach(f => {
   const src = fs.readFileSync(path.join(ROOT, 'js', f + '.js'), 'utf8');
-  try { vm.runInContext(src, ctx, { filename: f + '.js' }); }
+  try {
+    vm.runInContext(src, ctx, { filename: f + '.js' });
+    if (f.includes('game-icons')) console.log('[dbg] GAME_ICONS after load:', typeof ctx.window.GAME_ICONS, ctx.window.GAME_ICONS ? Object.keys(ctx.window.GAME_ICONS).length : '-');
+    if (f === 'games/ring-and-wrong/data') console.log('[dbg] before data: GI=', typeof ctx.GAME_ICONS, typeof ctx.window.GAME_ICONS, 'ctx===window:', ctx === ctx.window);
+  }
   catch (e) { err(f + '.js kunne ikke lastes: ' + e.message); }
 });
 
