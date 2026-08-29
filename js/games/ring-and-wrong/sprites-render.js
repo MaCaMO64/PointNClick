@@ -36,7 +36,7 @@
   }
 
   function spriteSpace(c, o, w, h) {
-    const KXl = 320 / 1280, KYl = 156 / 720;
+    const KXl = 320 / 1280, KYl = 156 / 624;
     c.save();
     c.setTransform(1, 0, 0, 1, 0, 0);
     c.imageSmoothingEnabled = false;

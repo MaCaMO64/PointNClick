@@ -1,6 +1,6 @@
 ﻿const W = 1280, H = 720, UI_TOP = 624;
 const LOW_W = 320, LOW_H = 156;
-const KX = LOW_W / W, KY = LOW_H / H;
+const KX = LOW_W / W, KY = LOW_H / UI_TOP;
 const GAME = window.GAME;
 const GAME_VERSION = GAME.meta.version;
 
@@ -602,7 +602,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
   function drawWorld() {
     const l = G._lctx;
     if (!G.bgCache[G.roomId]) return;
-    l.setTransform(LOW_W / W, 0, 0, LOW_H / H, 0, 0);
+    l.setTransform(KX, 0, 0, KY, 0, 0);
     l.clearRect(0, 0, W, H);
     l.save();
     l.setTransform(1, 0, 0, 1, 0, 0);
@@ -1470,7 +1470,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
     G._low.width = LOW_W; G._low.height = LOW_H;
     G._lctx = G._low.getContext('2d');
     G._lctx.imageSmoothingEnabled = false;
-    G._lctx.setTransform(LOW_W / W, 0, 0, LOW_H / H, 0, 0);
+    G._lctx.setTransform(KX, 0, 0, KY, 0, 0);
     G._bgImages = {};
     if (typeof Image !== 'undefined' && window.ROOMS) {
       Object.keys(window.ROOMS).forEach(id => {
