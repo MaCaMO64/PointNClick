@@ -1,0 +1,1412 @@
+{
+  "meta": {
+    "game": "RING & WRONG",
+    "version": "v0.12.0",
+    "generated": "2026-08-29T22:01:35.490Z"
+  },
+  "howto": "Rediger .new-felt, så kjør node tools/story-tool.js build. Bildefelter (name/look/verbs/intro/endings) skrives tilbake. Dialoger (readonly) redigeres i JS-filene.",
+  "texts": [
+    {
+      "key": "intro:0:0",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "In an age before ages got late,"
+    },
+    {
+      "key": "intro:0:1",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "the Great Rings were forged in the factories of Middle-earth."
+    },
+    {
+      "key": "intro:0:2",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "Three for the elves. Seven for the dwarves. Nine for men –"
+    },
+    {
+      "key": "intro:0:3",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "and one to rule them all … plus the service agreement."
+    },
+    {
+      "key": "intro:1:0",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "But one day, the Great Ring went missing."
+    },
+    {
+      "key": "intro:1:1",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "It turned up in the pocket of UNCLE BONGO,"
+    },
+    {
+      "key": "intro:1:2",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "a retired adventurer who refused to believe it was more than loose change."
+    },
+    {
+      "key": "intro:1:3",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "\"Probably from a vending machine,\" he said. He said it often. Nervously."
+    },
+    {
+      "key": "intro:2:0",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "Now the Dark Lord's Vice-Chancellor has booked a pickup."
+    },
+    {
+      "key": "intro:2:1",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "The only one who can save the neighborhood is a small halfling"
+    },
+    {
+      "key": "intro:2:2",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "with big feet and a poor sense of planning:"
+    },
+    {
+      "key": "intro:2:3",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "TOMBLE BAGSHOT. That is you. Sorry."
+    },
+    {
+      "key": "endings:good:title",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "THE END — the good kind!"
+    },
+    {
+      "key": "endings:good:lines:0",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "The Ring screamed \"NOOO! I had SO much left to give!\""
+    },
+    {
+      "key": "endings:good:lines:1",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "and melted away with a tiny confetti-bang."
+    },
+    {
+      "key": "endings:good:lines:2",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "The Dark Lord lost his job and opened a bakery instead."
+    },
+    {
+      "key": "endings:good:lines:3",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "Uncle Bongo flew past on an eagle: \"I TOLD you I would come!\""
+    },
+    {
+      "key": "endings:good:lines:4",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "Rando's first comment: \"So the food at your uncle's WAS free, right?\""
+    },
+    {
+      "key": "endings:bad:title",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "THE END … or is it?"
+    },
+    {
+      "key": "endings:bad:lines:0",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "Tomble kept the Ring. The Ring kept Tomble."
+    },
+    {
+      "key": "endings:bad:lines:1",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "Three weeks later he was middle manager at Mordor Inc.,"
+    },
+    {
+      "key": "endings:bad:lines:2",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "in charge of meeting minutes and evil looks."
+    },
+    {
+      "key": "endings:bad:lines:3",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "The pay was poor. The coffee was worse."
+    },
+    {
+      "key": "endings:bad:lines:4",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "Uncle Bongo sent a card: \"Regards, grandma. PS: My ring?\""
+    },
+    {
+      "key": "start:script:0",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "Bloomdale. Nine in the morning. The birds are singing, the grass is green, and someone has packed an entire house into boxes."
+    },
+    {
+      "key": "start:script:1",
+      "file": "js/games/ring-and-wrong/game.js",
+      "old": "Uncle Bongo? Why is all your furniture standing out in the garden?"
+    },
+    {
+      "key": "items:stokk:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "Stick"
+    },
+    {
+      "key": "items:eple:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "Apple"
+    },
+    {
+      "key": "items:ring:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "The Great Ring"
+    },
+    {
+      "key": "items:mynter:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "Pouch of coins"
+    },
+    {
+      "key": "items:fløyte:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "Tin whistle"
+    },
+    {
+      "key": "items:pølse:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "Salted sausage"
+    },
+    {
+      "key": "items:øl:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "Mug of ale"
+    },
+    {
+      "key": "items:skje:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "Lucky spoon"
+    },
+    {
+      "key": "items:nøkkel:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "Boathouse key"
+    },
+    {
+      "key": "items:åre:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "Oar"
+    },
+    {
+      "key": "items:avis:name",
+      "file": "js/games/ring-and-wrong/data.js",
+      "old": "\"Mordor Times\""
+    },
+    {
+      "key": "npcs:bongo:name",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Uncle Bongo"
+    },
+    {
+      "key": "npcs:bongo:look",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Uncle Bongo. He has reading glasses on his forehead and the Ring in his eyes – in that order."
+    },
+    {
+      "key": "npcs:bongo:take",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "You cannot pack uncles. They arrive voluntarily."
+    },
+    {
+      "key": "npcs:bongo:use",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Ew. We are RELATED."
+    },
+    {
+      "key": "npcs:bongo:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Uncle Bongo… why is all your furniture in the garden?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bongo:talk:say:1",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "The Ring, Tomble. THE Great Ring. I inherited it from my uncle, who inherited it from HIS uncle.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bongo:talk:say:2",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "We are clearly terrible at throwing things away.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bongo:talk:say:3",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "My glasses? They must be in a box… or a pocket… or…",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bongo:talk:say:4",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Uncle Bongo characteristically reaches for his forehead. There sit the glasses. They have ALWAYS sat there.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bongo:talk:say:5",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Found them. As always. Not a word of this to anyone.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bongo:talk:opt:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "You seem worried. What is going on?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bongo:talk:opt:1",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Are you even fit to travel? You keep hunting for your glasses.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bongo:talk:opt:2",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Why are you moving out again?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:tommel:name",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Billy the Goat"
+    },
+    {
+      "key": "npcs:tommel:look",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "A goat. She is evaluating me as a food item that has feelings."
+    },
+    {
+      "key": "npcs:tommel:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "BAAAAH.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:perr:name",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Black Rider"
+    },
+    {
+      "key": "npcs:perr:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Toll. One coin. Or a favor. Or just some company. This shift is LOOOONG.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:perr:talk:say:1",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Mordor Roadworks. We operate a toll station now. Payment accepted in coins, information or entertainment.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:perr:talk:say:2",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Nobody has paid since Tuesday. LAST Tuesday.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:perr:talk:say:3",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "I AM a dark power. You know what it\\'s like working in the family business? Like that. But with more cloak regulations.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:perr:talk:opt:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "A toll? Out here?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:perr:talk:opt:1",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "What kind of favor are we talking?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:perr:talk:opt:2",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Aren\\",
+      "readonly": true
+    },
+    {
+      "key": "npcs:perr:talk:opt:3",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Give him the Mordor Times.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:perr:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Something to READ. I have been staring into this road for six weeks. Even the gravel avoids eye contact now.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:dora:name",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Dora (innkeeper)"
+    },
+    {
+      "key": "npcs:dora:look",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Dora, innkeeper of The Wobbly Pony. She is drying a mug that was already dry. Twice."
+    },
+    {
+      "key": "npcs:dora:take",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "The innkeeper is not on the menu. People have asked."
+    },
+    {
+      "key": "npcs:dora:use",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "The bar is served FROM behind it. Not ON it. Compose yourself."
+    },
+    {
+      "key": "npcs:dora:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Welcome to The Wobbly Pony! We serve soup, beds and scandal. What will it be?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:halvor:name",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Halvor Halfpint"
+    },
+    {
+      "key": "npcs:halvor:look",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Halvor. His elbow rests on the table. The table does not rest back."
+    },
+    {
+      "key": "npcs:halvor:take",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "He is heavy. And he has friends. Well, ONE friend. The table."
+    },
+    {
+      "key": "npcs:halvor:use",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Heyyy! Table is my best friend. I like YOU too. About the same amount."
+    },
+    {
+      "key": "npcs:halvor:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "I am NOT drunk. I am… horizontally optimistic. *hic*",
+      "readonly": true
+    },
+    {
+      "key": "npcs:halvor:talk:say:1",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "You look like someone who needs something. Everyone needs something. I need something to DRINK.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:halvor:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Your spoon… it was pretty… gonna just… close my eyes a bit… *hic*",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:name",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Rando the Wanderer"
+    },
+    {
+      "key": "npcs:rando:look",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "A dark wanderer in the corner, trying very hard to look mysterious. It works slightly too well."
+    },
+    {
+      "key": "npcs:rando:take",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "He weighs roughly as much as a library with shoulders."
+    },
+    {
+      "key": "npcs:rando:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Psst. Over here. No – HERE. I\\'m just your average mountain wanderer™. No special background. No secrets.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:talk:say:1",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "You are sitting in the shadows, staring dramatically at the door.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:talk:say:2",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Exactly. Standard wanderer behavior.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:talk:say:3",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Rando. Rando the Wanderer. I guarded the south road for three years. Before that: two years guarding another road.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:talk:say:4",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "I have seen things. Things you wouldn\\'t believe. Among them: a man eating soup with a fork.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:talk:say:5",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Dangerous? Nah. Just a Black Rider running a toll booth, a troll with poetic ambitions, and a volcano with a renovation plan.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:talk:say:6",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "…Maybe a LITTLE dangerous.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:talk:opt:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Who ARE you exactly?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:talk:opt:1",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Is the road to Mount Pleasant dangerous?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:talk:opt:2",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "Will you come with me?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:rando:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs1.js",
+      "old": "On an adventure? Without a contract? Hmm. What are the stakes? What is the pay? What about–",
+      "readonly": true
+    },
+    {
+      "key": "npcs:grim:name",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Grim Greybeard"
+    },
+    {
+      "key": "npcs:grim:look",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Grim Greybeard, fisher-gnome. He stares at his bobber like it owes him money."
+    },
+    {
+      "key": "npcs:grim:take",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "He is small but tough as tar. And he has friends. Many, many fish friends."
+    },
+    {
+      "key": "npcs:grim:use",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Do not disturb a man mid-conflict with a catfish."
+    },
+    {
+      "key": "npcs:grim:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "TODAY? Yesterday I landed a catfish so big she had her own postal code.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:grim:talk:say:1",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Proof? Proof is for people who get believed.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:grim:talk:say:2",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Hungry? I am SO hungry I considered eating the bait. The bait is A HOOK.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:grim:talk:say:3",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "What I need is real food. Salty. Meaty. Sausage-shaped, if you must know.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:grim:talk:say:4",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "If he follows you: hit him with something long. Or give him a fish. No – hit him.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:grim:talk:opt:0",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Small catch today?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:grim:talk:opt:1",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Aren\\",
+      "readonly": true
+    },
+    {
+      "key": "npcs:grim:talk:opt:2",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Who is that grey thing sneaking by the rock?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:grim:talk:opt:3",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Trade a salted sausage for an oar?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:grim:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Hm. Tourist. Fine. Fish don\\'t bite on tourists anyway. Already tested.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:glumpeek:name",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Something grey behind the rock"
+    },
+    {
+      "key": "npcs:glumpeek:look",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Two big, wet eyes peek over the rock. They seem to recognize you. That worries me most of all."
+    },
+    {
+      "key": "npcs:glumpeek:use",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "*hissing* Don\\'t touch! Glum is gentle! Glum is FRIENDLY! Almost!"
+    },
+    {
+      "key": "npcs:glumpeek:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "*hissing* You have it, yes? WE know you have it. It SCREAMS. The whole river screams.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:glumpeek:talk:say:1",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Have what? I have many things. I have a sausage. Do you want the sausage?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:glumpeek:talk:say:2",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "NOT THE SAUSAGE! *hissing* THE TREASURE. My treasure! I mean… nobody\\'s treasure. Officially. *dives*",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bent:name",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Bent the Bridge-Troll"
+    },
+    {
+      "key": "npcs:bent:use",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "My bridge. My rules. My poems. Also my go-backwards."
+    },
+    {
+      "key": "npcs:bent:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "HALT! My bridge, my rules. Payment accepted in POETRY.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bent:talk:say:1",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Poetry? Not coins? Not blood?",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bent:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Pass, poet friend. And greet the lava for me. We have… history together.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bent:talk:say:1",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "You already paid. In VERSE. G onward.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:goblin:name",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Goblin"
+    },
+    {
+      "key": "npcs:goblin:use",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "*growl* Goblin has knife. Goblin has mood. Don\\'t ruin the mood."
+    },
+    {
+      "key": "npcs:goblin:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "*sniff* Hobbit! Soft! Good with mustard! …No wait. We are on a DIET. Leader\\'s orders.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:goblin:talk:say:1",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "(They aren\\'t listening to me. But they ARE listening FOR me. Which is almost worse.)",
+      "readonly": true
+    },
+    {
+      "key": "npcs:goblin:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Zzzz… five gold rings… two small… one BIG one… zzzz…",
+      "readonly": true
+    },
+    {
+      "key": "npcs:bjarne:name",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Bjarne (guard)"
+    },
+    {
+      "key": "npcs:bjarne:look",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Bjarne the orc. He wears a hi-vis vest OVER his chainmail. Safety first, tradition later."
+    },
+    {
+      "key": "npcs:bjarne:use",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Do not touch the vest. It is certified by the workplace safety board of TWO ages."
+    },
+    {
+      "key": "npcs:bjarne:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "CLOSED. Maintenance. No entry. No, you can\\'t just– no. Read the sign. The sign is CLEAR.",
+      "readonly": true
+    },
+    {
+      "key": "npcs:glumfinale:name",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Glum"
+    },
+    {
+      "key": "npcs:glumfinale:look",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Glum. He oscillates between \"menace\" and \"pleading\". The distance between them is shorter than you think."
+    },
+    {
+      "key": "npcs:glumfinale:use",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "*hissing* Glum helps! Glum only wants treasure to bathe! A little! Only a bit!"
+    },
+    {
+      "key": "npcs:glumfinale:talk:say:0",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Throw it! Don\\'t throw it! THROW IT! Don\\'t– GLUM! Calm yourself!",
+      "readonly": true
+    },
+    {
+      "key": "npcs:glumfinale:talk:say:1",
+      "file": "js/games/ring-and-wrong/npcs2.js",
+      "old": "Glum is TWO goblins in one body. It is difficult for EVERYONE.",
+      "readonly": true
+    },
+    {
+      "key": "rooms:dal:hs:dor:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the round door"
+    },
+    {
+      "key": "rooms:dal:hs:dor:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A round green door built into the hillside. Uncle Bongo claims green doors are \"classic\". He said the same about his trousers."
+    },
+    {
+      "key": "rooms:dal:hs:dor:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Locked. Uncle Bongo loses keys constantly. Or the keys lose him."
+    },
+    {
+      "key": "rooms:dal:hs:vindu1:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the round window"
+    },
+    {
+      "key": "rooms:dal:hs:vindu1:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Someone has drawn a moustache on the inside of the glass. Suspect: Uncle Bongo. Evidence: everything."
+    },
+    {
+      "key": "rooms:dal:hs:vindu2:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the neighbor's window"
+    },
+    {
+      "key": "rooms:dal:hs:vindu2:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The neighbor's round window. Warm light inside. Their moustache drawings are less impressive."
+    },
+    {
+      "key": "rooms:dal:hs:floyte:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the tin whistle"
+    },
+    {
+      "key": "rooms:dal:hs:floyte:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A tin whistle resting on the door step. It lies there as if waiting for a musical moment. Or an excuse."
+    },
+    {
+      "key": "rooms:dal:hs:vedstabbel:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the woodpile"
+    },
+    {
+      "key": "rooms:dal:hs:vedstabbel:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Neatly stacked firewood. Uncle Bongo calls it \"pension plan B\"."
+    },
+    {
+      "key": "rooms:dal:hs:vedstabbel:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The wood was stacked by a man with strong opinions about angles."
+    },
+    {
+      "key": "rooms:dal:hs:stokk:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "a loose stick"
+    },
+    {
+      "key": "rooms:dal:hs:stokk:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A sturdy stick leaning by the woodpile. It has lain here long enough to form opinions about the neighborhood."
+    },
+    {
+      "key": "rooms:dal:hs:epletre:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the apple tree"
+    },
+    {
+      "key": "rooms:dal:hs:epletre:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A small apple tree full of red apples. They hang high. Arrogantly high."
+    },
+    {
+      "key": "rooms:dal:hs:epletre:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The tree wobbles a little. The apples laugh at you."
+    },
+    {
+      "key": "rooms:dal:hs:epletre:take",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "They hang too high. Even for a hobbit on tiptoe."
+    },
+    {
+      "key": "rooms:dal:hs:eple:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "an apple"
+    },
+    {
+      "key": "rooms:dal:hs:eple:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "One perfect apple. It fell from a great height with style."
+    },
+    {
+      "key": "rooms:dal:hs:esker:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the moving boxes"
+    },
+    {
+      "key": "rooms:dal:hs:esker:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Boxes marked \"FRAGILE\". Uncle Bongo has corrected it to \"FRA-GIL-E\" in pencil. Twice."
+    },
+    {
+      "key": "rooms:dal:hs:esker:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "No. Opening other people's boxes is how adventures go BAD."
+    },
+    {
+      "key": "rooms:dal:hs:skilt:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the fence post"
+    },
+    {
+      "key": "rooms:dal:hs:skilt:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A sturdy fence post. Someone has carved \"BLOOMDALE RULES\" into it. Both letters and grammar are questionable."
+    },
+    {
+      "key": "rooms:dal:hs:skilt:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The post stands firm. Respect."
+    },
+    {
+      "key": "rooms:dal:hs:port:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the east gate"
+    },
+    {
+      "key": "rooms:dal:hs:port:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The gate toward the eastern road. The world outside Bloomdale waits. It smells slightly less like cocoa."
+    },
+    {
+      "key": "rooms:kryss:hs:skilt:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the signpost"
+    },
+    {
+      "key": "rooms:kryss:hs:skilt:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Two arrows. One points west (\"Bloomdale\"), one points east (\"Grumblingdale\"). Below, less legible: \"and otherwise just around\"."
+    },
+    {
+      "key": "rooms:kryss:hs:skilt:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The signpost creaks, alarmed."
+    },
+    {
+      "key": "rooms:kryss:hs:kraaker:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the crows"
+    },
+    {
+      "key": "rooms:kryss:hs:kraaker:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Two crows. They are judging me. The left one has already written the verdict."
+    },
+    {
+      "key": "rooms:kryss:hs:postkasse:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the mailbox"
+    },
+    {
+      "key": "rooms:kryss:hs:postkasse:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A red mailbox with its flag raised. The flag means complaint. The postal service knows this road well."
+    },
+    {
+      "key": "rooms:kryss:hs:avis:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "a crumpled newspaper"
+    },
+    {
+      "key": "rooms:kryss:hs:avis:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "\"MORDOR TIMES – all the news, one opinion.\" The headline is set in CAPITALS and zero discussion."
+    },
+    {
+      "key": "rooms:kryss:hs:tommerstokk:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the hollow log"
+    },
+    {
+      "key": "rooms:kryss:hs:tommerstokk:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A hollow log. Classic hiding spot. Even I have read adventure stories."
+    },
+    {
+      "key": "rooms:kryss:hs:tommerstokk:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "You peer inside. Something peers back. It is your reflection. PROBABLY."
+    },
+    {
+      "key": "rooms:kryss:hs:tommerstokk:take",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The log weighs roughly as much as my future regrets. It stays."
+    },
+    {
+      "key": "rooms:kryss:hs:dtre:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the dead tree"
+    },
+    {
+      "key": "rooms:kryss:hs:dtre:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Even the trees have given up out here. Respect for the honesty."
+    },
+    {
+      "key": "rooms:kryss:hs:dtre:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The tree groaned. It was not enthusiastic."
+    },
+    {
+      "key": "rooms:kryss:hs:nordvei:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the north path"
+    },
+    {
+      "key": "rooms:kryss:hs:nordvei:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A narrow path wanders north between the hills, toward the sound of running water."
+    },
+    {
+      "key": "rooms:kryss:hs:vestvei:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the road home"
+    },
+    {
+      "key": "rooms:kryss:hs:vestvei:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The road back toward Bloomdale. The cocoa at home calls faintly."
+    },
+    {
+      "key": "rooms:kryss:hs:ostvei:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the east road"
+    },
+    {
+      "key": "rooms:pub:hs:peis:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the fireplace"
+    },
+    {
+      "key": "rooms:pub:hs:peis:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The fire crackles away like Uncle Bongo's knees. The warmth is real. The coziness is debatable. The warmth is real."
+    },
+    {
+      "key": "rooms:pub:hs:peis:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "You warm your hands. Adventure requires warm fingers and cold feet. Or something."
+    },
+    {
+      "key": "rooms:pub:hs:bardisk:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the bar counter"
+    },
+    {
+      "key": "rooms:pub:hs:bardisk:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The bar top has been polished by a thousand elbows. Human elbows. The other kind charge by the hour."
+    },
+    {
+      "key": "rooms:pub:hs:flasker:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the bottle shelf"
+    },
+    {
+      "key": "rooms:pub:hs:flasker:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Bottles from every corner of Middle-earth. Some of them still remember the Roman Empire."
+    },
+    {
+      "key": "rooms:pub:hs:flasker:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Dora coughed. From across the room. Impressive lung work."
+    },
+    {
+      "key": "rooms:pub:hs:tavle:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the picture on the wall"
+    },
+    {
+      "key": "rooms:pub:hs:tavle:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A small landscape painting. It hangs slightly crooked. Like everything else in this establishment."
+    },
+    {
+      "key": "rooms:pub:hs:tavle:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "You straighten it. It tilts back within the minute. Some things are meant to be."
+    },
+    {
+      "key": "rooms:pub:hs:pvindu:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the window"
+    },
+    {
+      "key": "rooms:pub:hs:pvindu:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Outside it is evening. Inside there is soup. The balance of the universe holds."
+    },
+    {
+      "key": "rooms:pub:hs:bord:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Halvor's table"
+    },
+    {
+      "key": "rooms:pub:hs:bord:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "Two empty mugs. Halvor refers to them as \"colleagues\"."
+    },
+    {
+      "key": "rooms:pub:hs:bord:use",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The mugs are empty. Like Halvor's promises."
+    },
+    {
+      "key": "rooms:pub:hs:polseplate:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "a plate of salted sausage"
+    },
+    {
+      "key": "rooms:pub:hs:polseplate:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A salted sausage on a plate. The pride of the house. Dora winks: \"Take two.\" I take one."
+    },
+    {
+      "key": "rooms:pub:hs:gulvskje:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "something shiny"
+    },
+    {
+      "key": "rooms:pub:hs:gulvskje:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "A silver spoon under the table! Halvor apparently \"inherited\" it down to the floorboards."
+    },
+    {
+      "key": "rooms:pub:hs:utgang:label",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "the arched doorway"
+    },
+    {
+      "key": "rooms:pub:hs:utgang:look",
+      "file": "js/games/ring-and-wrong/rooms1.js",
+      "old": "The exit. The door to the crossroads and the rest of the story."
+    },
+    {
+      "key": "rooms:elv:hs:vestvei:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the road west"
+    },
+    {
+      "key": "rooms:elv:hs:vestvei:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "The path back toward the crossroads and the tavern. Civilization faintly whispers about soup."
+    },
+    {
+      "key": "rooms:elv:hs:sivrør:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the reeds"
+    },
+    {
+      "key": "rooms:elv:hs:sivrør:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "Reeds. They stand perfectly still. Either they are wise, or they are terrible at dancing."
+    },
+    {
+      "key": "rooms:elv:hs:sivrør:use",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "The reeds sway. Somewhere a fish gives a tiny round of applause."
+    },
+    {
+      "key": "rooms:elv:hs:brygge:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the dock"
+    },
+    {
+      "key": "rooms:elv:hs:brygge:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "Wooden planks in varying states of \"safe\". Some of them are only theoretically attached."
+    },
+    {
+      "key": "rooms:elv:hs:brygge:use",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "You test a plank. It passes the test. Barely."
+    },
+    {
+      "key": "rooms:elv:hs:vann:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the river"
+    },
+    {
+      "key": "rooms:elv:hs:vann:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "The river glitters. Somewhere out there a fish is having a better day than you, and it knows."
+    },
+    {
+      "key": "rooms:elv:hs:vann:use",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "You dip a finger in. Cold. The river does not judge you. The river has no time for that."
+    },
+    {
+      "key": "rooms:elv:hs:botte:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the fish bucket"
+    },
+    {
+      "key": "rooms:elv:hs:botte:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "Grim's bucket. It contains one fish. The fish stares. You CAN lose a staring contest to a fish."
+    },
+    {
+      "key": "rooms:elv:hs:botte:use",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "The fish blinked first. You lost."
+    },
+    {
+      "key": "rooms:elv:hs:bskilt:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the BOATHOUSE sign"
+    },
+    {
+      "key": "rooms:elv:hs:bskilt:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "\"BOATHOUSE\" – hand-painted with one extra letter's worth of confidence. Friendly folk along this river. Creative, at least."
+    },
+    {
+      "key": "rooms:elv:hs:bskilt:use",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "The sign hangs crooked. Like so many other things in life."
+    },
+    {
+      "key": "rooms:elv:hs:bdor:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the boathouse door"
+    },
+    {
+      "key": "rooms:elv:hs:bat:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the rowboat"
+    },
+    {
+      "key": "rooms:skog:hs:vestvei:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the path west"
+    },
+    {
+      "key": "rooms:skog:hs:vestvei:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "The path back toward the riverbank. The reeds wave goodbye. They are good at standing still and bad at farewells."
+    },
+    {
+      "key": "rooms:skog:hs:ugle:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the owl"
+    },
+    {
+      "key": "rooms:skog:hs:ugle:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "An owl. She has seen everything. She judges gently. That is somehow worse than harsh judgment."
+    },
+    {
+      "key": "rooms:skog:hs:baal:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the goblin campfire"
+    },
+    {
+      "key": "rooms:skog:hs:baal:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "A fire built by goblins. Rare hospitality – right up until you wonder what they usually set ON fire."
+    },
+    {
+      "key": "rooms:skog:hs:baal:use",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "You poke the fire. Sparks dance. No goblin protests. Yet."
+    },
+    {
+      "key": "rooms:skog:hs:leir:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the goblin camp"
+    },
+    {
+      "key": "rooms:skog:hs:sopp:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "glowing mushrooms"
+    },
+    {
+      "key": "rooms:skog:hs:sopp:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "Mushrooms that glow. Either they are magical, or there is a party going on in the roots. Either answer is fine."
+    },
+    {
+      "key": "rooms:skog:hs:sopp:take",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "Edible? Unclear. Glowing? Yes. The math argues against dinner."
+    },
+    {
+      "key": "rooms:skog:hs:hultre:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the hollow tree"
+    },
+    {
+      "key": "rooms:skog:hs:hultre:use",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "You knock on the tree. Inside it echoes hollowly. Or almost hollowly. Depending on the evening."
+    },
+    {
+      "key": "rooms:skog:hs:lykt:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the decorative lantern"
+    },
+    {
+      "key": "rooms:skog:hs:lykt:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "A lantern without oil, without flame, without purpose. Pure decoration. Exactly like back home."
+    },
+    {
+      "key": "rooms:skog:hs:lykt:use",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "*click click*. Nothing. The lantern is more ornament than light source. Like Uncle Bongo's diploma on the wall."
+    },
+    {
+      "key": "rooms:skog:hs:bro:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the bridge"
+    },
+    {
+      "key": "rooms:skog:hs:bro:look",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "An old stone bridge across a ravine. The bridge is solid. The figure on it looks less solid. He looks like a bridge WITH OPINIONS."
+    },
+    {
+      "key": "rooms:skog:hs:ostvei:label",
+      "file": "js/games/ring-and-wrong/rooms2.js",
+      "old": "the road over the bridge"
+    },
+    {
+      "key": "rooms:vulkan:hs:vestvei:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the path back"
+    },
+    {
+      "key": "rooms:vulkan:hs:vestvei:look",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "The path back toward Trollwood and the bridge. Bent is probably still composing."
+    },
+    {
+      "key": "rooms:vulkan:hs:fjellet:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "Mount Pleasant"
+    },
+    {
+      "key": "rooms:vulkan:hs:fjellet:look",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "Mount Pleasant. The name was chosen by a tourism board. The volcano was NOT consulted. It smokes, offended."
+    },
+    {
+      "key": "rooms:vulkan:hs:fjellet:use",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "You cannot climb an entire volcano on attitude alone."
+    },
+    {
+      "key": "rooms:vulkan:hs:advarsel:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the warning sign"
+    },
+    {
+      "key": "rooms:vulkan:hs:advarsel:look",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "\"FIRE HAZARD\" with a skull. Thanks. Very helpful. I would NEVER have guessed that a volcano was hot."
+    },
+    {
+      "key": "rooms:vulkan:hs:advarsel:use",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "The sign wobbles, threatened. Even the signs are tired out here."
+    },
+    {
+      "key": "rooms:vulkan:hs:drageskilt:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the dragon sign"
+    },
+    {
+      "key": "rooms:vulkan:hs:drageskilt:look",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "\"NO PARKING FOR DRAGONS.\" Something has parked here anyway. The tracks are large and hurtful to the grass."
+    },
+    {
+      "key": "rooms:vulkan:hs:drageskilt:use",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "No dragons in sight. The rules hold. For now."
+    },
+    {
+      "key": "rooms:vulkan:hs:sprekk:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the lava crack"
+    },
+    {
+      "key": "rooms:vulkan:hs:sprekk:look",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "A crack with glowing contents. It smells like Uncle Bongo's kitchen when he \"experiments\"."
+    },
+    {
+      "key": "rooms:vulkan:hs:sprekk:use",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "No. We dip NOTHING into lava until we have thought VERY carefully. ESPECIALLY not fingers."
+    },
+    {
+      "key": "rooms:vulkan:hs:tauko:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the queue barrier"
+    },
+    {
+      "key": "rooms:vulkan:hs:tauko:look",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "A queue barrier. The queue is empty. People rarely line up for an active volcano. Mystery solved."
+    },
+    {
+      "key": "rooms:vulkan:hs:tauko:use",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "You step into the queue. You are number one! And number everything. Congratulations."
+    },
+    {
+      "key": "rooms:vulkan:hs:vaktbord:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the guard desk"
+    },
+    {
+      "key": "rooms:vulkan:hs:vaktbord:look",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "The guard desk. Form FD-66: \"Application to Throw Things Into Lava\", in triplicate, stamped by someone who no longer exists."
+    },
+    {
+      "key": "rooms:vulkan:hs:vaktbord:use",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "The papers are stacked according to a system only Bjarne (and possibly the lava) understands."
+    },
+    {
+      "key": "rooms:vulkan:hs:port:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the iron gate"
+    },
+    {
+      "key": "rooms:vulkan:hs:vskilt:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the CLOSED sign"
+    },
+    {
+      "key": "rooms:vulkan:hs:vskilt:look",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "\"CLOSED FOR MAINTENANCE – reopens next age.\" Below, in smaller print: \"(sorry for the inconvenience)\""
+    },
+    {
+      "key": "rooms:vulkan:hs:vskilt:use",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "The sign swings a little. It has no power left here. Not over you, at least."
+    },
+    {
+      "key": "rooms:krater:hs:lava:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the lava"
+    },
+    {
+      "key": "rooms:krater:hs:lava:look",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "Below: lava. Lots of lava. a CONCERNING amount of lava. It bubbles like soup at Dora's, just more ambitious."
+    },
+    {
+      "key": "rooms:krater:hs:lava:use",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "No. We do not throw things in RANDOMLY. We throw things in WITH A PLAN. Or not at all."
+    },
+    {
+      "key": "rooms:krater:hs:bskilt:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the broken sign"
+    },
+    {
+      "key": "rooms:krater:hs:bskilt:look",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "\"DO NOT THROW THINGS HERE!\" – the sign itself lies half inside the crater. The house of irony has found its headquarters."
+    },
+    {
+      "key": "rooms:krater:hs:bskilt:use",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "The sign gave up on its own rule. Respect for following through."
+    },
+    {
+      "key": "rooms:krater:hs:ravine:label",
+      "file": "js/games/ring-and-wrong/rooms3.js",
+      "old": "the crater rim"
+    }
+  ]
+}

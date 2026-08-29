@@ -92,6 +92,15 @@ Alle lekkasjer under er nå flyttet til spillpakken:
 * Steg 2: JSON-schema for rom/NPC — hotspot-editor ✔ (se §5b; gjenbruk N-debug)
 * Steg 3: ES-moduler/importmap + dynamisk `import()`-loader (fjern rekkefølge-fragilitet i `index.html`)
 
+## 5c. Historieverktøy (story-tool)
+
+* `node tools/story-tool.js dump|list|build [--dry]` — historietekst = data (inspirert av AGS Dialog Editor / Escoria dialogue resources).
+* `dump` → `story/story.json`: ALLE data-tekster (intro, endings, start.script, item-navn, npc navn/look/take/use, hotspot label+verbs) + dialoger (`talk/sayLines/openDialog`) som **readonly**-poster.
+* `build`: skriver endrede `.new`-verdier tilbake i kildefilene (nøyaktig-1-treff-guard; skriver UTF-8). Oppdaterer `old=new` i story.json. `--dry` viser kun.
+* `list`: konsolloversikt over alle tekster (prefix `[d]` = dialog, readonly).
+* **Bare data-tekster skrives tilbake** — dialoger redigeres i JS-filene direkte.
+* **Encodings-skade (fiks):** pakken hadde dobbelt-encodet UTF-8 (`â€“`→`–`, `â€¦`→`…`, `â€”`→`—`, `Ã¸`→`ø`). Reparert med `node tools/fix-mojibake.js` (kjør ved behov). Var i game.js/rooms1.js/rooms3.js + build-art.js-kommentar. FALLGRUVE: Windows PowerShell 5.1 leser UTF-8-uten-BOM som ANSI → verktøy viser `�`/`â€“` feil selv når filen er OK (data.js var alltid ren). Les bytes med `node`, ikke PowerShell, ved tvil.
+
 ## 7. Nyttige kommandoer
 
 ```
@@ -99,4 +108,6 @@ npx -y serve .                         # live-preview
 node tools/build-art.js                # etter nye bilder i art/
 node tools/build-music.js              # etter nye spor i music/
 node test/validate.js && node test/smoke.js
+node tools/story-tool.js dump       # all historietekst → story/story.json
+node tools/story-tool.js build      # skriv endrede tekster tilbake
 ```
