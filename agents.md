@@ -78,10 +78,18 @@ Alle lekkasjer under er nå flyttet til spillpakken:
 
 **FALLGRUVE ved vm-loading (validate/smoke):** `window.X = …` i vm blir IKKE automatisk global `X` — filer som leser `GAME_ICONS`/andre uten window-prefix må sette `const X = window.X || {}` lokalt. Dette ga falske 'reading fløyte'-feil.
 
+## 5b. Hotspot-editor (v0.12.0)
+
+* **Tast `E`** (kun i play-state) aktiverer editormodus; klikk i verden fanges av editoren, ikke spillet.
+* Velg hotspot ved klikk → **dra kroppen** = flytt, **dra hjørne-håndtak** = størrelse, **dra walk-bånd-linjer** (minY/maxY) = gang-område. Klikk tomt og dra = **ny hotspot**.
+* HUD-panel høyre: hotspost-liste (klikk = velg), knapper `EKS` (laster ned `hotspot-overrides.js`), `RENAME` (prompt), `SLETT` (fjern override), `RESET` (tøm alle), `LUKK`.
+* **Persistens:** endringer lagres til `localStorage[storageKey+'_hs_overrides']` og gjelder umiddelbart. `EKS`-filen definerer `window.HOTSPOT_OVERRIDES = { roomId: { hsId: {x,y,w,h} | full-def (har verbs) | _walk:{minY,maxY} } }` — commit den som `js/games/<spill>/hotspot-overrides.js` og legg i index.html (etter rom-filene) for varig lagring. Patcher merges med DSL-hotspotet (`Object.assign`); full-defs (med `verbs`) push-es som nytt hotspot; `_walk` overstyrer walk-båndet.
+* **Merk:** `engine.js`-konstanter `W/H/UI_TOP/KX/KY` er topp-nivå `const` (globale lexikale bindinger) — synlige for `editor.js` og i vm-sandbox. `editor.js` laster etter engine, før main.
+
 ## 6. Veikart
 
 * Steg 1: tett lekkasjene over, gjør `W/H` og `ids` i `tools/*` data-drevet
-* Steg 2: JSON-schema for rom/NPC + visuell hotspot-editor (gjenbruk N-debug)
+* Steg 2: JSON-schema for rom/NPC — hotspot-editor ✔ (se §5b; gjenbruk N-debug)
 * Steg 3: ES-moduler/importmap + dynamisk `import()`-loader (fjern rekkefølge-fragilitet i `index.html`)
 
 ## 7. Nyttige kommandoer

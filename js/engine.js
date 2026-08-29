@@ -249,8 +249,9 @@ const SPEAKER_NAMES = GAME.speakers.names;
     AudioSys.startMusic(room.mood || GAME.defaultMood);
     pendingAuto = !!scriptState.steps;
     invPage = 0;
-    if (room.onEnter) room.onEnter();
+if (room.onEnter) room.onEnter();
     if (!pendingAuto) autosave();
+    if (window.GAME_EDITOR) window.GAME_EDITOR.onRoom(room);
   }
 
   function walkableClamp(x, y) {
@@ -1244,8 +1245,12 @@ const SPEAKER_NAMES = GAME.speakers.names;
     };
   }
 
-  function onClick(x, y, rightBtn) {
+function onClick(x, y, rightBtn) {
     AudioSys.init(); AudioSys.resume();
+
+    if (window.GAME_EDITOR && window.GAME_EDITOR.active) {
+      if (window.GAME_EDITOR.down(x, y)) return;
+    }
 
     if (settingsOpen) {
       for (const r of settingsRects) {
@@ -1414,7 +1419,7 @@ const SPEAKER_NAMES = GAME.speakers.names;
       if (toastT > 0) toastT -= dt;
       computeHover();
       render();
-      if (toastMsg && toastT > 0) {
+if (toastMsg && toastT > 0) {
         ctx.font = 'bold 18px Verdana, sans-serif';
         ctx.textAlign = 'center';
         const tw = ctx.measureText(toastMsg).width;
@@ -1423,6 +1428,10 @@ const SPEAKER_NAMES = GAME.speakers.names;
         ctx.fill();
         ctx.fillStyle = '#ffe9a8';
         ctx.fillText(toastMsg, W / 2, 108);
+        ctx.textAlign = 'left';
+      }
+      if (window.GAME_EDITOR && window.GAME_EDITOR.active) {
+        window.GAME_EDITOR.render(ctx);
       }
     } catch (e) {
       console.error('[RING & WRONG] frame error:', e);
@@ -1494,9 +1503,13 @@ const SPEAKER_NAMES = GAME.speakers.names;
     }
     resize();
     window.addEventListener('resize', resize);
-    canvas.addEventListener('mousemove', evt => {
+canvas.addEventListener('mousemove', evt => {
       const p = toLogical(evt);
       mx = p.x; my = p.y; mouseInside = true;
+      if (window.GAME_EDITOR) window.GAME_EDITOR.move(p.x, p.y);
+    });
+    canvas.addEventListener('mouseup', evt => {
+      if (window.GAME_EDITOR) window.GAME_EDITOR.up();
     });
     canvas.addEventListener('mouseleave', () => { mouseInside = false; });
     canvas.addEventListener('contextmenu', evt => evt.preventDefault());
@@ -1510,8 +1523,14 @@ const SPEAKER_NAMES = GAME.speakers.names;
         if (settingsOpen) { settingsOpen = false; AudioSys.fx('click'); }
         else if (G.state === 'play') { paused = !paused; AudioSys.fx('click'); }
       }
-      if (evt.key === 'n' || evt.key === 'N') {
+if (evt.key === 'n' || evt.key === 'N') {
         G._debugNpcs = !G._debugNpcs;
+      }
+      if (evt.key === 'e' || evt.key === 'E') {
+        if (G.state === 'play' && window.GAME_EDITOR) {
+          window.GAME_EDITOR.active = !window.GAME_EDITOR.active;
+          AudioSys.fx('click');
+        }
       }
       if (evt.key === ' ') {
         if (speech.current) { advanceSpeech(); evt.preventDefault(); }
