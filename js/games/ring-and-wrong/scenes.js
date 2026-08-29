@@ -582,7 +582,7 @@
     });
     if (!G.has('fløyte')) {
       c.save(); c.translate(150, 514); c.scale(0.8, 0.8);
-      ART.ICONS['fløyte'](c);
+      GAME_ICONS['fløyte'](c);
       c.restore();
     }
     if (!G.has('stokk')) {
@@ -666,7 +666,7 @@
       ell(c, 328, 432, 21, 6, '#e8e2d2', '#b0a890', 1.5);
       c.save();
       c.translate(328, 426); c.scale(0.85, 0.85);
-      ART.ICONS['pølse'](c);
+      GAME_ICONS['pølse'](c);
       c.restore();
     }
     if (G.flag('spoonFloor') && !G.has('skje')) {
