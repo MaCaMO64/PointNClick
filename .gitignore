@@ -2,3 +2,6 @@ test/trace.txt
 test/smoke-out.txt
 test/smoke-err*.txt
 test/smoke-probe.js
+node_modules/
+dist/
+package-lock.json

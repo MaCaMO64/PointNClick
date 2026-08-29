@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "noEmit": true,
+    "allowJs": true,
+    "checkJs": false,
+    "skipLibCheck": true,
+    "types": []
+  },
+  "include": ["ring-og-vrang/js/**/*.js", "ring-og-vrang/index.html"],
+  "exclude": ["js/games/**/art-data.js", "js/games/**/music-data.js"]
+}
