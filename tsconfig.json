@@ -10,6 +10,6 @@
     "skipLibCheck": true,
     "types": []
   },
-  "include": ["js/**/*.js", "index.html"],
-  "exclude": ["js/games/**/art-data.js", "js/games/**/music-data.js"]
+  "include": ["engine/**/*.js", "games/**/*.js", "index.html"],
+  "exclude": ["games/**/art-data.js", "games/**/music-data.js"]
 }

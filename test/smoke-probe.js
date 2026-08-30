@@ -116,10 +116,10 @@ function click(x, y, rightBtn = false) {
 }
 
 vm.createContext(sandbox);
-const FILES = ['audio', 'art', 'scenes', 'painters1', 'painters2', 'painters3', 'sprites', 'sprites-render', 'data', 'npcs1', 'npcs2', 'rooms1', 'rooms2', 'rooms3', 'game', 'engine', 'main'];
+const FILES = ['engine/audio', 'engine/art', 'games/ring-and-wrong/scenes', 'games/ring-and-wrong/painters1', 'games/ring-and-wrong/painters2', 'games/ring-and-wrong/painters3', 'games/ring-and-wrong/sprites', 'games/ring-and-wrong/sprites-render', 'games/ring-and-wrong/data', 'games/ring-and-wrong/npcs1', 'games/ring-and-wrong/npcs2', 'games/ring-and-wrong/rooms1', 'games/ring-and-wrong/rooms2', 'games/ring-and-wrong/rooms3', 'games/ring-and-wrong/game', 'engine/engine', 'engine/main'];
 try {
   FILES.forEach(f => {
-    const src = fs.readFileSync(path.join(ROOT, 'js', f + '.js'), 'utf8');
+    const src = fs.readFileSync(path.join(ROOT, f + '.js'), 'utf8');
     vm.runInContext(src, sandbox, { filename: f + '.js' });
   });
   } catch (e) {

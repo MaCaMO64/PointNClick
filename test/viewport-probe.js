@@ -3,12 +3,12 @@ const path = require('path');
 const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const FILES = [...src.matchAll(/src="(js\/[^?"]+)/g)].map(m => m[1].replace(/^js\//, '').replace(/\.js$/, '')).filter(f => f !== 'engine' && f !== 'main');
+const FILES = [...src.matchAll(/src="((?:engine|games)\/[^?"]+)/g)].map(m => m[1].replace(/\.js$/, '')).filter(f => !['engine/engine', 'engine/main', 'engine/editor'].includes(f));
 const ctx = { window: {}, console, performance, Math, Object, Array, Date };
 ctx.window = ctx;
 vm.createContext(ctx);
 FILES.forEach(f => {
-  try { vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', f + '.js'), 'utf8'), ctx, { filename: f + '.js' }); }
+  try { vm.runInContext(fs.readFileSync(path.join(ROOT, f + '.js'), 'utf8'), ctx, { filename: f + '.js' }); }
   catch (e) { console.log('LOAD FAIL', f, e.message); process.exit(1); }
 });
 // KX/KY live fra engine-const? engine filtrert. Beregn her:

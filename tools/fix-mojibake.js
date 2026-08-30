@@ -8,7 +8,7 @@ const map = [
   ['\u00e2\u20ac\u201c', '\u2013'], // â€“ -> –  (en dash)
   ['\u00e2\u20ac\u201d', '\u2014'], // â€” -> —  (em dash)
 ];
-const dir = path.join(ROOT, 'js', 'games', 'ring-and-wrong');
+const dir = path.join(ROOT, 'games', 'ring-and-wrong');
 fs.readdirSync(dir).filter(f => f.endsWith('.js') && f !== 'art-data.js' && f !== 'music-data.js').forEach(f => {
   const p = path.join(dir, f);
   let s = fs.readFileSync(p, 'utf8');
@@ -19,7 +19,7 @@ fs.readdirSync(dir).filter(f => f.endsWith('.js') && f !== 'art-data.js' && f !=
   });
   if (changed) { fs.writeFileSync(p, s, 'utf8'); console.log(f + ': ' + changed + ' tegn reparert'); }
 });
-['tools/build-art.js', 'js/games/ring-and-wrong/art-data.js'].forEach(p => {
+['tools/build-art.js', 'games/ring-and-wrong/art-data.js'].forEach(p => {
   const full = path.join(ROOT, p);
   let s = fs.readFileSync(full, 'utf8');
   const n = s.split('\u00e2\u20ac\u201d').length - 1;

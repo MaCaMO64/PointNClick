@@ -1,7 +1,7 @@
 /**
  * story-tool.js — enkelt historieverktøy inspirert av AGS «Dialog Editor» og Escoria «dialogue resources».
  *
- *  node tools/story-tool.js dump    → leser all historietekst fra spillpakken → story/story.json (UTF-8)
+ *  node tools/story-tool.js dump    → leser all historietekst fra spillpakken → games/<spill>/story/story.json (UTF-8)
  *  node tools/story-tool.js list    → skriver oversikt over alle tekster til konsollen
  *  node tools/story-tool.js build   → skriver endrede tekster i story.json tilbake i kildefilene
  *  node tools/story-tool.js build --dry  → viser hva som VILLE blitt skrevet uten å endre filer
@@ -14,8 +14,8 @@ const path = require('path');
 const vm = require('vm');
 
 const ROOT = path.resolve(__dirname, '..');
-const GAME_DIR = path.join(ROOT, 'js', 'games', 'ring-and-wrong');
-const STORY_JSON = path.join(ROOT, 'story', 'story.json');
+const GAME_DIR = path.join(ROOT, 'games', 'ring-and-wrong');
+const STORY_JSON = path.join(GAME_DIR, 'story', 'story.json');
 
 const LIST = ['dump', 'list', 'build'];
 const cmd = process.argv[2];
@@ -38,8 +38,8 @@ sandbox.globalThis = sandbox;
 vm.createContext(sandbox);
 
 const indexHtml = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const FILES = [...indexHtml.matchAll(/src="(js\/[^"?]+)/g)].map(m => m[1].replace(/^js\//, '').replace(/\.js$/, ''))
-  .filter(f => f.startsWith('games/ring-and-wrong') || f === 'art');
+const FILES = [...indexHtml.matchAll(/src="((?:engine|games)\/[^"?]+)/g)].map(m => m[1].replace(/\.js$/, ''))
+  .filter(f => f.startsWith('games/ring-and-wrong') || f === 'engine/art');
 
 // attribusjon: hvilke ROOMS-/NPC_DEFS-id-er bidrar hver fil med
 const roomFile = {};   // roomId -> filnavn
@@ -47,7 +47,7 @@ const npcFile = {};    // npcId -> filnavn
 FILES.forEach(f => {
   const beforeR = new Set(Object.keys(sandbox.ROOMS || {}));
   const beforeN = new Set(Object.keys(sandbox.NPC_DEFS || {}));
-  const src = fs.readFileSync(path.join(ROOT, 'js', f + '.js'), 'utf8');
+  const src = fs.readFileSync(path.join(ROOT, f + '.js'), 'utf8');
   vm.runInContext(src, sandbox, { filename: f + '.js' });
   const fname = path.basename(f) + '.js';
   Object.keys(sandbox.ROOMS || {}).forEach(id => { if (!beforeR.has(id)) roomFile[id] = fname; });
@@ -60,7 +60,7 @@ const ITEMS = sandbox.ITEMS || {};
 const NPC_DEFS = sandbox.NPC_DEFS || {};
 const ROOMS = sandbox.ROOMS || {};
 
-function fileOf(name) { return name === 'game.js' ? 'js/games/ring-and-wrong/game.js' : 'js/games/ring-and-wrong/' + name; }
+function fileOf(name) { return name === 'game.js' ? 'games/ring-and-wrong/game.js' : 'games/ring-and-wrong/' + name; }
 function strLit(s) {
   if (typeof s !== 'string') return null;
   return s.indexOf('\'') >= 0 ? '"' + s.replace(/"/g, '\\"') + '"' : '\'' + s + '\'';
@@ -155,7 +155,7 @@ function dump() {
     texts,
   };
   fs.writeFileSync(STORY_JSON, JSON.stringify(doc, null, 2), 'utf8');
-  console.log('dump → story/story.json (' + texts.length + ' tekster)');
+  console.log('dump → games/ring-and-wrong/story/story.json (' + texts.length + ' tekster)');
 }
 
 function list() {
@@ -164,7 +164,7 @@ function list() {
 }
 
 function build() {
-  if (!fs.existsSync(STORY_JSON)) { console.log('Mangler story/story.json — kjør dump først.'); process.exit(1); }
+  if (!fs.existsSync(STORY_JSON)) { console.log('Mangler games/<spill>/story/story.json — kjør dump først.'); process.exit(1); }
   const doc = JSON.parse(fs.readFileSync(STORY_JSON, 'utf8'));
   const edits = []; const skipped = [];
   doc.texts.forEach(t => {

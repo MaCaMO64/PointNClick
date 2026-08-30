@@ -3,14 +3,14 @@ const path = require('path');
 const vm = require('vm');
 const ROOT = path.resolve(__dirname, '..');
 const src = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-const FILES = [...src.matchAll(/src="(js\/[^?"]+)/g)].map(m => m[1].replace(/^js\//, '').replace(/\.js$/, ''));
+const FILES = [...src.matchAll(/src="((?:engine|games)\/[^?"]+)/g)].map(m => m[1].replace(/\.js$/, ''));
 const ctx = { window: {}, console, performance };
 ctx.window = ctx;
 vm.createContext(ctx);
 FILES.forEach(f => {
-  if (f === 'engine' || f === 'main') return;
+  if (f === 'engine/engine' || f === 'engine/main') return;
   try {
-    vm.runInContext(fs.readFileSync(path.join(ROOT, 'js', f + '.js'), 'utf8'), ctx, { filename: f + '.js' });
+    vm.runInContext(fs.readFileSync(path.join(ROOT, f + '.js'), 'utf8'), ctx, { filename: f + '.js' });
   } catch (e) {
     console.log('FAIL', f, e.message);
     process.exit(1);

@@ -130,7 +130,7 @@
     ],
   };
 
-  GAME.assets = { artPath: 'js/games/ring-and-wrong/art/' };
+  GAME.assets = { artPath: 'games/ring-and-wrong/art/' };
   GAME.audio = {
     tracks: { title: 'title', shire: 'dal', road: 'kryss', pub: 'pub', river: 'elv', forest: 'skog', volcano: 'vulkan', ending: 'ending' },
     moods: {

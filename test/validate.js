@@ -4,7 +4,7 @@ const vm = require('vm');
 
 const ROOT = path.join(__dirname, '..');
   const indexSrc = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
-  const FILES = [...indexSrc.matchAll(/src="(js\/[^"?]+)/g)].map(m => m[1].replace(/^js\//, '').replace(/\.js$/, '')).filter(f => f !== 'engine' && f !== 'main');
+  const FILES = [...indexSrc.matchAll(/src="((?:engine|games)\/[^"?]+)/g)].map(m => m[1].replace(/\.js$/, '')).filter(f => !['engine/engine', 'engine/main'].includes(f));
 
 let errors = 0;
 let warnings = 0;
@@ -15,7 +15,7 @@ const ctx = { window: {}, console, performance };
 ctx.window = ctx;
 vm.createContext(ctx);
 FILES.forEach(f => {
-  const src = fs.readFileSync(path.join(ROOT, 'js', f + '.js'), 'utf8');
+  const src = fs.readFileSync(path.join(ROOT, f + '.js'), 'utf8');
   try {
     vm.runInContext(src, ctx, { filename: f + '.js' });
     if (f.includes('game-icons')) console.log('[dbg] GAME_ICONS after load:', typeof ctx.window.GAME_ICONS, ctx.window.GAME_ICONS ? Object.keys(ctx.window.GAME_ICONS).length : '-');
@@ -45,7 +45,7 @@ const flagsRead = new Set();
 
 const roomSources = {};
 FILES.forEach(f => {
-  const src = fs.readFileSync(path.join(ROOT, 'js', f + '.js'), 'utf8');
+  const src = fs.readFileSync(path.join(ROOT, f + '.js'), 'utf8');
   const re = /window\.ROOMS\.([a-zA-Z]+)\s*=\s*\{/g;
   let m;
   const marks = [];
@@ -66,7 +66,7 @@ Object.entries(roomSources).forEach(([rid, s]) => {
   while ((m = reReadRoom.exec(s))) flagsRead.add(m[1]);
 });
 ['npcs1.js', 'npcs2.js'].forEach(f => {
-  const src = fs.readFileSync(path.join(ROOT, 'js', 'games', 'ring-and-wrong', f), 'utf8');
+  const src = fs.readFileSync(path.join(ROOT, 'games', 'ring-and-wrong', f), 'utf8');
   let m;
   const reSet = /\.setFlag\(\s*['"]([a-zA-Z]+)['"]/g;
   while ((m = reSet.exec(src))) flagsSet.add(m[1]);

@@ -8,29 +8,33 @@ SCUMMVM-lignende motor for point-and-click (LucasArts-inspirert). Én generisk m
 ## 2. Arkitektur (motor vs. innhold)
 
 ```
-index.html              ← velger pakke ved hvilke <script src="js/games/<spill>/…"> som inkluderes (?v= cache-bust)
-js/
+index.html              ← velger pakke ved hvilke <script src="games/<spill>/…"> + <script src="engine/…"> som inkluderes (?v= cache-bust)
+engine/                 ← MOTOR (historie-fri)
   engine.js             ← MOTOREN: verber, dialog, cutscenes (G.script), lagring, settings, render-loop, viewport
   audio.js              ← WebAudio: MOODS prog + reverb/delay + ambience + MUSIC_DATA slots
   art.js                ← kun primitiver: rr/ell/circle/poly/vgrad/glow (+ fallback vektor-person) — ingen historie
+  editor.js             ← hotspot-editor (E-tast) — se §5b
   main.js               ← boot
-  games/<spill>/
-    game.js             ← MANIFEST: window.GAME = { meta, ui, speakers, intro, endings, difficulty, paint, start, assets, audio }
-    rooms1-3.js         ← window.ROOMS — hvert rom: { id,name,mood|track,paint,walk,hotspots,npcs,onEnter,onRingToggle,animateOver,pngTint,bgHeal }
-    npcs1-2.js          ← window.NPC_DEFS — { id,name,draw,look/talk/itemActions,hidden }
-    data.js             ← window.ITEMS + window.COMBOS
-    sprites.js          ← SPRITE_CORE (UPPER/LEG_*/STYLES/GOAT/GLUM/TROLL/RIDER)
-    sprites-render.js   ← overskriver ART.person/rider → piksel-sprites (CELL=2, cache-fritt, heltalls-snap)
-    scenes.js           ← fallback-malerier (ART.<romId>) — brukes hvis art/<id>.png mangler
-    painters1-3.js      ← rike prosedyre-malerier (overskriver ART.<romId>)
-    art/  music/        ← kildefiler for build-verktøyene
-    art-data.js / music-data.js ← GENERERT av tools/build-*.js (base64) — gjør file:// spillbart
+games/<spill>/          ← SPILLPAKKE (motor-agnostisk)
+  game.js               ← MANIFEST: window.GAME = { meta, ui, speakers, intro, endings, difficulty, paint, start, assets, audio }
+  rooms1-3.js           ← window.ROOMS — hvert rom: { id,name,mood|track,paint,walk,hotspots,npcs,onEnter,onRingToggle,animateOver,pngTint,bgHeal }
+  npcs1-2.js            ← window.NPC_DEFS — { id,name,draw,look/talk/itemActions,hidden }
+  data.js               ← window.ITEMS + window.COMBOS
+  sprites.js            ← SPRITE_CORE (UPPER/LEG_*/STYLES/GOAT/GLUM/TROLL/RIDER)
+  sprites-render.js     ← overskriver ART.person/rider → piksel-sprites (CELL=2, cache-fritt, heltalls-snap)
+  scenes.js             ← fallback-malerier (ART.<romId>) — brukes hvis art/<id>.png mangler
+  painters1-3.js        ← rike prosedyre-malerier (overskriver ART.<romId>)
+  art/                  ← artwork-kilder (jpeg/png) for build-art
+  music/                ← musikk-kilder for build-music
+  story/                ← historie (story.json, se §5c)
+  art-data.js / music-data.js ← GENERERT av tools/build-*.js (base64) — gjør file:// spillbart
 test/
-  validate.js           ← parser src="js/[^"] fra index.html → vm-sandbox, sjekker ROOMS/ITEMS/npcs/verb-whitelist/goto-graf/flagg
+  validate.js           ← parser src="(engine|games)/[^"] fra index.html → vm-sandbox, sjekker ROOMS/ITEMS/npcs/verb-whitelist/goto-graf/flagg
   smoke.js              ← Proxy-canvas som kaster ved NaN/negativ radius, Image-stub, raf-kø, wall-clock-vakt, pump(frames)
 tools/
-  build-art.js          ← ids=['dal','kryss','pub','elv','skog','vulkan','krater'] → js/games/<spill>/art-data.js (base64)
-  build-music.js        ← ids=['title','dal',...,'ending'] → music-data.js
+  build-art.js          ← ids=['dal','kryss','pub','elv','skog','vulkan','krater'] → games/<spill>/art-data.js (base64)
+  build-music.js        ← ids=['title','dal',...,'ending'] → games/<spill>/music-data.js
+  story-tool.js         ← dump/list/build historietekst (se §5c)
 README.md / HOSTING.md  ← forfatter-docs (koordinater, prompts, oppskrift nytt spill)
 ```
 
@@ -61,7 +65,7 @@ Motoren skal ikke inneholde historie — se §5 for kjente lekkasjer som er igje
 2. **Bash spiser backticks:** PowerShell-kommandoer kjørt via `bash`-verktøyet mister `` ` `` (command substitution). Unngå `` `r`n `` i slike kommandoer — bruk `[Environment]::NewLine` (+ regex `\\r\\n` literal-replace ved reparasjon).
 3. **file:// CORS/taint:** `art/<id>.png` kan ikke lastes som bilde fra `file://` uten taint. Løsning: `tools/build-*.js` baker til base64 i `art-data.js`/`music-data.js`. Husk `node tools/build-art.js` etter nye bilder og bump `?v=`.
 4. **Cache-blende spriter:** hver pikselcelle må være heltall i lavoppløsning; `imageSmoothingEnabled=false` + `Math.round` ellers blir spriter halvgjennomsiktige. Cache-laget er fjernet — direkte tegning er riktig.
-5. **Art vs. spill:** `js/art.js` skal kun inneholde primitiver + fallback. `painters*/sprites` hører til pakken (`js/games/<spill>/`). `scenes.js` er fallback-maler — overskrives av `painters`.
+5. **Art vs. spill:** `engine/art.js` skal kun inneholde primitiver + fallback. `painters*/sprites` hører til pakken (`games/<spill>/`). `scenes.js` er fallback-maler — overskrives av `painters`.
 6. **Test-harness:** `smoke.js` bruker Proxy-canvas som kaster ved `NaN/negativ radius`, `Image`-stub og `setInterval`-vakt. Musikken holder Node i live → husk `process.exit(0)` i slutten. `validate.js` leser `index.html` for fil-liste — robust mot flyttinger.
 7. **N-debug:** `N`-tasten viser grønne etiketter + magenta blit-rammer per karakter + kanari (`ART._canary`). Bruk ved «usynlig»/«på taket»-rapport.
 8. **Script-format:** `GAME.start.script` må være `[{say:[who,text]}]` — rå `[[who,text]]` henger (queue tømmes aldri). Duplikat `GAME.*`-blokker i `game.js` overskriver korrekt (sjekk at kun én `GAME.start = {` finnes).
@@ -83,7 +87,7 @@ Alle lekkasjer under er nå flyttet til spillpakken:
 * **Tast `E`** (kun i play-state) aktiverer editormodus; klikk i verden fanges av editoren, ikke spillet.
 * Velg hotspot ved klikk → **dra kroppen** = flytt, **dra hjørne-håndtak** = størrelse, **dra walk-bånd-linjer** (minY/maxY) = gang-område. Klikk tomt og dra = **ny hotspot**.
 * HUD-panel høyre: hotspost-liste (klikk = velg), knapper `EKS` (laster ned `hotspot-overrides.js`), `RENAME` (prompt), `SLETT` (fjern override), `RESET` (tøm alle), `LUKK`.
-* **Persistens:** endringer lagres til `localStorage[storageKey+'_hs_overrides']` og gjelder umiddelbart. `EKS`-filen definerer `window.HOTSPOT_OVERRIDES = { roomId: { hsId: {x,y,w,h} | full-def (har verbs) | _walk:{minY,maxY} } }` — commit den som `js/games/<spill>/hotspot-overrides.js` og legg i index.html (etter rom-filene) for varig lagring. Patcher merges med DSL-hotspotet (`Object.assign`); full-defs (med `verbs`) push-es som nytt hotspot; `_walk` overstyrer walk-båndet.
+* **Persistens:** endringer lagres til `localStorage[storageKey+'_hs_overrides']` og gjelder umiddelbart. `EKS`-filen definerer `window.HOTSPOT_OVERRIDES = { roomId: { hsId: {x,y,w,h} | full-def (har verbs) | _walk:{minY,maxY} } }` — commit den som `games/<spill>/hotspot-overrides.js` og legg i index.html (etter rom-filene) for varig lagring. Patcher merges med DSL-hotspotet (`Object.assign`); full-defs (med `verbs`) push-es som nytt hotspot; `_walk` overstyrer walk-båndet.
 * **Merk:** `engine.js`-konstanter `W/H/UI_TOP/KX/KY` er topp-nivå `const` (globale lexikale bindinger) — synlige for `editor.js` og i vm-sandbox. `editor.js` laster etter engine, før main.
 
 ## 6. Veikart
@@ -95,7 +99,7 @@ Alle lekkasjer under er nå flyttet til spillpakken:
 ## 5c. Historieverktøy (story-tool)
 
 * `node tools/story-tool.js dump|list|build [--dry]` — historietekst = data (inspirert av AGS Dialog Editor / Escoria dialogue resources).
-* `dump` → `story/story.json`: ALLE data-tekster (intro, endings, start.script, item-navn, npc navn/look/take/use, hotspot label+verbs) + dialoger (`talk/sayLines/openDialog`) som **readonly**-poster.
+* `dump` → `games/<spill>/story/story.json`: ALLE data-tekster (intro, endings, start.script, item-navn, npc navn/look/take/use, hotspot label+verbs) + dialoger (`talk/sayLines/openDialog`) som **readonly**-poster.
 * `build`: skriver endrede `.new`-verdier tilbake i kildefilene (nøyaktig-1-treff-guard; skriver UTF-8). Oppdaterer `old=new` i story.json. `--dry` viser kun.
 * `list`: konsolloversikt over alle tekster (prefix `[d]` = dialog, readonly).
 * **Bare data-tekster skrives tilbake** — dialoger redigeres i JS-filene direkte.
@@ -108,6 +112,6 @@ npx -y serve .                         # live-preview
 node tools/build-art.js                # etter nye bilder i art/
 node tools/build-music.js              # etter nye spor i music/
 node test/validate.js && node test/smoke.js
-node tools/story-tool.js dump       # all historietekst → story/story.json
+node tools/story-tool.js dump       # all historietekst → games/<spill>/story/story.json
 node tools/story-tool.js build      # skriv endrede tekster tilbake
 ```

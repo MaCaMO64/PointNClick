@@ -1,7 +1,7 @@
 # RING & WRONG
 
 Et punkt-og-klikkeventyr i ærbødig parodiens ånd — LucasArts-møter moderne pikselkunst.
-**Nåværende versjon:** se `js/game.js` → `meta.version` (vises også på tittelskjermen, i ESC-menyen og nede i høyre hjørne av UI-et).
+**Nåværende versjon:** se `games/ring-and-wrong/game.js` → `meta.version` (vises også på tittelskjermen, i ESC-menyen og nede i høyre hjørne av UI-et).
 
 ## Kjøre
 Dobbeltklikk `index.html` — alt er innbakt (bilder som base64), ingen server nødvendig.
@@ -102,7 +102,7 @@ Mangler spor → prosedyremusikk (pad/bass/melodi per rom med reverb + ambientsj
 Prompt-mal: *«[STEMNING], instrumental video game background music, pixel adventure style, seamless loop, no vocals»* — se `music/README.txt`.
 
 ## Vanskelighetsgrad
-`GAME.difficulty.rules` i `js/game.js`:
+`GAME.difficulty.rules` i `games/ring-and-wrong/game.js`:
 - `riddleRounds`: antall gåter hos Troll-Bent (Lett: 1, Normal/Vanskelig: 3)
 - `hintLevel`: 2 = «PSST… HINT?»-alternativ hos Bent + Dora sier «GOAL: …»; 0 = vage hint
 Les `Game.difficulty` der du vil utvide (velges i SETTINGS, gjelder umiddelbart på hint).
@@ -155,15 +155,15 @@ vest over cream shirt, brown shorts, cheerful determined face. + [mal med 3 pose
 1. Lagre som `art/chars/<navn>.png` (ark: `tomble_sheet.png`)
 2. Si ifra — jeg bygger `tools/build-chars.js` (kroma-nøkling + slice + normalisering + innbaking) og kobler den genererte rendereren i motoren
 3. NPC-varianter kan farges med hue-rotate per karakter uten nye genereringer
-Motoren (`js/engine.js`, `js/audio.js`, `js/art.js`, `js/main.js`) inneholder null historie — alt innhold ligger i en **spillpakke** under `js/games/<dittspill>/`. `index.html` velger spill ved hvilken pakke som inkluderes.
+Motoren (`engine/engine.js`, `engine/audio.js`, `engine/art.js`, `engine/main.js`) inneholder null historie — alt innhold ligger i en **spillpakke** under `games/<dittspill>/`. `index.html` velger spill ved hvilken pakke som inkluderes.
 
 ## Lag et nytt spill med motoren
-Motoren (`js/engine.js`, `js/audio.js`, `js/art.js`, `js/main.js`) inneholder null historie — alt innhold ligger i en **spillpakke** under `js/games/<dittspill>/`. `index.html` velger spill ved hvilken pakke som inkluderes.
+Motoren (`engine/engine.js`, `engine/audio.js`, `engine/art.js`, `engine/main.js`) inneholder null historie — alt innhold ligger i en **spillpakke** under `games/<dittspill>/`. `index.html` velger spill ved hvilken pakke som inkluderes.
 
 ### Oppskrift
 1. **Kopier pakken** (raskest):
 ```
-xcopy /E /I js\games\ring-and-wrong js\games\mittspill
+xcopy /E /I games\ring-and-wrong games\mittspill
 ```
 2. **Bytt manifestet** (`mittspill/game.js`) — dette er kontrakten mot motoren:
 ```js
@@ -183,7 +183,7 @@ window.GAME = {
             person(c, o), canary() },                 // tegning (deleger til ART.*)
   start:  { room: 'forsterom', x: 400, y: 500,
             script: [{ say: ['helt', 'Foerste replikk!'] }] },
-  assets: { artPath: 'js/games/mittspill/art/' },
+  assets: { artPath: 'games/mittspill/art/' },
   audio:  { tracks: { title: 'title', /* mood → musikkfil-id */ } },
 };
 ```
@@ -198,7 +198,7 @@ window.GAME = {
 node tools/build-art.js
 node tools/build-music.js
 ```
-5. **Bytt paken i `index.html`**: endre `js/games/ring-and-wrong/` → `js/games/mittspill/` i script-blokken.
+5. **Bytt paken i `index.html`**: endre `games/ring-and-wrong/` → `games/mittspill/` i script-blokken.
 6. **Test**:
 ```
 node test/validate.js
@@ -220,7 +220,7 @@ Tips: start med å **slette** innhold du ikke trenger (f.eks. `painters*` hvis a
 
 ## Motor vs. innhold (oversikt)
 - **Motor**: `engine.js` (rendering, verber, dialog, cutscenes, lagring, innstillinger) + `audio.js` + `art.js` (verktøy) + `main.js` — ingen historie-referanser
-- **Innhold**: `js/games/<spill>/` — alt annet
+- **Innhold**: `games/<spill>/` — alt annet
 - Motoren kaller bare GAME-hookene (`paint`, `start`, `assets`, `audio`) — null historie igjen i `engine.js`/`audio.js`
 
 ## Hosting

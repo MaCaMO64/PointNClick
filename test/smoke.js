@@ -130,10 +130,10 @@ function click(x, y, rightBtn = false) {
 vm.createContext(sandbox);
 const errSync = (s) => { try { require('fs').appendFileSync('ring-og-vrang/test/trace.txt', s + '\n'); } catch (e) {} };
 const indexHtmlSrc = require('fs').readFileSync(path.join(__dirname, '..', 'index.html'), 'utf8');
-const FILES = [...indexHtmlSrc.matchAll(/src="(js\/[^"?]+)/g)].map(m => m[1].replace(/^js\//, '').replace(/\.js$/, ''));
+const FILES = [...indexHtmlSrc.matchAll(/src="((?:engine|games)\/[^"?]+)/g)].map(m => m[1].replace(/\.js$/, ''));
 try {
   FILES.forEach(f => {
-    const src = fs.readFileSync(path.join(ROOT, 'js', f + '.js'), 'utf8');
+    const src = fs.readFileSync(path.join(ROOT, f + '.js'), 'utf8');
     vm.runInContext(src, sandbox, { filename: f + '.js' });
   });
   } catch (e) {
@@ -145,7 +145,7 @@ try {
 
 console.log('== BOOT ==');
 console.log('smoke-read game.js:', (function () {
-  const s = require('fs').readFileSync(path.join(__dirname, '..', 'js', 'games', 'ring-and-wrong', 'game.js'), 'utf8');
+  const s = require('fs').readFileSync(path.join(__dirname, '..', 'games', 'ring-and-wrong', 'game.js'), 'utf8');
   const i = s.indexOf('GAME.start');
   return s.slice(i, i + 160);
 })());
