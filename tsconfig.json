@@ -11,5 +11,5 @@
     "types": []
   },
   "include": ["engine/**/*.js", "games/**/*.js", "index.html"],
-  "exclude": ["games/**/art-data.js", "games/**/music-data.js"]
+  "exclude": ["games/**/art-data.js", "games/**/music-data.js", "games/**/chars-data.js"]
 }

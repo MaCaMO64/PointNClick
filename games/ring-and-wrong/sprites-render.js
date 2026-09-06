@@ -9,7 +9,8 @@
   (function initTomble() {
     if (typeof Image === 'undefined' || typeof document === 'undefined') return;
     const img = new Image();
-    img.src = 'games/ring-and-wrong/art/chars/tomble_sheet.jpeg?v=27';
+    const embedded = window.CHARS_DATA && window.CHARS_DATA['tomble_sheet'];
+    img.src = embedded || 'games/ring-and-wrong/art/chars/tomble_sheet.jpeg?v=28';
     img.onload = () => {
       try {
         const fw = Math.floor(img.width / 3);
