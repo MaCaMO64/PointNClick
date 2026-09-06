@@ -9,7 +9,7 @@ if (!fs.existsSync(dir)) {
   console.log('No chars dir — created', dir);
 }
 
-const out = [];
+const map = new Map(); // key -> {file, mime, b64, kb}
 const files = fs.readdirSync(dir).filter(f => /\.(png|jpe?g)$/i.test(f));
 files.forEach(f => {
   const full = path.join(dir, f);
@@ -17,9 +17,18 @@ files.forEach(f => {
   const ext = path.extname(f).slice(1).toLowerCase();
   const mime = ext === 'jpg' || ext === 'jpeg' ? 'jpeg' : ext;
   const key = path.basename(f, path.extname(f)).toLowerCase();
-  out.push(`  "${key}": "data:image/${mime};base64,${b.toString('base64')}"`);
-  console.log('embedded', f, Math.round(b.length / 1024) + 'kB ->', key);
+  const kb = Math.round(b.length / 1024);
+  const cur = map.get(key);
+  // prefer png over jpeg (cleaner magenta)
+  if (!cur || (mime === 'png' && cur.mime !== 'png')) {
+    map.set(key, { f, mime, b64: b.toString('base64'), kb });
+  }
 });
+const out = [];
+for (const [key, v] of map.entries()) {
+  out.push(`  "${key}": "data:image/${v.mime};base64,${v.b64}"`);
+  console.log('embedded', v.f, v.kb + 'kB ->', key, v.mime === 'png' ? '(png preferred)' : '');
+}
 
 if (!out.length) console.log('(no char sheets found in', dir, '— procedural fallback will be used)');
 
