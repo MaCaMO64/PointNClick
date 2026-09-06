@@ -4,6 +4,53 @@
   const LETTER_FALLBACK = { K: '#20263a', C: '#e8a090', W: '#ffffff', N: '#d8aab2' };
   const vecPerson = C.vecPerson;
 
+  // --- Tomble sheet (Nano Banana) — chroma-keyed at runtime ---
+  let TOMB_FRAMES = null;
+  (function initTomble() {
+    if (typeof Image === 'undefined' || typeof document === 'undefined') return;
+    const img = new Image();
+    img.src = 'games/ring-and-wrong/art/chars/tomble_sheet.jpeg?v=27';
+    img.onload = () => {
+      try {
+        const fw = Math.floor(img.width / 3);
+        const fh = img.height;
+        const frames = [];
+        for (let i = 0; i < 3; i++) {
+          const cv = document.createElement('canvas');
+          cv.width = fw; cv.height = fh;
+          const cx = cv.getContext('2d');
+          cx.drawImage(img, i * fw, 0, fw, fh, 0, 0, fw, fh);
+          const id = cx.getImageData(0, 0, fw, fh);
+          const d = id.data;
+          for (let p = 0; p < d.length; p += 4) {
+            const r = d[p], g = d[p + 1], b = d[p + 2];
+            const dist = Math.abs(r - 255) + g + Math.abs(b - 255);
+            const isMag = r > 140 && b > 140 && g < 130;
+            if (dist < 115 || (isMag && dist < 260)) d[p + 3] = 0;
+          }
+          cx.putImageData(id, 0, 0);
+          // trim transparent border to tight bounding box
+          const w = fw, h = fh;
+          let minX = w, maxX = -1, minY = h, maxY = -1;
+          const d2 = cx.getImageData(0, 0, w, h).data;
+          for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d2[(y * w + x) * 4 + 3] > 10) {
+            if (x < minX) minX = x; if (x > maxX) maxX = x;
+            if (y < minY) minY = y; if (y > maxY) maxY = y;
+          }
+          if (maxX >= 0) {
+            const tw = maxX - minX + 1, th = maxY - minY + 1;
+            const tc = document.createElement('canvas');
+            tc.width = tw; tc.height = th;
+            tc.getContext('2d').drawImage(cv, minX, minY, tw, th, 0, 0, tw, th);
+            frames.push(tc);
+          } else frames.push(cv);
+        }
+        TOMB_FRAMES = frames;
+      } catch (e) { console.warn('tomble sheet failed', e); }
+    };
+    img.onerror = () => {};
+  })();
+
   function SnapCtx(c) {
     const r = v => Math.round(v);
     return {
@@ -48,6 +95,33 @@
   }
 
   function drawHumanoid(c, o) {
+    // Nano Banana Tomble — use image sheet if ready
+    if (o.style === 'toke' && TOMB_FRAMES && TOMB_FRAMES.length === 3) {
+      const now = performance.now() / 1000;
+      c.fillStyle = 'rgba(10,12,20,0.28)';
+      c.beginPath(); c.ellipse(o.x, o.y + 2, 17 * (o.scale || 1), 5 * (o.scale || 1), 0, 0, Math.PI * 2); c.fill();
+      let idx = 0;
+      if (o.walking) { const seq = [1, 0, 2, 0]; idx = seq[Math.floor(o.phase) % 4]; }
+      const frame = TOMB_FRAMES[idx];
+      const targetH = 52;
+      const scale = targetH / frame.height;
+      const w = Math.round(frame.width * scale);
+      const h = Math.round(frame.height * scale);
+      const bob = o.walking && (Math.floor(o.phase) % 4) % 2 === 1 ? -1 : 0;
+      const sp = spriteSpace(c, o, w, h);
+      if (bob) c.translate(0, bob);
+      c.imageSmoothingEnabled = false;
+      c.drawImage(frame, 0, 0, frame.width, frame.height, 0, 0, w, h);
+      if (o.talking) {
+        const open = Math.floor(now * 9) % 2 === 0;
+        c.fillStyle = '#5a3a32';
+        c.fillRect(Math.round(w * 0.42), Math.round(h * 0.38), Math.round(w * 0.10), open ? Math.max(1, Math.round(h * 0.05)) : 1);
+      }
+      c.restore();
+      o._blit = { lx: sp.ox, ly: sp.oy, wPx: w, hPx: h };
+      return;
+    }
+
     const st = C.STYLES[o.style] || C.STYLES.toke;
     const now = performance.now() / 1000;
 
