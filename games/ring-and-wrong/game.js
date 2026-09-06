@@ -1,7 +1,7 @@
 ﻿window.GAME = {
   meta: {
     title: 'RING & WRONG',
-    version: 'v0.15.0',
+    version: 'v0.16.0',
     storageKey: 'ringandwrong',
     subtitle: 'A thoroughly unnecessary hero\'s tale',
     tagline: 'A point-and-click adventure in the spirit of LucasArts',
