@@ -6,7 +6,7 @@
 
   // --- Nano Banana sheets — chroma-keyed at runtime (magenta #FF00FF, JPEG-tolerant) ---
   const CHAR_FRAMES = {}; // style -> [idle, walkA, walkB]
-  const STYLE_MAP = { tomble_sheet: 'toke', bongo_sheet: 'bongo', billy_sheet: 'goat', dora_sheet: 'dora', halvor_sheet: 'halvor', rando_sheet: 'rando' };
+  const STYLE_MAP = { tomble_sheet: 'toke', bongo_sheet: 'bongo', billy_sheet: 'goat', dora_sheet: 'dora', halvor_sheet: 'halvor', rando_sheet: 'rando', bjarne_sheet: 'bjarne', glum_sheet: 'glum', grim_sheet: 'grim' };
   (function initSheets() {
     if (typeof Image === 'undefined' || typeof document === 'undefined') return;
     const loadSheet = (key, style) => {
@@ -113,7 +113,7 @@
       c.fillStyle = 'rgba(10,12,20,0.28)';
       c.beginPath(); c.ellipse(o.x, o.y + 2, 17 * (o.scale || 1), 5 * (o.scale || 1), 0, 0, Math.PI * 2); c.fill();
       let idx = 0;
-      if (['dora', 'halvor', 'rando'].includes(o.style)) {
+      if (['dora', 'halvor', 'rando', 'bjarne', 'grim'].includes(o.style)) {
         const t = now * 0.7;
         idx = Math.floor(t * 1.2) % 23 === 0 ? 2 : Math.floor(t) % 7 === 0 ? 1 : 0;
       } else if (o.walking) { const seq = [1, 0, 2, 0]; idx = seq[Math.floor(o.phase) % 4]; }
@@ -205,13 +205,12 @@
       c.fillStyle = 'rgba(10,12,20,0.28)';
       c.beginPath(); c.ellipse(o.x, o.y + 2, (o.style === 'goat' ? 12 : 17) * (o.scale || 1), 5 * (o.scale || 1), 0, 0, Math.PI * 2); c.fill();
       let idx = 0;
-      if (o.style === 'goat') {
-        // Geita går aldri — vis idle-varianter som sakte blunk/hale-vrikk
+      if (['goat', 'glum'].includes(o.style)) {
         const t = now * 0.9;
         idx = Math.floor(t) % 7 === 0 ? 2 : Math.floor(t * 0.6) % 3 === 1 ? 1 : 0;
       } else if (o.walking) { const seq = [1, 0, 2, 0]; idx = seq[Math.floor(o.phase) % 4]; }
       const frame = GFR[idx];
-      const targetH = o.style === 'goat' ? 38 : 52;
+      const targetH = ['goat', 'glum'].includes(o.style) ? 38 : 52;
       const scale = targetH / frame.height;
       const w = Math.round(frame.width * scale), h = Math.round(frame.height * scale);
       const bob = o.walking && (Math.floor(o.phase) % 4) % 2 === 1 ? -1 : 0;
