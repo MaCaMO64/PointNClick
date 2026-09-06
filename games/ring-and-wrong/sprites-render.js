@@ -4,52 +4,63 @@
   const LETTER_FALLBACK = { K: '#20263a', C: '#e8a090', W: '#ffffff', N: '#d8aab2' };
   const vecPerson = C.vecPerson;
 
-  // --- Tomble sheet (Nano Banana) — chroma-keyed at runtime ---
-  let TOMB_FRAMES = null;
-  (function initTomble() {
+  // --- Nano Banana sheets — chroma-keyed at runtime (magenta #FF00FF, JPEG-tolerant) ---
+  const CHAR_FRAMES = {}; // style -> [idle, walkA, walkB]
+  const STYLE_MAP = { tomble_sheet: 'toke', bongo_sheet: 'bongo' };
+  (function initSheets() {
     if (typeof Image === 'undefined' || typeof document === 'undefined') return;
-    const img = new Image();
-    const embedded = window.CHARS_DATA && window.CHARS_DATA['tomble_sheet'];
-    img.src = embedded || 'games/ring-and-wrong/art/chars/tomble_sheet.jpeg?v=28';
-    img.onload = () => {
-      try {
-        const fw = Math.floor(img.width / 3);
-        const fh = img.height;
-        const frames = [];
-        for (let i = 0; i < 3; i++) {
-          const cv = document.createElement('canvas');
-          cv.width = fw; cv.height = fh;
-          const cx = cv.getContext('2d');
-          cx.drawImage(img, i * fw, 0, fw, fh, 0, 0, fw, fh);
-          const id = cx.getImageData(0, 0, fw, fh);
-          const d = id.data;
-          for (let p = 0; p < d.length; p += 4) {
-            const r = d[p], g = d[p + 1], b = d[p + 2];
-            const dist = Math.abs(r - 255) + g + Math.abs(b - 255);
-            const isMag = r > 140 && b > 140 && g < 130;
-            if (dist < 115 || (isMag && dist < 260)) d[p + 3] = 0;
+    const loadSheet = (key, style) => {
+      const img = new Image();
+      const embedded = window.CHARS_DATA && window.CHARS_DATA[key];
+      img.src = embedded || ('games/ring-and-wrong/art/chars/' + key + '.jpeg?v=29');
+      if (!embedded) {
+        const altJpg = 'games/ring-and-wrong/art/chars/' + key + '.jpg?v=29';
+        img.onerror = () => { const f2 = new Image(); f2.src = altJpg; f2.onload = img.onload; };
+      }
+      img.onload = () => {
+        try {
+          const fw = Math.floor(img.width / 3);
+          const fh = img.height;
+          const frames = [];
+          for (let i = 0; i < 3; i++) {
+            const cv = document.createElement('canvas');
+            cv.width = fw; cv.height = fh;
+            const cx = cv.getContext('2d');
+            cx.drawImage(img, i * fw, 0, fw, fh, 0, 0, fw, fh);
+            // Bongo-arket har "MASTER-STIL" tekst i bunn — overskriv med magenta før nøkling
+            if (key === 'bongo_sheet') { cx.fillStyle = '#FF00FF'; cx.fillRect(0, fh - 58, fw, 58); }
+            const id = cx.getImageData(0, 0, fw, fh);
+            const d = id.data;
+            for (let p = 0; p < d.length; p += 4) {
+              const r = d[p], g = d[p + 1], b = d[p + 2];
+              const dist = Math.abs(r - 255) + g + Math.abs(b - 255);
+              const isMag = r > 140 && b > 140 && g < 130;
+              if (dist < 115 || (isMag && dist < 260)) d[p + 3] = 0;
+            }
+            cx.putImageData(id, 0, 0);
+            const w = fw, h = fh;
+            let minX = w, maxX = -1, minY = h, maxY = -1;
+            const d2 = cx.getImageData(0, 0, w, h).data;
+            for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d2[(y * w + x) * 4 + 3] > 10) {
+              if (x < minX) minX = x; if (x > maxX) maxX = x;
+              if (y < minY) minY = y; if (y > maxY) maxY = y;
+            }
+            if (maxX >= 0) {
+              const tw = maxX - minX + 1, th = maxY - minY + 1;
+              const tc = document.createElement('canvas');
+              tc.width = tw; tc.height = th;
+              tc.getContext('2d').drawImage(cv, minX, minY, tw, th, 0, 0, tw, th);
+              frames.push(tc);
+            } else frames.push(cv);
           }
-          cx.putImageData(id, 0, 0);
-          // trim transparent border to tight bounding box
-          const w = fw, h = fh;
-          let minX = w, maxX = -1, minY = h, maxY = -1;
-          const d2 = cx.getImageData(0, 0, w, h).data;
-          for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) if (d2[(y * w + x) * 4 + 3] > 10) {
-            if (x < minX) minX = x; if (x > maxX) maxX = x;
-            if (y < minY) minY = y; if (y > maxY) maxY = y;
-          }
-          if (maxX >= 0) {
-            const tw = maxX - minX + 1, th = maxY - minY + 1;
-            const tc = document.createElement('canvas');
-            tc.width = tw; tc.height = th;
-            tc.getContext('2d').drawImage(cv, minX, minY, tw, th, 0, 0, tw, th);
-            frames.push(tc);
-          } else frames.push(cv);
-        }
-        TOMB_FRAMES = frames;
-      } catch (e) { console.warn('tomble sheet failed', e); }
+          CHAR_FRAMES[style] = frames;
+        } catch (e) { console.warn(key + ' sheet failed', e); }
+      };
+      img.onerror = () => {};
     };
-    img.onerror = () => {};
+    const src = window.CHARS_DATA || {};
+    const keys = Object.keys(src).length ? Object.keys(src) : ['tomble_sheet', 'bongo_sheet'];
+    keys.forEach(k => loadSheet(k, STYLE_MAP[k] || k.replace('_sheet', '')));
   })();
 
   function SnapCtx(c) {
@@ -96,14 +107,14 @@
   }
 
   function drawHumanoid(c, o) {
-    // Nano Banana Tomble — use image sheet if ready
-    if (o.style === 'toke' && TOMB_FRAMES && TOMB_FRAMES.length === 3) {
+    const FR = CHAR_FRAMES[o.style];
+    if (FR && FR.length === 3) {
       const now = performance.now() / 1000;
       c.fillStyle = 'rgba(10,12,20,0.28)';
       c.beginPath(); c.ellipse(o.x, o.y + 2, 17 * (o.scale || 1), 5 * (o.scale || 1), 0, 0, Math.PI * 2); c.fill();
       let idx = 0;
       if (o.walking) { const seq = [1, 0, 2, 0]; idx = seq[Math.floor(o.phase) % 4]; }
-      const frame = TOMB_FRAMES[idx];
+      const frame = FR[idx];
       const targetH = 52;
       const scale = targetH / frame.height;
       const w = Math.round(frame.width * scale);
